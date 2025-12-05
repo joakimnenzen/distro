@@ -1,0 +1,162 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase-browser'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { ChevronLeft, ChevronRight, Search, Settings, LogOut } from 'lucide-react'
+
+export function TopBar() {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [user, setUser] = useState<any>(null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        setUser(user)
+
+        // Fetch profile data for avatar
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', user.id)
+          .single()
+
+        if (profile?.avatar_url) {
+          setAvatarUrl(profile.avatar_url)
+        }
+      }
+    }
+
+    getUser()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        setUser(session.user)
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', session.user.id)
+          .single()
+
+        if (profile?.avatar_url) {
+          setAvatarUrl(profile.avatar_url)
+        }
+      } else {
+        setUser(null)
+        setAvatarUrl(null)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase])
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.refresh()
+  }
+
+  const getInitials = (email: string) => {
+    return email.substring(0, 2).toUpperCase()
+  }
+
+  if (!user) {
+    return null // Don't show top bar if not logged in
+  }
+
+  return (
+    <div className="w-full border-b border-white/10 bg-black/50 backdrop-blur-xl">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* Left: History Navigation */}
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 rounded-full hover:bg-white/10"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 rounded-full hover:bg-white/10"
+            onClick={() => router.forward()}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Center: Search */}
+        <div className="flex-1 max-w-md mx-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search music..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
+              className="pl-10 pr-4 h-10 rounded-full bg-white/5 border-white/20 font-mono text-sm placeholder:text-muted-foreground focus:border-white/30 focus:bg-white/10"
+            />
+          </div>
+        </div>
+
+        {/* Right: User Menu */}
+        <div className="flex items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={avatarUrl || undefined} alt={user.email} />
+                  <AvatarFallback className="bg-white/10 text-white font-mono text-xs">
+                    {getInitials(user.email)}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 bg-black/90 border-white/20 backdrop-blur-xl" align="end">
+              <DropdownMenuItem
+                className="font-mono text-sm hover:bg-white/10 cursor-pointer"
+                onClick={() => router.push('/settings')}
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem
+                className="font-mono text-sm text-red-400 hover:bg-red-400/10 cursor-pointer"
+                onClick={handleLogout}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </div>
+  )
+}

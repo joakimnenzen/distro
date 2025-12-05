@@ -1,0 +1,329 @@
+'use client'
+
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase-browser'
+import { createAlbum, createTrack, type CreateAlbumData, type CreateTrackData } from '@/actions/upload'
+import { toast } from '@/hooks/use-toast'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Upload, Music, Image as ImageIcon, X } from 'lucide-react'
+
+const uploadFormSchema = z.object({
+  title: z.string().min(1, 'Album title is required').max(200, 'Album title too long'),
+  releaseDate: z.string().optional(),
+  coverFile: z.instanceof(File, { message: 'Cover image is required' })
+    .refine((file) => file.size <= 5 * 1024 * 1024, 'File size must be less than 5MB')
+    .refine((file) => file.type.startsWith('image/'), 'Must be an image file'),
+  trackFiles: z.array(z.instanceof(File))
+    .min(1, 'At least one track is required')
+    .max(50, 'Maximum 50 tracks allowed')
+    .refine((files) => files.every(file => file.size <= 50 * 1024 * 1024), 'Each track must be less than 50MB')
+    .refine((files) => files.every(file => file.type.startsWith('audio/')), 'All files must be audio files'),
+})
+
+type UploadFormData = z.infer<typeof uploadFormSchema>
+
+interface AlbumUploadFormProps {
+  bandId: string
+  bandSlug: string
+}
+
+export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const supabase = createClient() // This is the browser client, no need to await
+
+  const form = useForm<UploadFormData>({
+    resolver: zodResolver(uploadFormSchema),
+    defaultValues: {
+      title: '',
+      releaseDate: '',
+      trackFiles: [],
+    },
+  })
+
+  const watchedCoverFile = form.watch('coverFile')
+  const watchedTrackFiles = form.watch('trackFiles')
+
+  const generateUniqueFilename = (originalName: string) => {
+    const extension = originalName.split('.').pop()
+    const timestamp = Date.now()
+    const random = Math.random().toString(36).substring(2, 15)
+    return `${timestamp}-${random}.${extension}`
+  }
+
+  const uploadFile = async (file: File, bucket: string, path: string): Promise<string> => {
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .upload(path, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) {
+      throw new Error(`Failed to upload ${file.name}: ${error.message}`)
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(path)
+
+    return publicUrl
+  }
+
+  const onSubmit = async (data: UploadFormData) => {
+    setIsUploading(true)
+    setError(null)
+    setUploadProgress('Starting upload...')
+
+    try {
+      // 1. Upload cover image
+      setUploadProgress('Uploading cover image...')
+      console.log("Starting cover upload...", data.coverFile.name)
+
+      let coverUrl: string
+      try {
+        const coverFilename = generateUniqueFilename(data.coverFile.name)
+        const coverPath = `${bandId}/${coverFilename}`
+        coverUrl = await uploadFile(data.coverFile, 'covers', coverPath)
+        console.log("Cover upload success:", coverUrl)
+      } catch (coverError) {
+        console.error("Cover upload failed:", coverError)
+        const errorMessage = coverError instanceof Error ? coverError.message : 'Failed to upload cover image'
+        toast({
+          title: "Upload Failed",
+          description: `Cover upload error: ${errorMessage}`,
+          variant: "destructive",
+        })
+        return // Stop the function here
+      }
+
+      // 2. Create album
+      setUploadProgress('Creating album...')
+      const albumData: CreateAlbumData = {
+        title: data.title,
+        releaseDate: data.releaseDate,
+        coverImageUrl: coverUrl,
+        bandId: bandId,
+      }
+
+      const albumResult = await createAlbum(albumData)
+      if (!albumResult.success) {
+        throw new Error(albumResult.error)
+      }
+
+      const albumId = albumResult.albumId
+
+      // 3. Upload tracks and create track records
+      setUploadProgress(`Uploading ${data.trackFiles.length} track(s)...`)
+
+      for (let i = 0; i < data.trackFiles.length; i++) {
+        const trackFile = data.trackFiles[i]
+        setUploadProgress(`Uploading track ${i + 1}/${data.trackFiles.length}: ${trackFile.name}`)
+
+        // Upload audio file
+        const trackFilename = generateUniqueFilename(trackFile.name)
+        const trackPath = `${bandId}/${albumId}/${trackFilename}`
+        const trackUrl = await uploadFile(trackFile, 'audio', trackPath)
+
+        // Create track record
+        const trackData: CreateTrackData = {
+          title: trackFile.name.replace(/\.[^/.]+$/, ''), // Remove extension for title
+          fileUrl: trackUrl,
+          trackNumber: i + 1,
+          albumId: albumId,
+        }
+
+        console.log("Submitting track:", { title: trackData.title, track_number: trackData.trackNumber })
+        const trackResult = await createTrack(trackData)
+        if (!trackResult.success) {
+          console.error(`Failed to create track ${i + 1}:`, trackResult.error)
+          // Continue with other tracks even if one fails
+        }
+      }
+
+      setUploadProgress('Upload complete! Redirecting...')
+      router.push(`/band/${bandSlug}`)
+      router.refresh()
+
+    } catch (err) {
+      console.error('Upload error:', err)
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred')
+    } finally {
+      setIsUploading(false)
+      setUploadProgress('')
+    }
+  }
+
+  return (
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Upload className="w-5 h-5" />
+          Upload New Album
+        </CardTitle>
+        <CardDescription>
+          Add a new album to your band with cover art and tracks
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Album Title *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter album title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="releaseDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Release Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Optional release date for the album
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="coverFile"
+              render={({ field: { value, onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Cover Image *</FormLabel>
+                  <FormControl>
+                    <div className="space-y-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => onChange(e.target.files?.[0] || undefined)}
+                        {...field}
+                      />
+                      {watchedCoverFile && (
+                        <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                          <ImageIcon className="w-4 h-4" />
+                          <span className="text-sm">{watchedCoverFile.name}</span>
+                          <span className="text-xs text-muted-foreground ml-auto">
+                            {(watchedCoverFile.size / 1024 / 1024).toFixed(1)}MB
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Upload a cover image (max 5MB, JPG/PNG/WebP)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="trackFiles"
+              render={({ field: { value, onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Audio Tracks *</FormLabel>
+                  <FormControl>
+                    <div className="space-y-2">
+                      <Input
+                        type="file"
+                        accept="audio/*"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || [])
+                          onChange(files)
+                        }}
+                        {...field}
+                      />
+                      {watchedTrackFiles && watchedTrackFiles.length > 0 && (
+                        <div className="space-y-1 max-h-40 overflow-y-auto">
+                          {watchedTrackFiles.map((file, index) => (
+                            <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                              <Music className="w-4 h-4" />
+                              <span className="text-sm truncate flex-1">{file.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {(file.size / 1024 / 1024).toFixed(1)}MB
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Upload audio files (max 50MB each, MP3/WAV/FLAC)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {error && (
+              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+                {error}
+              </div>
+            )}
+
+            {uploadProgress && (
+              <div className="p-3 text-sm text-blue-600 bg-blue-50 border border-blue-200 rounded-md">
+                {uploadProgress}
+              </div>
+            )}
+
+            <div className="flex gap-4 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push(`/band/${bandSlug}`)}
+                disabled={isUploading}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isUploading}
+                className="flex-1"
+              >
+                {isUploading ? 'Uploading...' : 'Upload Album'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  )
+}
