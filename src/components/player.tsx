@@ -119,9 +119,19 @@ export function Player() {
 
         {/* Left: Info */}
         <div className="flex items-center space-x-4 w-1/3 min-w-0">
+          {/* Album Cover */}
+          {currentTrack.cover_image_url && (
+            <div className="flex-shrink-0">
+              <img
+                src={currentTrack.cover_image_url}
+                alt={`${currentTrack.album_title} cover`}
+                className="w-14 h-14 rounded-md object-cover"
+              />
+            </div>
+          )}
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             <div className="min-w-0 flex-1">
-              <h3 className="font-medium truncate text-sm">{currentTrack.title}</h3>
+              <h3 className="font-mono truncate text-sm">{currentTrack.title}</h3>
               <p className="text-xs text-muted-foreground truncate">
                 {currentTrack.band_name}
               </p>
@@ -137,7 +147,7 @@ export function Player() {
               <SkipBack className="w-5 h-5" />
             </Button>
             <Button size="icon" onClick={togglePlay} className="h-10 w-10 rounded-full shadow-md">
-              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-1" />}
+              {isPlaying ? <Pause fill="currentColor" className="w-5 h-5" /> : <Play fill="currentColor" className="w-5 h-5 ml-1" />}
             </Button>
             <Button variant="ghost" size="icon" onClick={playNext} disabled={queue.length <= 1}>
               <SkipForward className="w-5 h-5" />

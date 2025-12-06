@@ -10,6 +10,7 @@ interface Track {
   album_id: string
   album_title: string
   band_name: string
+  cover_image_url?: string
 }
 
 interface PlayerState {

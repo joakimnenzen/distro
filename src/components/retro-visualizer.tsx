@@ -13,7 +13,7 @@ export function RetroVisualizer({ isPlaying }: RetroVisualizerProps) {
         <div
           key={index}
           className={`
-            w-1 bg-gradient-to-t from-primary to-primary/60 rounded-t-sm transition-all duration-300
+            w-1 bg-gradient-to-t from-[#ff565f] to-[#ff565f]/60 rounded-t-sm transition-all duration-300
             ${isPlaying
               ? `animate-pulse opacity-80 animate-bounce-${index % 3 === 0 ? 'slow' : index % 3 === 1 ? 'medium' : 'fast'}`
               : 'opacity-30'
