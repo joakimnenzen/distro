@@ -13,10 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronLeft, ChevronRight, Search, Settings, LogOut } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Search, Settings, LogOut, Loader2 } from 'lucide-react'
 
 export function TopBar() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [inputValue, setInputValue] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const router = useRouter()
@@ -67,9 +69,49 @@ export function TopBar() {
     return () => subscription.unsubscribe()
   }, [supabase])
 
+  // Sync input value with URL query parameter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const q = urlParams.get('q') || ''
+    setInputValue(q)
+    setSearchQuery(q)
+  }, [])
+
+  // Debounced search effect
+  useEffect(() => {
+    if (inputValue === searchQuery) return // No change
+
+    setIsSearching(true)
+
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(inputValue)
+      if (inputValue.trim()) {
+        router.replace(`/search?q=${encodeURIComponent(inputValue.trim())}`)
+      } else {
+        router.replace('/search')
+      }
+      setIsSearching(false)
+    }, 300)
+
+    return () => {
+      clearTimeout(timeoutId)
+      setIsSearching(false)
+    }
+  }, [inputValue, searchQuery, router])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+  }
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+    if (e.key === 'Enter') {
+      // Immediate search on Enter
+      const query = inputValue.trim()
+      if (query) {
+        router.push(`/search?q=${encodeURIComponent(query)}`)
+      } else {
+        router.push('/search')
+      }
     }
   }
 
@@ -87,7 +129,7 @@ export function TopBar() {
   }
 
   return (
-    <div className="w-full border-b border-white/10 bg-black/50 backdrop-blur-xl">
+    <div className="w-full sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Left: History Navigation */}
         <div className="flex items-center space-x-2">
@@ -116,11 +158,14 @@ export function TopBar() {
             <Input
               type="text"
               placeholder="Search music..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={inputValue}
+              onChange={handleInputChange}
               onKeyDown={handleSearch}
-              className="pl-10 pr-4 h-10 rounded-full bg-white/5 border-white/20 font-mono text-sm placeholder:text-muted-foreground focus:border-white/30 focus:bg-white/10"
+              className="pl-10 pr-10 h-10 rounded-full bg-white/5 border-white/20 font-mono text-sm placeholder:text-muted-foreground focus:border-white/30 focus:bg-white/10"
             />
+            {isSearching && (
+              <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
+            )}
           </div>
         </div>
 
