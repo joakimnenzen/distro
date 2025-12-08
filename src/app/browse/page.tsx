@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase-server'
 import { Music } from 'lucide-react'
 import { AlbumCard } from '@/components/album-card'
 
-// FIX: 'bands' is likely a single object, but let's allow it to be either just in case
 interface AlbumWithBand {
   id: string
   title: string
@@ -10,7 +9,7 @@ interface AlbumWithBand {
   created_at: string
   bands: {
     name: string
-  } | { name: string }[] // Allow both Object or Array
+  }[]
 }
 
 async function getAllAlbums(): Promise<AlbumWithBand[]> {
@@ -65,7 +64,16 @@ export default async function BrowsePage() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {albums.map((album) => (
-            <AlbumCard key={album.id} album={album} />
+            <AlbumCard
+              key={album.id}
+              album={{
+                id: album.id,
+                title: album.title,
+                cover_image_url: album.cover_image_url,
+                band_name: album.bands[0]?.name,
+              }}
+              showBandName={false}
+            />
           ))}
         </div>
       )}

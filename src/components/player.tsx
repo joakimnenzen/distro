@@ -104,7 +104,7 @@ export function Player() {
 
   return (
     <Card className="fixed bottom-0 left-0 right-0 z-50 rounded-none border-x-0 border-b-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center p-4 gap-6 container max-w-screen-xl mx-auto">
+      <div className="flex items-center py-4 px-6 gap-6 mx-auto">
         
         {/* THE AUDIO ELEMENT - No crossOrigin, using Props */}
         <audio

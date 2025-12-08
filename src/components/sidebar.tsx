@@ -9,8 +9,7 @@ import {
   Heart,
   Disc,
   Mic,
-  LayoutDashboard,
-  Music2
+  LayoutDashboard
 } from 'lucide-react'
 
 interface SidebarLinkProps {
@@ -34,7 +33,7 @@ function SidebarLink({ href, icon: Icon, children }: SidebarLinkProps) {
         }
       `}
     >
-      <Icon className="w-5 h-5" />
+      <Icon className="w-4 h-4" />
       {children}
     </Link>
   )
@@ -45,9 +44,12 @@ export function Sidebar() {
     <div className="flex flex-col h-full bg-black border-r border-white/10">
       {/* Logo/Header */}
       <div className="p-6 border-b border-white/10">
-        <Link href="/" className="flex items-center gap-2">
-          <Music2 className="w-8 h-8 text-white" />
-          <span className="text-2xl font-bold font-sans text-white">Distro</span>
+        <Link href="/" className="flex items-center">
+          <img
+            src="/distro_logo.svg"
+            alt="Distro"
+            className="h-5 w-auto"
+          />
         </Link>
       </div>
 
