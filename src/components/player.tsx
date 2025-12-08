@@ -104,18 +104,20 @@ export function Player() {
 
   return (
     <Card className="fixed bottom-0 left-0 right-0 z-50 rounded-none border-x-0 border-b-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center p-4 gap-6 container max-w-screen-xl mx-auto">
+      <div className="flex items-center py-4 px-6 gap-6 mx-auto">
         
         {/* THE AUDIO ELEMENT - No crossOrigin, using Props */}
-        <audio
-          ref={audioRef}
-          src={currentTrack.file_url}
-          preload="metadata"
-          onLoadedMetadata={onLoadedMetadata}
-          onTimeUpdate={onTimeUpdate}
-          onEnded={onEnded}
-          onError={onError} // <--- This catches the silent errors
-        />
+        {currentTrack.file_url && (
+          <audio
+            ref={audioRef}
+            src={currentTrack.file_url}
+            preload="metadata"
+            onLoadedMetadata={onLoadedMetadata}
+            onTimeUpdate={onTimeUpdate}
+            onEnded={onEnded}
+            onError={onError} // <--- This catches the silent errors
+          />
+        )}
 
         {/* Left: Info */}
         <div className="flex items-center space-x-4 w-1/3 min-w-0">

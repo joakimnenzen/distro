@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase-server'
-import { notFound } from 'next/navigation'
+import { getLikedTrackIds } from '@/actions/likes'
+import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 // Import the new Client Component
@@ -45,6 +46,14 @@ interface AlbumPageProps {
 }
 
 export default async function AlbumPage({ params }: AlbumPageProps) {
+  const supabase = await createClient()
+
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    redirect('/login')
+  }
+
   // In Next.js 15, params is a Promise, so we await it
   const { id } = await params
   const album = await getAlbumWithTracks(id)
@@ -52,6 +61,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   if (!album) {
     notFound()
   }
+
+  // Fetch user's liked track IDs
+  const likedTrackIds = await getLikedTrackIds(user.id)
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,7 +114,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         </div>
 
         {/* Track List - Now a Client Component */}
-        <TrackList album={album} />
+        <TrackList album={album} likedTrackIds={likedTrackIds} />
       </div>
     </div>
   )

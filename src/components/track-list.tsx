@@ -3,10 +3,14 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { usePlayerStore } from '@/hooks/use-player-store'
+import { LikeButton } from '@/components/like-button'
 import { Play, Clock } from 'lucide-react'
 import { AlbumWithTracks } from '@/types/album'
 
-export function TrackList({ album }: { album: AlbumWithTracks }) {
+export function TrackList({ album, likedTrackIds = [] }: {
+  album: AlbumWithTracks
+  likedTrackIds?: string[]
+}) {
   const { playTrack, setQueue } = usePlayerStore()
 
   const handlePlayTrack = (track: AlbumWithTracks['tracks'][0]) => {
@@ -55,6 +59,7 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
       <CardContent className="p-0">
         <div className="divide-y">
           {album.tracks
+            .filter((track) => track.id && track.id.trim() !== '') // Filter out tracks with invalid IDs
             .sort((a, b) => a.track_number - b.track_number)
             .map((track) => (
               <div
@@ -80,6 +85,13 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
                 <span className="text-sm text-muted-foreground">
                   {formatDuration(track.duration)}
                 </span>
+
+                <LikeButton
+                  trackId={track.id}
+                  initialIsLiked={likedTrackIds.includes(track.id)}
+                  size="sm"
+                  variant="ghost"
+                />
               </div>
             ))}
         </div>
