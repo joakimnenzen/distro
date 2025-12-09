@@ -9,31 +9,47 @@ interface AlbumWithBand {
   created_at: string
   bands: {
     name: string
+    slug: string
   }[]
 }
 
 async function getAllAlbums(): Promise<AlbumWithBand[]> {
   const supabase = await createClient()
 
+  // First get albums with band_id
   const { data: albums, error } = await supabase
     .from('albums')
-    .select(`
-      id,
-      title,
-      cover_image_url,
-      created_at,
-      bands (
-        name
-      )
-    `)
+    .select('id, title, cover_image_url, created_at, band_id')
     .order('created_at', { ascending: false })
 
-  if (error) {
+  if (error || !albums) {
     console.error('Error fetching albums:', error)
     return []
   }
 
-  return albums as unknown as AlbumWithBand[]
+  // Then get bands for these albums
+  const bandIds = albums.map(album => album.band_id).filter(Boolean)
+  if (bandIds.length === 0) {
+    return albums.map(album => ({ ...album, bands: [] }))
+  }
+
+  const { data: bands, error: bandsError } = await supabase
+    .from('bands')
+    .select('id, name, slug')
+    .in('id', bandIds)
+
+  if (bandsError) {
+    console.error('Error fetching bands:', bandsError)
+    return albums.map(album => ({ ...album, bands: [] }))
+  }
+
+  // Combine albums with their bands
+  const albumsWithBands = albums.map(album => ({
+    ...album,
+    bands: bands?.filter(band => band.id === album.band_id) || []
+  }))
+
+  return albumsWithBands as AlbumWithBand[]
 }
 
 export default async function BrowsePage() {
@@ -65,15 +81,15 @@ export default async function BrowsePage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {albums.map((album) => (
             <AlbumCard
-              key={album.id}
-              album={{
-                id: album.id,
-                title: album.title,
-                cover_image_url: album.cover_image_url,
-                band_name: album.bands[0]?.name,
-              }}
-              showBandName={false}
-            />
+            key={album.id}
+            album={{
+              id: album.id,
+              title: album.title,
+              cover_image_url: album.cover_image_url,
+              bands: album.bands // Pass the array - AlbumCard will normalize it
+            }}
+            showBandName={true}
+          />
           ))}
         </div>
       )}

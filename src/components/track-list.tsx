@@ -20,6 +20,7 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
       album_id: album.id,
       album_title: album.title,
       band_name: album.bands.name,
+      band_slug: album.bands.slug,
       cover_image_url: album.cover_image_url || undefined,
     })))
 
@@ -33,6 +34,7 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
       album_id: album.id,
       album_title: album.title,
       band_name: album.bands.name,
+      band_slug: album.bands.slug,
       cover_image_url: album.cover_image_url || undefined,
     })
   }

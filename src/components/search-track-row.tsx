@@ -35,6 +35,7 @@ export function SearchTrackRow({ track, onClick }: SearchTrackRowProps) {
       album_id: '', // We don't have this from search results
       album_title: track.album_title,
       band_name: track.band_name,
+      band_slug: track.band_slug,
       cover_image_url: track.album_cover || undefined,
     }])
 
@@ -48,6 +49,7 @@ export function SearchTrackRow({ track, onClick }: SearchTrackRowProps) {
       album_id: '', // We don't have this from search results
       album_title: track.album_title,
       band_name: track.band_name,
+      band_slug: track.band_slug,
       cover_image_url: track.album_cover || undefined,
     })
 

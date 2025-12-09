@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef, useState, useEffect } from 'react'
+import Link from 'next/link'
 import { usePlayerStore } from '@/hooks/use-player-store'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -132,16 +133,25 @@ export function Player() {
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             <div className="min-w-0 flex-1">
               <h3 className="font-mono truncate text-sm">{currentTrack.title}</h3>
-              <p className="text-xs text-muted-foreground truncate">
-                {currentTrack.band_name}
-              </p>
+              {currentTrack.band_slug ? (
+                <Link
+                  href={`/band/${currentTrack.band_slug}`}
+                  className="text-xs text-muted-foreground hover:text-white transition-colors truncate"
+                >
+                  {currentTrack.band_name}
+                </Link>
+              ) : (
+                <p className="text-xs text-muted-foreground truncate">
+                  {currentTrack.band_name}
+                </p>
+              )}
             </div>
             <RetroVisualizer isPlaying={isPlaying} />
           </div>
         </div>
 
         {/* Center: Controls */}
-        <div className="flex flex-col items-center space-y-2 w-1/3 max-w-md">
+        <div className="flex flex-col items-center space-y-2 w-1/3">
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="icon" onClick={playPrevious} disabled={queue.length <= 1}>
               <SkipBack className="w-5 h-5" />
