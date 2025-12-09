@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase-server'
 import { notFound, redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
+import { AlbumCard } from '@/components/album-card'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
@@ -28,8 +29,15 @@ async function getBandAlbums(bandId: string) {
   const { data: albums, error } = await supabase
     .from('albums')
     .select(`
-      *,
-      tracks (*)
+      id,
+      title,
+      cover_image_url,
+      created_at,
+      release_date,
+      bands (
+        name,
+        slug
+      )
     `)
     .eq('band_id', bandId)
     .order('created_at', { ascending: false })
@@ -82,33 +90,28 @@ export default async function BandPage({ params }: PageProps) {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Discography Section */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-sans font-semibold text-white mb-4">
+            Discography
+          </h2>
           {albums.length === 0 ? (
-            <div className="col-span-full text-center py-12">
+            <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">No albums yet</p>
               <p className="text-muted-foreground">Upload your first album to get started</p>
             </div>
           ) : (
-            albums.map((album) => (
-              <Card key={album.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle>{album.title}</CardTitle>
-                  <CardDescription>
-                    {album.release_date ? new Date(album.release_date).getFullYear() : 'No release date'}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {album.tracks?.length || 0} tracks
-                  </p>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href={`/album/${album.id}`}>
-                      View Album
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {albums.map((album) => (
+                <AlbumCard
+                  key={album.id}
+                  album={{
+                    ...album,
+                    bands: { name: band.name, slug: band.slug } // Manually attach band info since we are ON the band page
+                  }}
+                />
+              ))}
+            </div>
           )}
         </div>
       </div>

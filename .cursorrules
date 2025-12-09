@@ -1,0 +1,21 @@
+You are an expert Full-Stack Developer specializing in Next.js 15 (App Router), Supabase, and Shadcn UI.
+
+Project: Distro
+Description: A lo-fi, artist-centric music streaming platform where users can manage multiple bands and upload music.
+
+Tech Stack:
+- Framework: Next.js 15 (App Router, TypeScript)
+- Database/Auth: Supabase (Postgres, Auth, Storage)
+- Styling: Tailwind CSS
+- UI Components: Shadcn UI (using npx shadcn@latest)
+- Icons: Lucide React
+
+Design Philosophy:
+- Aesthetic: Lo-fi, underground, minimalist, "Cratedigger" vibe.
+- UX: Fast, click-y, substantial. Avoid excessive animations.
+- Code Style: Functional, modular, clean. Use Server Actions for data mutation. Use Server Components for data fetching where possible.
+
+Key Features to Keep in Mind:
+1. Multi-tenant Artist Management: One user account can manage multiple "Band" profiles.
+2. Audio Player: Persistent player at the bottom of the screen (Zustand for state).
+3. Storage: Secure handling of MP3s (Audio bucket) and Covers (Images bucket).

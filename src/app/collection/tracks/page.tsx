@@ -18,15 +18,18 @@ export default async function LikedSongsPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-6 mb-2">
           <Heart className="w-8 h-8 text-[#ff565f] fill-current" />
-          <h1 className="text-3xl font-bold font-sans text-white">
-            Liked Songs
-          </h1>
+          <div>
+            <h1 className="text-3xl font-semibold font-sans text-white mb-1">
+              Liked Songs
+              </h1>
+              <p className="text-muted-foreground font-mono text-sm">
+                {likedTracks.length} song{likedTracks.length !== 1 ? 's' : ''} &bull; Your personal collection
+                </p>
+          </div>
         </div>
-        <p className="text-muted-foreground font-mono text-sm">
-          {likedTracks.length} song{likedTracks.length !== 1 ? 's' : ''} &bull; Your personal collection
-        </p>
+
       </div>
 
       {likedTracks.length === 0 ? (
@@ -53,7 +56,7 @@ export default async function LikedSongsPage() {
                 album_title: track.album_title,
                 album_cover: track.album_cover,
                 band_name: track.band_name,
-                band_slug: '', // Not needed for liked songs page
+                band_slug: track.band_slug,
               }}
               likedTrackIds={[track.id]} // Mark this track as liked
             />

@@ -10,6 +10,7 @@ interface Track {
   album_id: string
   album_title: string
   band_name: string
+  band_slug?: string
   cover_image_url?: string
 }
 
