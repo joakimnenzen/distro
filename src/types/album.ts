@@ -13,5 +13,6 @@ export interface AlbumWithTracks {
     file_url: string
     duration: number | null
     track_number: number
+    play_count: number | null
   }>
 }
