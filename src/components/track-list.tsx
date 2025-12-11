@@ -2,27 +2,67 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { usePlayerStore } from '@/hooks/use-player-store'
 import { Play, Clock } from 'lucide-react'
 import { AlbumWithTracks } from '@/types/album'
 
+<<<<<<< HEAD
 export function TrackList({ album }: { album: AlbumWithTracks }) {
+=======
+export function TrackList({ album, likedTrackIds = [], totalDuration }: {
+  album: AlbumWithTracks
+  likedTrackIds?: string[]
+  totalDuration?: number
+}) {
+>>>>>>> c19dc7c (band page updates)
   const { playTrack, setQueue } = usePlayerStore()
+
+  const handlePlayAlbum = () => {
+    // Set queue to all tracks from this album
+    const queueTracks = album.tracks
+      .filter((track) => track.id && track.id.trim() !== '')
+      .sort((a, b) => a.track_number - b.track_number)
+      .map(t => ({
+        id: t.id,
+        title: t.title,
+        file_url: t.file_url,
+        duration: t.duration,
+        track_number: t.track_number,
+        album_id: album.id,
+        album_title: album.title,
+        band_name: album.bands.name,
+        band_slug: album.bands.slug,
+        cover_image_url: album.cover_image_url || undefined,
+      }))
+
+    setQueue(queueTracks)
+
+    // Play the first track
+    if (queueTracks.length > 0) {
+      playTrack(queueTracks[0])
+    }
+  }
 
   const handlePlayTrack = (track: AlbumWithTracks['tracks'][0]) => {
     // Set queue to all tracks from this album
-    setQueue(album.tracks.map(t => ({
-      id: t.id,
-      title: t.title,
-      file_url: t.file_url,
-      duration: t.duration,
-      track_number: t.track_number,
-      album_id: album.id,
-      album_title: album.title,
-      band_name: album.bands.name,
-      band_slug: album.bands.slug,
-      cover_image_url: album.cover_image_url || undefined,
-    })))
+    const queueTracks = album.tracks
+      .filter((track) => track.id && track.id.trim() !== '')
+      .sort((a, b) => a.track_number - b.track_number)
+      .map(t => ({
+        id: t.id,
+        title: t.title,
+        file_url: t.file_url,
+        duration: t.duration,
+        track_number: t.track_number,
+        album_id: album.id,
+        album_title: album.title,
+        band_name: album.bands.name,
+        band_slug: album.bands.slug,
+        cover_image_url: album.cover_image_url || undefined,
+      }))
+
+    setQueue(queueTracks)
 
     // Play the selected track
     playTrack({
@@ -46,15 +86,28 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
+  const formatPlayCount = (count: number | null) => {
+    if (!count) return '0'
+    return count.toLocaleString()
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="w-5 h-5" />
-          Tracks ({album.tracks.length})
-        </CardTitle>
+    <Card className="bg-black/20 border-white/10">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-white font-sans">Tracks</CardTitle>
+          <Button
+            onClick={handlePlayAlbum}
+            className="bg-[#ff565f] hover:bg-[#ff565f]/80 text-white"
+            size="sm"
+          >
+            <Play className="w-4 h-4 mr-2" />
+            Play Album
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="p-0">
+<<<<<<< HEAD
         <div className="divide-y">
           {album.tracks
             .sort((a, b) => a.track_number - b.track_number)
@@ -66,15 +119,33 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
                 <Button
                   variant="ghost"
                   size="icon"
+=======
+        <Table>
+          <TableHeader>
+            <TableRow className="border-white/10 hover:bg-white/5">
+              <TableHead className="text-white font-sans w-12">#</TableHead>
+              <TableHead className="text-white font-sans">Title</TableHead>
+              <TableHead className="text-white font-sans">Plays</TableHead>
+              <TableHead className="text-white font-sans text-right">
+                <Clock className="w-4 h-4 inline" />
+              </TableHead>
+              <TableHead className="text-white font-sans w-12"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {album.tracks
+              .filter((track) => track.id && track.id.trim() !== '') // Filter out tracks with invalid IDs
+              .sort((a, b) => a.track_number - b.track_number)
+              .map((track) => (
+                <TableRow
+                  key={track.id}
+                  className="border-white/10 hover:bg-white/5 group cursor-pointer"
+>>>>>>> c19dc7c (band page updates)
                   onClick={() => handlePlayTrack(track)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
                 >
-                  <Play className="w-4 h-4" />
-                </Button>
-
-                <div className="flex items-center gap-4 flex-1 min-w-0">
-                  <span className="text-sm text-muted-foreground w-8 text-center">
+                  <TableCell className="text-muted-foreground font-mono text-sm">
                     {track.track_number}
+<<<<<<< HEAD
                   </span>
                   <span className="font-medium truncate">{track.title}</span>
                 </div>
@@ -85,6 +156,37 @@ export function TrackList({ album }: { album: AlbumWithTracks }) {
               </div>
             ))}
         </div>
+=======
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Play className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="text-white font-medium truncate">
+                        {track.title}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground font-mono text-sm">
+                    {formatPlayCount(track.play_count)}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground font-mono text-sm text-right">
+                    {formatDuration(track.duration)}
+                  </TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <LikeButton
+                      trackId={track.id}
+                      initialIsLiked={likedTrackIds.includes(track.id)}
+                      size="sm"
+                      variant="ghost"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+>>>>>>> c19dc7c (band page updates)
       </CardContent>
     </Card>
   )

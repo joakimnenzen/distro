@@ -25,7 +25,8 @@ async function getAlbumWithTracks(albumId: string): Promise<AlbumWithTracks | nu
         title,
         file_url,
         duration,
-        track_number
+        track_number,
+        play_count
       )
     `)
     .eq('id', albumId)
@@ -53,6 +54,27 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
     notFound()
   }
 
+<<<<<<< HEAD
+=======
+  // Fetch user's liked track IDs
+  const likedTrackIds = await getLikedTrackIds(user.id)
+
+  // Calculate total album duration
+  const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)
+
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    const hours = Math.floor(minutes / 60)
+    const remainingMinutes = minutes % 60
+
+    if (hours > 0) {
+      return `${hours}:${remainingMinutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+    }
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
+
+>>>>>>> c19dc7c (band page updates)
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -97,12 +119,18 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
 
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span>{album.tracks.length} tracks</span>
+              <span>•</span>
+              <span>{formatDuration(totalDuration)}</span>
             </div>
           </div>
         </div>
 
         {/* Track List - Now a Client Component */}
+<<<<<<< HEAD
         <TrackList album={album} />
+=======
+        <TrackList album={album} likedTrackIds={likedTrackIds} totalDuration={totalDuration} />
+>>>>>>> c19dc7c (band page updates)
       </div>
     </div>
   )

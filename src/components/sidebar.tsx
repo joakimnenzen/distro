@@ -26,7 +26,7 @@ function SidebarLink({ href, icon: Icon, children }: SidebarLinkProps) {
     <Link
       href={href}
       className={`
-        flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-mono text-sm
+        flex items-center gap-3 px-3 py-2 rounded-lg transition-colors font-mono text-sm
         ${isActive
           ? 'bg-white/10 text-white'
           : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -57,7 +57,7 @@ export function Sidebar() {
       <nav className="flex-1 px-4 py-6 space-y-8">
         {/* Discover Section */}
         <div className="space-y-2">
-          <h3 className="px-4 text-xs font-mono text-white/40 uppercase tracking-wider">
+          <h3 className="px-3 text-xs font-mono font-medium text-white/40">
             Discover
           </h3>
           <div className="space-y-1">
@@ -72,8 +72,8 @@ export function Sidebar() {
 
         {/* Library Section */}
         <div className="space-y-2">
-          <h3 className="px-4 text-xs font-mono text-white/40 uppercase tracking-wider">
-            Library
+        <h3 className="px-3 text-xs font-mono font-medium text-white/40">
+        Library
           </h3>
           <div className="space-y-1">
             <SidebarLink href="/collection/tracks" icon={Heart}>
@@ -87,8 +87,8 @@ export function Sidebar() {
 
         {/* Studio Section */}
         <div className="space-y-2">
-          <h3 className="px-4 text-xs font-mono text-white/40 uppercase tracking-wider">
-            Studio
+        <h3 className="px-3 text-xs font-mono font-medium text-white/40">
+        Studio
           </h3>
           <div className="space-y-1">
             <SidebarLink href="/dashboard" icon={LayoutDashboard}>
