@@ -3,6 +3,8 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePlayerStore } from '@/hooks/use-player-store'
+import { createClient } from '@/lib/supabase-browser'
+import { formatTime } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Slider } from '@/components/ui/slider'
@@ -11,12 +13,14 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-rea
 
 export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null)
-  
+  const supabase = createClient()
+
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(0.7)
   const [isDragging, setIsDragging] = useState(false)
   const [previousVolume, setPreviousVolume] = useState(0.7)
+  const hasRecordedPlay = useRef(false)
 
   const {
     isPlaying,
@@ -26,6 +30,11 @@ export function Player() {
     playNext,
     playPrevious
   } = usePlayerStore()
+
+  // Reset play count tracking when track changes
+  useEffect(() => {
+    hasRecordedPlay.current = false
+  }, [currentTrack?.id])
 
   // 1. Handle Play/Pause & Volume (Sync React state to DOM)
   useEffect(() => {
@@ -53,6 +62,39 @@ export function Player() {
     const seconds = audio.duration
     if (seconds && !isNaN(seconds) && isFinite(seconds)) {
       setDuration(seconds)
+
+      // Self-heal missing duration in DB
+      if (currentTrack && (!currentTrack.duration || currentTrack.duration <= 0) && seconds > 0) {
+        const floored = Math.floor(seconds)
+        ;(async () => {
+          try {
+            const { error } = await supabase
+              .from('tracks')
+              .update({ duration: floored })
+              .eq('id', currentTrack.id)
+
+            if (error) {
+              console.error('❌ Failed to auto-save duration:', error)
+              return
+            }
+
+            console.log(`💾 Auto-saved duration for ${currentTrack.title} to DB`)
+
+            // Update local state to reflect the new duration
+            usePlayerStore.setState((state) => ({
+              currentTrack:
+                state.currentTrack && state.currentTrack.id === currentTrack.id
+                  ? { ...state.currentTrack, duration: floored }
+                  : state.currentTrack,
+              queue: state.queue.map((t) =>
+                t.id === currentTrack.id ? { ...t, duration: floored } : t
+              ),
+            }))
+          } catch (err) {
+            console.error('❌ Unexpected error auto-saving duration:', err)
+          }
+        })()
+      }
     }
     
     // Auto-play if supposed to be playing
@@ -61,10 +103,59 @@ export function Player() {
 
   const onTimeUpdate = () => {
     if (!audioRef.current || isDragging) return
-    setCurrentTime(audioRef.current.currentTime)
+
+    const newTime = audioRef.current.currentTime
+    setCurrentTime(newTime)
+
+    // Check if we should record a play count (30+ seconds listened)
+    if (currentTrack && isPlaying && newTime > 30 && !hasRecordedPlay.current) {
+      hasRecordedPlay.current = true // Set immediately to prevent spam
+
+      // Fire and forget - don't block UI updates
+      ;(async () => {
+        try {
+          const { error } = await supabase.rpc('increment_play_count', { t_id: currentTrack.id })
+          if (error) {
+            console.error('❌ Supabase RPC Error:', error)
+            hasRecordedPlay.current = false // Reset on error so it can retry
+          } else {
+            console.log('✅ Successfully incremented play count for:', currentTrack.title)
+          }
+        } catch (error) {
+          console.error('❌ Failed to record play count:', error)
+          hasRecordedPlay.current = false // Reset on error so it can retry
+        }
+      })()
+    }
   }
 
   const onEnded = () => {
+    // Record play count for short songs that ended before 30 seconds
+    if (currentTrack && !hasRecordedPlay.current && duration > 0) {
+      // For short songs, consider it played if user listened to at least 50%
+      const percentageListened = (currentTime / duration) * 100
+      if (percentageListened >= 50) {
+        hasRecordedPlay.current = true // Set immediately
+
+        // Fire and forget - don't block autoplay
+        ;(async () => {
+          try {
+            const { error } = await supabase.rpc('increment_play_count', { t_id: currentTrack.id })
+            if (error) {
+              console.error('❌ Supabase RPC Error (short track):', error)
+              hasRecordedPlay.current = false // Reset on error
+            } else {
+              console.log('✅ Successfully incremented play count for short track:', currentTrack.title)
+            }
+          } catch (error) {
+            console.error('❌ Failed to record play count for short track:', error)
+            hasRecordedPlay.current = false // Reset on error
+          }
+        })()
+      }
+    }
+
+    // Always call playNext() to maintain autoplay functionality
     playNext()
   }
 
@@ -94,12 +185,6 @@ export function Player() {
     }
   }
 
-  const formatTime = (time: number) => {
-    if (isNaN(time)) return '0:00'
-    const minutes = Math.floor(time / 60)
-    const seconds = Math.floor(time % 60)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
 
   if (!currentTrack) return null
 

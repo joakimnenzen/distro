@@ -116,8 +116,22 @@ export function TopBar() {
   }
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    router.refresh()
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Logout error:', error)
+        return
+      }
+
+      // Clear local state immediately
+      setUser(null)
+      setAvatarUrl(null)
+
+      // Redirect to login page
+      router.replace('/login')
+    } catch (error) {
+      console.error('Unexpected logout error:', error)
+    }
   }
 
   const getInitials = (email: string) => {
