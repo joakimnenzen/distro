@@ -8,8 +8,12 @@ import { usePlayerStore } from '@/hooks/use-player-store'
 =======
 import { LikeButton } from '@/components/like-button'
 import { formatTime } from '@/lib/utils'
+<<<<<<< HEAD
 >>>>>>> b3487da (duration on album page)
 import { Play, Clock } from 'lucide-react'
+=======
+import { Play, Pause, Clock } from 'lucide-react'
+>>>>>>> baf139b (track-list update)
 import { AlbumWithTracks } from '@/types/album'
 
 <<<<<<< HEAD
@@ -20,11 +24,24 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
   likedTrackIds?: string[]
   totalDuration?: number
 }) {
+<<<<<<< HEAD
 >>>>>>> c19dc7c (band page updates)
   const { playTrack, setQueue } = usePlayerStore()
+=======
+  const { playTrack, setQueue, isPlaying, currentTrack, togglePlay } = usePlayerStore()
+
+  // Check if this album is currently playing
+  const isCurrentAlbum = currentTrack?.album_id === album.id
+>>>>>>> baf139b (track-list update)
 
   const handlePlayAlbum = () => {
-    // Set queue to all tracks from this album
+    // If this album is already playing, toggle play/pause
+    if (isCurrentAlbum) {
+      togglePlay()
+      return
+    }
+
+    // Otherwise, start playing this album from the beginning
     const queueTracks = album.tracks
       .filter((track) => track.id && track.id.trim() !== '')
       .sort((a, b) => a.track_number - b.track_number)
@@ -95,12 +112,16 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
       <CardHeader className="pb-4">
         <div className="flex flex-col items-start gap-6">
           <Button
-          size="icon"
-          onClick={handlePlayAlbum}
-          className="rounded-full shadow-md bg-[#ff565f] hover:bg-[#ff565f]/80"
+            size="icon"
+            onClick={handlePlayAlbum}
+            className="rounded-full shadow-md bg-[#ff565f] hover:bg-[#ff565f]/80"
           >
+            {isCurrentAlbum && isPlaying ? (
+              <Pause fill="currentColor" className="w-5 h-5" />
+            ) : (
               <Play fill="currentColor" className="w-5 h-5 ml-1" />
-            </Button>
+            )}
+          </Button>
           <CardTitle className="text-white font-sans">Tracks</CardTitle>
         </div>
       </CardHeader>
@@ -134,12 +155,25 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
             {album.tracks
               .filter((track) => track.id && track.id.trim() !== '') // Filter out tracks with invalid IDs
               .sort((a, b) => a.track_number - b.track_number)
-              .map((track) => (
+              .map((track) => {
+                const isCurrentTrack = currentTrack?.id === track.id
+                
+                return (
                 <TableRow
                   key={track.id}
                   className="border-white/10 hover:bg-white/5 group cursor-pointer"
+<<<<<<< HEAD
 >>>>>>> c19dc7c (band page updates)
                   onClick={() => handlePlayTrack(track)}
+=======
+                  onClick={() => {
+                    if (isCurrentTrack) {
+                      togglePlay()
+                    } else {
+                      handlePlayTrack(track)
+                    }
+                  }}
+>>>>>>> baf139b (track-list update)
                 >
                   <TableCell className="text-muted-foreground font-mono text-sm">
                     {track.track_number}
@@ -158,10 +192,14 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Play className="w-4 h-4 text-white" />
+                      <div className={isCurrentTrack ? "opacity-100" : "opacity-0 group-hover:opacity-100 transition-opacity"}>
+                        {isCurrentTrack && isPlaying ? (
+                          <Pause className="w-4 h-4 text-white" />
+                        ) : (
+                          <Play className="w-4 h-4 text-white" />
+                        )}
                       </div>
-                      <span className="text-white font-medium truncate">
+                      <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
                         {track.title}
                       </span>
                     </div>
@@ -181,7 +219,8 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
                     />
                   </TableCell>
                 </TableRow>
-              ))}
+                )
+              })}
           </TableBody>
         </Table>
 >>>>>>> c19dc7c (band page updates)
