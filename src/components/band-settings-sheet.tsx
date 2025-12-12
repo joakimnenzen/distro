@@ -321,7 +321,7 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
             <Button
               type="submit"
               disabled={isLoading}
-              className="flex-1 bg-[#ff565f] hover:bg-[#ff565f]/80 text-white"
+              className="flex-1 bg-[#ff565f] hover:bg-[#ff565f]/80 text-black"
             >
               {isLoading ? 'Saving...' : 'Save Changes'}
             </Button>

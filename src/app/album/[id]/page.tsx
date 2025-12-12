@@ -5,6 +5,7 @@ import Link from 'next/link'
 // Import the new Client Component
 import { TrackList } from '@/components/track-list'
 import { AlbumWithTracks } from '@/types/album'
+import { formatTime } from '@/lib/utils'
 
 async function getAlbumWithTracks(albumId: string): Promise<AlbumWithTracks | null> {
   const supabase = await createClient()
@@ -62,16 +63,17 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   // Calculate total album duration
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)
 
-  const formatDuration = (seconds: number) => {
+  // Format total duration in a more readable way for the header
+  const formatTotalDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = seconds % 60
-    const hours = Math.floor(minutes / 60)
-    const remainingMinutes = minutes % 60
 
-    if (hours > 0) {
-      return `${hours}:${remainingMinutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60)
+      const remainingMinutes = minutes % 60
+      return `${hours}h ${remainingMinutes}m`
     }
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+    return `${minutes}m ${remainingSeconds}s`
   }
 
 >>>>>>> c19dc7c (band page updates)
@@ -120,7 +122,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span>{album.tracks.length} tracks</span>
               <span>•</span>
-              <span>{formatDuration(totalDuration)}</span>
+              <span>{formatTotalDuration(totalDuration)}</span>
             </div>
           </div>
         </div>

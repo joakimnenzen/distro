@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { usePlayerStore } from '@/hooks/use-player-store'
+<<<<<<< HEAD
+=======
+import { LikeButton } from '@/components/like-button'
+import { formatTime } from '@/lib/utils'
+>>>>>>> b3487da (duration on album page)
 import { Play, Clock } from 'lucide-react'
 import { AlbumWithTracks } from '@/types/album'
 
@@ -79,12 +84,6 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
     })
   }
 
-  const formatDuration = (seconds: number | null) => {
-    if (!seconds) return '--:--'
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-  }
 
   const formatPlayCount = (count: number | null) => {
     if (!count) return '0'
@@ -94,16 +93,15 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
   return (
     <Card className="bg-black/20 border-white/10">
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-white font-sans">Tracks</CardTitle>
+        <div className="flex flex-col items-start gap-6">
           <Button
-            onClick={handlePlayAlbum}
-            className="bg-[#ff565f] hover:bg-[#ff565f]/80 text-white"
-            size="sm"
+          size="icon"
+          onClick={handlePlayAlbum}
+          className="rounded-full shadow-md bg-[#ff565f] hover:bg-[#ff565f]/80"
           >
-            <Play className="w-4 h-4 mr-2" />
-            Play Album
-          </Button>
+              <Play fill="currentColor" className="w-5 h-5 ml-1" />
+            </Button>
+          <CardTitle className="text-white font-sans">Tracks</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="p-0">
@@ -172,7 +170,7 @@ export function TrackList({ album, likedTrackIds = [], totalDuration }: {
                     {formatPlayCount(track.play_count)}
                   </TableCell>
                   <TableCell className="text-muted-foreground font-mono text-sm text-right">
-                    {formatDuration(track.duration)}
+                    {track.duration ? formatTime(track.duration) : '--:--'}
                   </TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
                     <LikeButton
