@@ -4,13 +4,15 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { useToast } from '@/hooks/use-toast'
+import { deleteBand } from '@/actions/delete-band'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Upload, X } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Upload, X, Trash2 } from 'lucide-react'
 
 interface Band {
   id: string
@@ -36,6 +38,8 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
   const supabase = createClient()
 
   const [isLoading, setIsLoading] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [formData, setFormData] = useState({
     name: band.name,
     bio: band.bio || '',
@@ -209,6 +213,41 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
+  const handleDelete = async () => {
+    setIsDeleting(true)
+
+    try {
+      const result = await deleteBand(band.id)
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Band deleted successfully!",
+        })
+        onClose()
+        router.push('/dashboard')
+        router.refresh()
+      } else {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        })
+        setShowDeleteDialog(false)
+      }
+    } catch (error) {
+      console.error('Error deleting band:', error)
+      toast({
+        title: "Error",
+        description: "Failed to delete band. Please try again.",
+        variant: "destructive",
+      })
+      setShowDeleteDialog(false)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="bg-black border-white/10 text-white w-full sm:max-w-md">
@@ -326,7 +365,54 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
               {isLoading ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
+
+          {/* Delete Button */}
+          <div className="pt-6 border-t border-white/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowDeleteDialog(true)}
+              className="w-full border-red-500/50 text-red-500 hover:bg-red-500/10 hover:border-red-500"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete Band
+            </Button>
+          </div>
         </form>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <DialogContent className="bg-black border-white/10 text-white">
+            <DialogHeader>
+              <DialogTitle className="text-white font-sans">Delete Band</DialogTitle>
+              <DialogDescription className="text-muted-foreground font-mono">
+                Are you sure you want to delete &ldquo;{band.name}&rdquo;? This action cannot be undone.
+                <br />
+                <br />
+                This will also delete all albums and tracks associated with this band.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowDeleteDialog(false)}
+                className="border-white/20 text-white hover:bg-white/10"
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Band'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </SheetContent>
     </Sheet>
   )

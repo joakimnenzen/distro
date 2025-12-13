@@ -48,13 +48,6 @@ export default async function UploadPage({ params }: UploadPageProps) {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
         <div className="mb-6">
-          <Button variant="ghost" asChild className="mb-4">
-            <Link href={`/band/${band.slug}`}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to {band.name}
-            </Link>
-          </Button>
-
           <h1 className="text-3xl font-bold">Upload Album</h1>
           <p className="text-muted-foreground mt-2">
             Add a new album to <strong>{band.name}</strong> with cover art and audio tracks

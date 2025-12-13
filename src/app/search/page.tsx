@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { searchDistro } from '@/actions/search'
 import { AlbumCard } from '@/components/album-card'
-import { SearchTrackRow } from '@/components/search-track-row'
+import { TrackList } from '@/components/track-list'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User, Music, Search } from 'lucide-react'
 import Link from 'next/link'
@@ -10,12 +10,12 @@ interface SearchPageProps {
   searchParams: Promise<{ q?: string }>
 }
 
-function ArtistCard({ band }: { band: { id: string; name: string; slug: string; bio: string | null } }) {
+function ArtistCard({ band }: { band: { id: string; name: string; slug: string; bio: string | null; image_url: string | null } }) {
   return (
     <Link href={`/band/${band.slug}`} className="group">
       <div className="flex flex-col items-center space-y-3 p-4 rounded-lg hover:bg-white/5 transition-colors">
         <Avatar className="w-20 h-20">
-          <AvatarImage src="" alt={band.name} />
+          <AvatarImage src={band.image_url || undefined} alt={band.name} />
           <AvatarFallback className="bg-white/10 text-white font-mono text-lg">
             {band.name.substring(0, 2).toUpperCase()}
           </AvatarFallback>
@@ -68,11 +68,34 @@ async function SearchResults({ query }: { query: string }) {
       {results.tracks.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold font-sans text-white mb-6">Songs</h2>
+<<<<<<< HEAD
           <div className="space-y-2">
             {results.tracks.map((track) => (
               <SearchTrackRow key={track.id} track={track} />
             ))}
           </div>
+=======
+          <TrackList
+            tracks={results.tracks
+              .filter((track) => track.id && track.id.trim() !== '')
+              .map((track) => ({
+                id: track.id,
+                title: track.title,
+                file_url: track.file_url,
+                duration: track.duration,
+                track_number: track.track_number,
+                album_id: track.album_id || undefined,
+                album_title: track.album_title || undefined,
+                cover_image_url: track.album_cover || undefined,
+                band_name: track.band_name || undefined,
+                band_slug: track.band_slug || undefined,
+              }))}
+            variant="playlist"
+            hideHeader={true}
+            hideDateAdded={true}
+            likedTrackIds={likedTrackIds}
+          />
+>>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
         </section>
       )}
 
