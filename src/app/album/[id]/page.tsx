@@ -47,6 +47,13 @@ interface AlbumPageProps {
 }
 
 export default async function AlbumPage({ params }: AlbumPageProps) {
+<<<<<<< HEAD
+=======
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+>>>>>>> b08f707 (feat: add my albums dashboard and implement google oauth login)
   // In Next.js 15, params is a Promise, so we await it
   const { id } = await params
   const album = await getAlbumWithTracks(id)
@@ -56,9 +63,14 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   // Fetch user's liked track IDs
   const likedTrackIds = await getLikedTrackIds(user.id)
+=======
+  // Fetch user's liked track IDs (empty array if not logged in)
+  const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
+>>>>>>> b08f707 (feat: add my albums dashboard and implement google oauth login)
 
   // Calculate total album duration
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)

@@ -108,6 +108,7 @@ export function Player() {
     setCurrentTime(newTime)
 
     // Check if we should record a play count (30+ seconds listened)
+    // Record for all users (authenticated and guests)
     if (currentTrack && isPlaying && newTime > 30 && !hasRecordedPlay.current) {
       hasRecordedPlay.current = true // Set immediately to prevent spam
 
@@ -116,13 +117,11 @@ export function Player() {
         try {
           const { error } = await supabase.rpc('increment_play_count', { t_id: currentTrack.id })
           if (error) {
-            console.error('❌ Supabase RPC Error:', error)
+            // Silently fail on error (RLS might block guests, but we try anyway)
             hasRecordedPlay.current = false // Reset on error so it can retry
-          } else {
-            console.log('✅ Successfully incremented play count for:', currentTrack.title)
           }
         } catch (error) {
-          console.error('❌ Failed to record play count:', error)
+          // Silently fail on error
           hasRecordedPlay.current = false // Reset on error so it can retry
         }
       })()
@@ -131,6 +130,7 @@ export function Player() {
 
   const onEnded = () => {
     // Record play count for short songs that ended before 30 seconds
+    // Record for all users (authenticated and guests)
     if (currentTrack && !hasRecordedPlay.current && duration > 0) {
       // For short songs, consider it played if user listened to at least 50%
       const percentageListened = (currentTime / duration) * 100
@@ -142,13 +142,11 @@ export function Player() {
           try {
             const { error } = await supabase.rpc('increment_play_count', { t_id: currentTrack.id })
             if (error) {
-              console.error('❌ Supabase RPC Error (short track):', error)
+              // Silently fail on error (RLS might block guests, but we try anyway)
               hasRecordedPlay.current = false // Reset on error
-            } else {
-              console.log('✅ Successfully incremented play count for short track:', currentTrack.title)
             }
           } catch (error) {
-            console.error('❌ Failed to record play count for short track:', error)
+            // Silently fail on error
             hasRecordedPlay.current = false // Reset on error
           }
         })()

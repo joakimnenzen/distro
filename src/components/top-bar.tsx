@@ -13,7 +13,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronLeft, ChevronRight, Search, Settings, LogOut, Loader2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Search, Settings, LogOut, Loader2, LogIn, UserPlus } from 'lucide-react'
+import Link from 'next/link'
+import { useAuthModal } from '@/hooks/use-auth-modal'
 
 export function TopBar() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -23,6 +25,7 @@ export function TopBar() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+  const { open: openAuthModal } = useAuthModal()
 
   // Fetch user profile on mount
   useEffect(() => {
@@ -138,10 +141,6 @@ export function TopBar() {
     return email.substring(0, 2).toUpperCase()
   }
 
-  if (!user) {
-    return null // Don't show top bar if not logged in
-  }
-
   return (
     <div className="w-full sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -183,37 +182,59 @@ export function TopBar() {
           </div>
         </div>
 
-        {/* Right: User Menu */}
+        {/* Right: User Menu or Auth Buttons */}
         <div className="flex items-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={avatarUrl || undefined} alt={user.email} />
-                  <AvatarFallback className="bg-white/10 text-white font-mono text-xs">
-                    {getInitials(user.email)}
-                  </AvatarFallback>
-                </Avatar>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={avatarUrl || undefined} alt={user.email} />
+                    <AvatarFallback className="bg-white/10 text-white font-mono text-xs">
+                      {getInitials(user.email)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-black/90 border-white/20 backdrop-blur-xl" align="end">
+                <DropdownMenuItem
+                  className="font-mono text-sm hover:bg-white/10 cursor-pointer"
+                  onClick={() => router.push('/settings')}
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem
+                  className="font-mono text-sm text-red-400 hover:bg-red-400/10 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => openAuthModal('signin')}
+                className="font-mono text-sm hover:bg-white/10"
+              >
+                <LogIn className="w-4 h-4 mr-2" />
+                Log in
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-black/90 border-white/20 backdrop-blur-xl" align="end">
-              <DropdownMenuItem
-                className="font-mono text-sm hover:bg-white/10 cursor-pointer"
-                onClick={() => router.push('/settings')}
+              <Button
+                size="sm"
+                onClick={() => openAuthModal('signup')}
+                className="font-mono text-sm bg-[#ff565f] hover:bg-[#ff565f]/80 text-black"
               >
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem
-                className="font-mono text-sm text-red-400 hover:bg-red-400/10 cursor-pointer"
-                onClick={handleLogout}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <UserPlus className="w-4 h-4 mr-2" />
+                Sign up
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

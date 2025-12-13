@@ -97,6 +97,9 @@ export function Sidebar() {
             <SidebarLink href="/bands" icon={Mic}>
               My Bands
             </SidebarLink>
+            <SidebarLink href="/albums" icon={Disc}>
+              My Albums
+            </SidebarLink>
           </div>
         </div>
       </nav>

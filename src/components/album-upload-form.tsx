@@ -21,7 +21,26 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Upload, Music, Image as ImageIcon, X } from 'lucide-react'
+import { Upload, Music, Image as ImageIcon, X, GripVertical } from 'lucide-react'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 const uploadFormSchema = z.object({
   title: z.string().min(1, 'Album title is required').max(200, 'Album title too long'),
@@ -43,12 +62,66 @@ interface AlbumUploadFormProps {
   bandSlug: string
 }
 
+interface FileWithId extends File {
+  _id?: string
+}
+
+// Sortable File Item Component
+function SortableFileItem({ file }: { file: FileWithId }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: file._id || '' })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 p-2 bg-white/5 border border-white/10 rounded-md hover:bg-white/10 transition-colors"
+    >
+      <div
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-white transition-colors"
+      >
+        <GripVertical className="w-4 h-4" />
+      </div>
+      <Music className="w-4 h-4 text-muted-foreground" />
+      <span className="text-sm truncate flex-1 font-mono text-white">
+        {file.name}
+      </span>
+      <span className="text-xs text-muted-foreground font-mono">
+        {(file.size / 1024 / 1024).toFixed(1)}MB
+      </span>
+    </div>
+  )
+}
+
 export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [orderedTrackFiles, setOrderedTrackFiles] = useState<FileWithId[]>([])
+  const [activeFileId, setActiveFileId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient() // This is the browser client, no need to await
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const form = useForm<UploadFormData>({
     resolver: zodResolver(uploadFormSchema),
@@ -61,6 +134,53 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
 
   const watchedCoverFile = form.watch('coverFile')
   const watchedTrackFiles = form.watch('trackFiles')
+
+  // Update ordered files when form files change
+  React.useEffect(() => {
+    if (watchedTrackFiles && watchedTrackFiles.length > 0) {
+      // Create files with unique IDs if not already set
+      const filesWithIds = watchedTrackFiles.map((file, index) => {
+        const fileWithId = file as FileWithId
+        if (!fileWithId._id) {
+          fileWithId._id = `${Date.now()}-${index}-${Math.random()}`
+        }
+        return fileWithId
+      })
+      
+      // Only update if the count changed or if ordered files is empty
+      // Also check if files are different by comparing names
+      const currentFileNames = orderedTrackFiles.map(f => f.name).join(',')
+      const newFileNames = filesWithIds.map(f => f.name).join(',')
+      
+      if (orderedTrackFiles.length !== filesWithIds.length || 
+          orderedTrackFiles.length === 0 ||
+          currentFileNames !== newFileNames) {
+        setOrderedTrackFiles(filesWithIds)
+      }
+    } else if (orderedTrackFiles.length > 0) {
+      setOrderedTrackFiles([])
+    }
+  }, [watchedTrackFiles]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveFileId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    setActiveFileId(null)
+
+    if (over && active.id !== over.id) {
+      setOrderedTrackFiles((items) => {
+        const oldIndex = items.findIndex((item) => item._id === active.id)
+        const newIndex = items.findIndex((item) => item._id === over.id)
+
+        return arrayMove(items, oldIndex, newIndex)
+      })
+    }
+  }
+
+  const activeFile = orderedTrackFiles.find(f => f._id === activeFileId)
 
   const generateUniqueFilename = (originalName: string) => {
     const extension = originalName.split('.').pop()
@@ -132,11 +252,13 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
       const albumId = albumResult.albumId
 
       // 3. Upload tracks and create track records
-      setUploadProgress(`Uploading ${data.trackFiles.length} track(s)...`)
+      // Use ordered files if available, otherwise use form files
+      const tracksToUpload = orderedTrackFiles.length > 0 ? orderedTrackFiles : data.trackFiles
+      setUploadProgress(`Uploading ${tracksToUpload.length} track(s)...`)
 
-      for (let i = 0; i < data.trackFiles.length; i++) {
-        const trackFile = data.trackFiles[i]
-        setUploadProgress(`Uploading track ${i + 1}/${data.trackFiles.length}: ${trackFile.name}`)
+      for (let i = 0; i < tracksToUpload.length; i++) {
+        const trackFile = tracksToUpload[i]
+        setUploadProgress(`Uploading track ${i + 1}/${tracksToUpload.length}: ${trackFile.name}`)
 
         // Upload audio file
         const trackFilename = generateUniqueFilename(trackFile.name)
@@ -272,23 +394,43 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
                         }}
                         {...field}
                       />
-                      {watchedTrackFiles && watchedTrackFiles.length > 0 && (
-                        <div className="space-y-1 max-h-40 overflow-y-auto">
-                          {watchedTrackFiles.map((file, index) => (
-                            <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                              <Music className="w-4 h-4" />
-                              <span className="text-sm truncate flex-1">{file.name}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {(file.size / 1024 / 1024).toFixed(1)}MB
-                              </span>
+                      {orderedTrackFiles.length > 0 && (
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragStart={handleDragStart}
+                          onDragEnd={handleDragEnd}
+                        >
+                          <SortableContext
+                            items={orderedTrackFiles.map(f => f._id || '')}
+                            strategy={verticalListSortingStrategy}
+                          >
+                            <div className="space-y-2 max-h-64 overflow-y-auto">
+                              {orderedTrackFiles.map((file) => (
+                                <SortableFileItem key={file._id} file={file} />
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          </SortableContext>
+                          <DragOverlay>
+                            {activeFile ? (
+                              <div className="flex items-center gap-3 p-3 bg-white/10 border border-white/20 rounded-md shadow-lg">
+                                <GripVertical className="w-4 h-4 text-white" />
+                                <Music className="w-4 h-4 text-white" />
+                                <span className="text-sm truncate flex-1 font-mono text-white">
+                                  {activeFile.name}
+                                </span>
+                                <span className="text-xs text-muted-foreground font-mono">
+                                  {(activeFile.size / 1024 / 1024).toFixed(1)}MB
+                                </span>
+                              </div>
+                            ) : null}
+                          </DragOverlay>
+                        </DndContext>
                       )}
                     </div>
                   </FormControl>
                   <FormDescription>
-                    Upload audio files (max 50MB each, MP3/WAV/FLAC)
+                    Upload audio files (max 50MB each, MP3/WAV/FLAC). Drag to reorder tracks.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
