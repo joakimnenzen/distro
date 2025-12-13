@@ -207,7 +207,11 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
                 <FormItem>
                   <FormLabel>Release Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      className="[&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:contrast-100"
+                    />
                   </FormControl>
                   <FormDescription>
                     Optional release date for the album

@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
-import { getLikedTracks } from '@/actions/likes'
+import { getLikedTracks, getLikedTrackIds } from '@/actions/likes'
 import { redirect } from 'next/navigation'
-import { SearchTrackRow } from '@/components/search-track-row'
+import { TrackList } from '@/components/track-list'
 import { Heart } from 'lucide-react'
 
 export default async function LikedSongsPage() {
@@ -14,6 +14,7 @@ export default async function LikedSongsPage() {
   }
 
   const likedTracks = await getLikedTracks(user.id)
+  const likedTrackIds = await getLikedTrackIds(user.id)
 
   return (
     <div className="container mx-auto py-8">
@@ -23,13 +24,12 @@ export default async function LikedSongsPage() {
           <div>
             <h1 className="text-3xl font-semibold font-sans text-white mb-1">
               Liked Songs
-              </h1>
-              <p className="text-muted-foreground font-mono text-sm">
-                {likedTracks.length} song{likedTracks.length !== 1 ? 's' : ''} &bull; Your personal collection
-                </p>
+            </h1>
+            <p className="text-muted-foreground font-mono text-sm">
+              {likedTracks.length} song{likedTracks.length !== 1 ? 's' : ''} &bull; Your personal collection
+            </p>
           </div>
         </div>
-
       </div>
 
       {likedTracks.length === 0 ? (
@@ -43,25 +43,29 @@ export default async function LikedSongsPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
-          {likedTracks.map((track) => (
-            <SearchTrackRow
-              key={track.id}
-              track={{
-                id: track.id,
-                title: track.title,
-                file_url: track.file_url,
-                duration: track.duration,
-                track_number: 0, // Not needed for liked songs page
-                album_title: track.album_title,
-                album_cover: track.album_cover,
-                band_name: track.band_name,
-                band_slug: track.band_slug,
-              }}
-              likedTrackIds={[track.id]} // Mark this track as liked
-            />
-          ))}
-        </div>
+        <TrackList
+          tracks={likedTracks.map(track => ({
+            id: track.id,
+            title: track.title,
+            file_url: track.file_url,
+            duration: track.duration,
+            album_id: track.album_id || '',
+            album_title: track.album_title || '',
+            band_name: track.band_name || '',
+            band_slug: track.band_slug || '',
+            album_cover: track.album_cover || null,
+            cover_image_url: track.cover_image_url || track.album_cover || null,
+            liked_at: track.liked_at,
+          }))}
+          variant="playlist"
+          hideHeader={true}
+          headerInfo={{
+            id: 'liked-songs',
+            title: 'Liked Songs',
+            type: 'liked'
+          }}
+          likedTrackIds={likedTrackIds}
+        />
       )}
     </div>
   )

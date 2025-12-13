@@ -111,7 +111,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
               <h1 className="text-4xl font-bold">{album.title}</h1>
               <Link
                 href={`/band/${album.bands.slug}`}
-                className="text-xl text-muted-foreground hover:text-foreground transition-colors"
+                className="text-xl text-muted-foreground hover:text-foreground hover:underline transition-colors"
               >
                 {album.bands.name}
               </Link>
@@ -134,7 +134,29 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         </div>
 
         {/* Track List - Now a Client Component */}
-        <TrackList album={album} likedTrackIds={likedTrackIds} totalDuration={totalDuration} />
+        <TrackList 
+          tracks={album.tracks.map(track => ({
+            id: track.id,
+            title: track.title,
+            file_url: track.file_url,
+            duration: track.duration,
+            track_number: track.track_number,
+            play_count: track.play_count,
+            album_id: album.id,
+            album_title: album.title,
+            band_name: album.bands.name,
+            band_slug: album.bands.slug,
+            cover_image_url: album.cover_image_url,
+          }))}
+          variant="album"
+          headerInfo={{
+            id: album.id,
+            title: 'Tracks',
+            cover_image_url: album.cover_image_url,
+            type: 'album'
+          }}
+          likedTrackIds={likedTrackIds}
+        />
       </div>
     </div>
   )

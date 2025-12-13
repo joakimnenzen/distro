@@ -124,7 +124,9 @@ export async function getLikedTracks(userId: string) {
           title,
           file_url,
           duration,
+          album_id,
           albums (
+            id,
             title,
             cover_image_url,
             bands ( name, slug )
@@ -146,15 +148,39 @@ export async function getLikedTracks(userId: string) {
     const formattedTracks = (data || [])
       .map((item: any) => {
         // Skip if track no longer exists (was deleted)
-        if (!item.tracks) return null
+        if (!item.tracks) {
+          console.warn('Track missing for like:', item.track_id)
+          return null
+        }
+
+        // Extract album data - albums is an array from Supabase
+        const album = Array.isArray(item.tracks.albums) 
+          ? item.tracks.albums[0] 
+          : item.tracks.albums
+
+        // Extract band data - bands is nested inside album
+        const band = Array.isArray(album?.bands)
+          ? album.bands[0]
+          : album?.bands
+
+        // Debug logging in development
+        if (process.env.NODE_ENV === 'development' && !album) {
+          console.warn('No album found for track:', item.tracks.id, item.tracks.title)
+        }
+        if (process.env.NODE_ENV === 'development' && !band) {
+          console.warn('No band found for track:', item.tracks.id, 'album:', album?.title)
+        }
 
         return {
           ...item.tracks, // Spread the nested track data
           // Ensure we handle the nested relationships safely
-          band_name: item.tracks.albums?.[0]?.bands?.[0]?.name || '',
-          band_slug: item.tracks.albums?.[0]?.bands?.[0]?.slug || '',
-          album_title: item.tracks.albums?.[0]?.title || '',
-          album_cover: item.tracks.albums?.[0]?.cover_image_url || null,
+          album_id: item.tracks.album_id || album?.id || '',
+          album_title: album?.title || '',
+          album_cover: album?.cover_image_url || null,
+          band_name: band?.name || '',
+          band_slug: band?.slug || '',
+          // Also set cover_image_url for consistency
+          cover_image_url: album?.cover_image_url || null,
           // Keep the liked_at timestamp if we want to show it later
           liked_at: item.created_at
         }

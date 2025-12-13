@@ -70,7 +70,7 @@ export function AlbumCard({ album, showBandName = true }: AlbumCardProps) {
           </h3>
           {showBandName && (
             <span
-              className="font-mono text-xs text-muted-foreground hover:text-white transition-colors truncate cursor-pointer"
+              className="font-mono text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate cursor-pointer"
               onClick={handleBandClick}
             >
               {bandName}
