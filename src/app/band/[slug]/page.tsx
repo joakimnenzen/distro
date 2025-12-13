@@ -6,15 +6,21 @@ import { AlbumCard } from '@/components/album-card'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
-async function getBand(slug: string, userId: string) {
+async function getBand(slug: string, userId?: string) {
   const supabase = await createClient()
 
-  const { data: band, error } = await supabase
+  // If userId is provided, check if user owns the band (for upload button)
+  // Otherwise, just get the band for public viewing
+  let query = supabase
     .from('bands')
     .select('*')
     .eq('slug', slug)
-    .eq('owner_id', userId)
-    .single()
+
+  if (userId) {
+    query = query.eq('owner_id', userId)
+  }
+
+  const { data: band, error } = await query.single()
 
   if (error) {
     return null
@@ -59,20 +65,18 @@ interface PageProps {
 export default async function BandPage({ params }: PageProps) {
   const supabase = await createClient()
 
-  const { data: { user }, error } = await supabase.auth.getUser()
-
-  if (error || !user) {
-    redirect('/login')
-  }
+  const { data: { user } } = await supabase.auth.getUser()
 
   const { slug } = await params
-  const band = await getBand(slug, user.id)
+  // Get band for public viewing (no ownership check)
+  const band = await getBand(slug)
 
   if (!band) {
     notFound()
   }
 
   const albums = await getBandAlbums(band.id)
+  const isOwner = user && band.owner_id === user.id
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,12 +86,14 @@ export default async function BandPage({ params }: PageProps) {
             <h1 className="text-3xl font-bold">{band.name}</h1>
             <p className="text-muted-foreground">{band.bio || 'No description'}</p>
           </div>
-          <Button asChild>
-            <Link href={`/band/${band.slug}/upload`}>
-              <Plus className="w-4 h-4 mr-2" />
-              Upload Album
-            </Link>
-          </Button>
+          {isOwner && (
+            <Button asChild>
+              <Link href={`/band/${band.slug}/upload`}>
+                <Plus className="w-4 h-4 mr-2" />
+                Upload Album
+              </Link>
+            </Button>
+          )}
         </div>
 
         {/* Discography Section */}

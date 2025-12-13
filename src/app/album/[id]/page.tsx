@@ -50,11 +50,7 @@ interface AlbumPageProps {
 export default async function AlbumPage({ params }: AlbumPageProps) {
   const supabase = await createClient()
 
-  const { data: { user }, error } = await supabase.auth.getUser()
-
-  if (error || !user) {
-    redirect('/login')
-  }
+  const { data: { user } } = await supabase.auth.getUser()
 
   // In Next.js 15, params is a Promise, so we await it
   const { id } = await params
@@ -64,8 +60,8 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
     notFound()
   }
 
-  // Fetch user's liked track IDs
-  const likedTrackIds = await getLikedTrackIds(user.id)
+  // Fetch user's liked track IDs (empty array if not logged in)
+  const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
 
   // Calculate total album duration
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)

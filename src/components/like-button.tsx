@@ -1,9 +1,13 @@
 'use client'
 
 import React, { useOptimistic, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toggleLike } from '@/actions/likes'
+import { createClient } from '@/lib/supabase-browser'
+import { useState, useEffect } from 'react'
+import { useAuthModal } from '@/hooks/use-auth-modal'
 
 interface LikeButtonProps {
   trackId: string
@@ -18,16 +22,47 @@ export function LikeButton({
   size = 'sm',
   variant = 'ghost'
 }: LikeButtonProps) {
+  const router = useRouter()
+  const supabase = createClient()
+  const { open: openAuthModal } = useAuthModal()
   const [isPending, startTransition] = useTransition()
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [optimisticIsLiked, setOptimisticIsLiked] = useOptimistic(
     initialIsLiked,
     (currentState) => !currentState
   )
 
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setIsAuthenticated(!!user)
+    }
+    checkAuth()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session?.user)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase])
+
   const handleToggleLike = () => {
     // Don't attempt to toggle if trackId is invalid
     if (!trackId || trackId.trim() === '') {
       console.error('Invalid track ID for like toggle')
+      return
+    }
+
+    // If not authenticated, open auth modal
+    if (isAuthenticated === false) {
+      openAuthModal('signin')
+      return
+    }
+
+    // If auth status is still loading, wait
+    if (isAuthenticated === null) {
       return
     }
 
