@@ -1,0 +1,1111 @@
+0 verbose cli /Users/joakimnenzen/.nvm/versions/node/v20.18.1/bin/node /Users/joakimnenzen/.nvm/versions/node/v20.18.1/bin/npm
+1 info using npm@10.8.2
+2 info using node@v20.18.1
+3 silly config load:file:/Users/joakimnenzen/.nvm/versions/node/v20.18.1/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/joakimnenzen/Documents/distro/.npmrc
+5 silly config load:file:/Users/joakimnenzen/.npmrc
+6 silly config load:file:/Users/joakimnenzen/.nvm/versions/node/v20.18.1/etc/npmrc
+7 verbose title npm install next@15.5.7 eslint-config-next@15.5.7
+8 verbose argv "install" "next@15.5.7" "eslint-config-next@15.5.7"
+9 verbose logfile logs-max:10 dir:/Users/joakimnenzen/Documents/distro/.npm-cache/_logs/2025-12-18T21_35_19_271Z-
+10 verbose logfile /Users/joakimnenzen/Documents/distro/.npm-cache/_logs/2025-12-18T21_35_19_271Z-debug-0.log
+11 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+12 silly logfile done cleaning log files
+13 silly idealTree buildDeps
+14 silly fetch manifest next@15.5.7
+15 silly packumentCache full:https://registry.npmjs.org/next cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/next 61ms (cache hit)
+17 silly packumentCache full:https://registry.npmjs.org/next set size:28166838 disposed:false
+18 silly fetch manifest @opentelemetry/api@^1.1.0
+19 silly packumentCache full:https://registry.npmjs.org/@opentelemetry%2fapi cache-miss
+20 http fetch GET 200 https://registry.npmjs.org/@opentelemetry%2fapi 4ms (cache hit)
+21 silly packumentCache full:https://registry.npmjs.org/@opentelemetry%2fapi set size:455567 disposed:false
+22 silly fetch manifest @playwright/test@^1.51.1
+23 silly packumentCache full:https://registry.npmjs.org/@playwright%2ftest cache-miss
+24 http fetch GET 200 https://registry.npmjs.org/@playwright%2ftest 8ms (cache hit)
+25 silly packumentCache full:https://registry.npmjs.org/@playwright%2ftest set size:8550098 disposed:false
+26 silly fetch manifest babel-plugin-react-compiler@*
+27 silly packumentCache full:https://registry.npmjs.org/babel-plugin-react-compiler cache-miss
+28 http fetch GET 200 https://registry.npmjs.org/babel-plugin-react-compiler 3ms (cache hit)
+29 silly packumentCache full:https://registry.npmjs.org/babel-plugin-react-compiler set size:1171337 disposed:false
+30 silly fetch manifest react@^18.2.0
+31 silly packumentCache full:https://registry.npmjs.org/react cache-miss
+32 http fetch GET 200 https://registry.npmjs.org/react 7ms (cache hit)
+33 silly packumentCache full:https://registry.npmjs.org/react set size:6362607 disposed:false
+34 silly fetch manifest react-dom@^18.2.0
+35 silly packumentCache full:https://registry.npmjs.org/react-dom cache-miss
+36 http fetch GET 200 https://registry.npmjs.org/react-dom 7ms (cache hit)
+37 silly packumentCache full:https://registry.npmjs.org/react-dom set size:8375290 disposed:false
+38 silly fetch manifest sass@^1.3.0
+39 silly packumentCache full:https://registry.npmjs.org/sass cache-miss
+40 http fetch GET 200 https://registry.npmjs.org/sass 2ms (cache hit)
+41 silly packumentCache full:https://registry.npmjs.org/sass set size:715784 disposed:false
+42 silly fetch manifest eslint-config-next@15.5.7
+43 silly packumentCache full:https://registry.npmjs.org/eslint-config-next cache-miss
+44 http fetch GET 200 https://registry.npmjs.org/eslint-config-next 6ms (cache hit)
+45 silly packumentCache full:https://registry.npmjs.org/eslint-config-next set size:6018907 disposed:false
+46 silly fetch manifest eslint@^8.57.0
+47 silly packumentCache full:https://registry.npmjs.org/eslint cache-miss
+48 http fetch GET 200 https://registry.npmjs.org/eslint 4ms (cache hit)
+49 silly packumentCache full:https://registry.npmjs.org/eslint set size:1900943 disposed:false
+50 silly fetch manifest typescript@^5.6.2
+51 silly packumentCache full:https://registry.npmjs.org/typescript cache-miss
+52 http fetch GET 200 https://registry.npmjs.org/typescript 14ms (cache hit)
+53 silly packumentCache full:https://registry.npmjs.org/typescript set size:15024347 disposed:false
+54 silly placeDep ROOT eslint-config-next@15.5.7 REPLACE for: distro@0.1.0 want: 15.5.7
+55 silly placeDep ROOT next@15.5.7 REPLACE for: distro@0.1.0 want: 15.5.7
+56 silly fetch manifest @next/eslint-plugin-next@15.5.7
+57 silly packumentCache full:https://registry.npmjs.org/@next%2feslint-plugin-next cache-miss
+58 silly fetch manifest @next/env@15.5.7
+59 silly packumentCache full:https://registry.npmjs.org/@next%2fenv cache-miss
+60 silly fetch manifest @swc/helpers@0.5.15
+61 silly packumentCache full:https://registry.npmjs.org/@swc%2fhelpers cache-miss
+62 silly fetch manifest sharp@^0.34.3
+63 silly packumentCache full:https://registry.npmjs.org/sharp cache-miss
+64 silly fetch manifest @next/swc-darwin-x64@15.5.7
+65 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-darwin-x64 cache-miss
+66 silly fetch manifest @next/swc-darwin-arm64@15.5.7
+67 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-darwin-arm64 cache-miss
+68 silly fetch manifest @next/swc-linux-x64-gnu@15.5.7
+69 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-x64-gnu cache-miss
+70 silly fetch manifest @next/swc-linux-x64-musl@15.5.7
+71 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-x64-musl cache-miss
+72 silly fetch manifest @next/swc-win32-x64-msvc@15.5.7
+73 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-win32-x64-msvc cache-miss
+74 silly fetch manifest @next/swc-linux-arm64-gnu@15.5.7
+75 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-arm64-gnu cache-miss
+76 silly fetch manifest @next/swc-linux-arm64-musl@15.5.7
+77 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-arm64-musl cache-miss
+78 silly fetch manifest @next/swc-win32-arm64-msvc@15.5.7
+79 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-win32-arm64-msvc cache-miss
+80 http fetch GET 200 https://registry.npmjs.org/@next%2feslint-plugin-next 30ms (cache hit)
+81 silly packumentCache full:https://registry.npmjs.org/@next%2feslint-plugin-next set size:6246139 disposed:false
+82 http fetch GET 200 https://registry.npmjs.org/@next%2fenv 52ms (cache hit)
+83 silly packumentCache full:https://registry.npmjs.org/@next%2fenv set size:6689657 disposed:false
+84 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-darwin-arm64 69ms (cache hit)
+85 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-darwin-arm64 set size:4801837 disposed:false
+86 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-linux-x64-gnu 85ms (cache hit)
+87 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-x64-gnu set size:4845037 disposed:false
+88 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-linux-arm64-gnu 98ms (cache hit)
+89 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-arm64-gnu set size:4646164 disposed:false
+90 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-win32-arm64-msvc 109ms (cache hit)
+91 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-win32-arm64-msvc set size:4630105 disposed:false
+92 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-linux-x64-musl 125ms (cache hit)
+93 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-x64-musl set size:4601771 disposed:false
+94 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-darwin-x64 137ms (cache hit)
+95 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-darwin-x64 set size:4749405 disposed:false
+96 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-linux-arm64-musl 152ms (cache hit)
+97 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-linux-arm64-musl set size:4662180 disposed:false
+98 http fetch GET 200 https://registry.npmjs.org/@next%2fswc-win32-x64-msvc 165ms (cache hit)
+99 silly packumentCache full:https://registry.npmjs.org/@next%2fswc-win32-x64-msvc set size:4819493 disposed:false
+100 http fetch GET 200 https://registry.npmjs.org/@swc%2fhelpers 238ms (cache miss)
+101 silly packumentCache full:https://registry.npmjs.org/@swc%2fhelpers set size:undefined disposed:false
+102 http fetch GET 200 https://registry.npmjs.org/sharp 243ms (cache miss)
+103 silly packumentCache full:https://registry.npmjs.org/sharp set size:undefined disposed:false
+104 silly placeDep ROOT @next/eslint-plugin-next@15.5.7 OK for: eslint-config-next@15.5.7 want: 15.5.7
+105 silly fetch manifest fast-glob@3.3.1
+106 silly packumentCache full:https://registry.npmjs.org/fast-glob cache-miss
+107 http fetch GET 200 https://registry.npmjs.org/fast-glob 2ms (cache hit)
+108 silly packumentCache full:https://registry.npmjs.org/fast-glob set size:220556 disposed:false
+109 silly placeDep ROOT fast-glob@3.3.1 OK for: @next/eslint-plugin-next@15.5.7 want: 3.3.1
+110 silly fetch manifest glob-parent@^5.1.2
+111 silly packumentCache full:https://registry.npmjs.org/glob-parent cache-miss
+112 http fetch GET 200 https://registry.npmjs.org/glob-parent 2ms (cache hit)
+113 silly packumentCache full:https://registry.npmjs.org/glob-parent set size:42445 disposed:false
+114 silly placeDep node_modules/fast-glob glob-parent@5.1.2 OK for: fast-glob@3.3.1 want: ^5.1.2
+115 silly placeDep ROOT @next/env@15.5.7 OK for: next@15.5.7 want: 15.5.7
+116 silly placeDep ROOT @next/swc-darwin-arm64@15.5.7 OK for: next@15.5.7 want: 15.5.7
+117 silly placeDep ROOT @next/swc-darwin-x64@15.5.7 OK for: next@15.5.7 want: 15.5.7
+118 silly placeDep ROOT @next/swc-linux-arm64-gnu@15.5.7 OK for: next@15.5.7 want: 15.5.7
+119 silly placeDep ROOT @next/swc-linux-arm64-musl@15.5.7 OK for: next@15.5.7 want: 15.5.7
+120 silly placeDep ROOT @next/swc-linux-x64-gnu@15.5.7 OK for: next@15.5.7 want: 15.5.7
+121 silly placeDep ROOT @next/swc-linux-x64-musl@15.5.7 OK for: next@15.5.7 want: 15.5.7
+122 silly placeDep ROOT @next/swc-win32-arm64-msvc@15.5.7 OK for: next@15.5.7 want: 15.5.7
+123 silly placeDep ROOT @next/swc-win32-x64-msvc@15.5.7 OK for: next@15.5.7 want: 15.5.7
+124 silly placeDep ROOT @swc/helpers@0.5.15 OK for: next@15.5.7 want: 0.5.15
+125 silly placeDep ROOT sharp@0.34.5 OK for: next@15.5.7 want: ^0.34.3
+126 silly fetch manifest @img/colour@^1.0.0
+127 silly packumentCache full:https://registry.npmjs.org/@img%2fcolour cache-miss
+128 silly fetch manifest detect-libc@^2.1.2
+129 silly packumentCache full:https://registry.npmjs.org/detect-libc cache-miss
+130 silly fetch manifest @img/sharp-darwin-arm64@0.34.5
+131 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-darwin-arm64 cache-miss
+132 silly fetch manifest @img/sharp-darwin-x64@0.34.5
+133 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-darwin-x64 cache-miss
+134 silly fetch manifest @img/sharp-libvips-darwin-arm64@1.2.4
+135 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-darwin-arm64 cache-miss
+136 silly fetch manifest @img/sharp-libvips-darwin-x64@1.2.4
+137 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-darwin-x64 cache-miss
+138 silly fetch manifest @img/sharp-libvips-linux-arm@1.2.4
+139 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-arm cache-miss
+140 silly fetch manifest @img/sharp-libvips-linux-arm64@1.2.4
+141 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-arm64 cache-miss
+142 silly fetch manifest @img/sharp-libvips-linux-ppc64@1.2.4
+143 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-ppc64 cache-miss
+144 silly fetch manifest @img/sharp-libvips-linux-riscv64@1.2.4
+145 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-riscv64 cache-miss
+146 silly fetch manifest @img/sharp-libvips-linux-s390x@1.2.4
+147 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-s390x cache-miss
+148 silly fetch manifest @img/sharp-libvips-linux-x64@1.2.4
+149 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-x64 cache-miss
+150 silly fetch manifest @img/sharp-libvips-linuxmusl-arm64@1.2.4
+151 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linuxmusl-arm64 cache-miss
+152 http fetch GET 200 https://registry.npmjs.org/detect-libc 31ms (cache miss)
+153 silly packumentCache full:https://registry.npmjs.org/detect-libc set size:undefined disposed:false
+154 silly fetch manifest @img/sharp-libvips-linuxmusl-x64@1.2.4
+155 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linuxmusl-x64 cache-miss
+156 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linuxmusl-x64 54ms (cache miss)
+157 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linuxmusl-x64 set size:undefined disposed:false
+158 silly fetch manifest @img/sharp-linux-arm@0.34.5
+159 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-arm cache-miss
+160 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-darwin-arm64 104ms (cache miss)
+161 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-darwin-arm64 set size:undefined disposed:false
+162 silly fetch manifest @img/sharp-linux-arm64@0.34.5
+163 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-arm64 cache-miss
+164 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-darwin-x64 108ms (cache miss)
+165 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-darwin-x64 set size:undefined disposed:false
+166 silly fetch manifest @img/sharp-linux-ppc64@0.34.5
+167 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-ppc64 cache-miss
+168 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linux-arm 128ms (cache miss)
+169 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-arm set size:undefined disposed:false
+170 silly fetch manifest @img/sharp-linux-riscv64@0.34.5
+171 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-riscv64 cache-miss
+172 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linux-ppc64 141ms (cache miss)
+173 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-ppc64 set size:undefined disposed:false
+174 silly fetch manifest @img/sharp-linux-s390x@0.34.5
+175 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-s390x cache-miss
+176 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-darwin-arm64 144ms (cache miss)
+177 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-darwin-arm64 set size:undefined disposed:false
+178 silly fetch manifest @img/sharp-linux-x64@0.34.5
+179 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-x64 cache-miss
+180 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linux-arm64 145ms (cache miss)
+181 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-arm64 set size:undefined disposed:false
+182 silly fetch manifest @img/sharp-linuxmusl-arm64@0.34.5
+183 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linuxmusl-arm64 cache-miss
+184 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linuxmusl-arm64 146ms (cache miss)
+185 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linuxmusl-arm64 set size:undefined disposed:false
+186 silly fetch manifest @img/sharp-linuxmusl-x64@0.34.5
+187 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linuxmusl-x64 cache-miss
+188 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-darwin-x64 148ms (cache miss)
+189 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-darwin-x64 set size:undefined disposed:false
+190 silly fetch manifest @img/sharp-wasm32@0.34.5
+191 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-wasm32 cache-miss
+192 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linux-arm 61ms (cache miss)
+193 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-arm set size:undefined disposed:false
+194 silly fetch manifest @img/sharp-win32-arm64@0.34.5
+195 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-win32-arm64 cache-miss
+196 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linux-s390x 152ms (cache miss)
+197 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-s390x set size:undefined disposed:false
+198 silly fetch manifest @img/sharp-win32-ia32@0.34.5
+199 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-win32-ia32 cache-miss
+200 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linux-x64 154ms (cache miss)
+201 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-x64 set size:undefined disposed:false
+202 silly fetch manifest @img/sharp-win32-x64@0.34.5
+203 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-win32-x64 cache-miss
+204 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linux-arm64 53ms (cache miss)
+205 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-arm64 set size:undefined disposed:false
+206 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linux-ppc64 48ms (cache miss)
+207 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-ppc64 set size:undefined disposed:false
+208 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-libvips-linux-riscv64 158ms (cache miss)
+209 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-libvips-linux-riscv64 set size:undefined disposed:false
+210 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linux-riscv64 38ms (cache miss)
+211 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-riscv64 set size:undefined disposed:false
+212 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linux-x64 36ms (cache miss)
+213 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-x64 set size:undefined disposed:false
+214 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linux-s390x 50ms (cache miss)
+215 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linux-s390x set size:undefined disposed:false
+216 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linuxmusl-arm64 47ms (cache miss)
+217 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linuxmusl-arm64 set size:undefined disposed:false
+218 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-win32-arm64 46ms (cache miss)
+219 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-win32-arm64 set size:undefined disposed:false
+220 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-wasm32 49ms (cache miss)
+221 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-wasm32 set size:undefined disposed:false
+222 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-win32-x64 46ms (cache miss)
+223 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-win32-x64 set size:undefined disposed:false
+224 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-linuxmusl-x64 55ms (cache miss)
+225 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-linuxmusl-x64 set size:undefined disposed:false
+226 http fetch GET 200 https://registry.npmjs.org/@img%2fsharp-win32-ia32 366ms (cache miss)
+227 silly packumentCache full:https://registry.npmjs.org/@img%2fsharp-win32-ia32 set size:undefined disposed:false
+228 http fetch GET 200 https://registry.npmjs.org/@img%2fcolour 1047ms (cache miss)
+229 silly packumentCache full:https://registry.npmjs.org/@img%2fcolour set size:undefined disposed:false
+230 silly placeDep ROOT @img/colour@1.0.0 OK for: sharp@0.34.5 want: ^1.0.0
+231 silly placeDep ROOT @img/sharp-darwin-arm64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+232 silly placeDep ROOT @img/sharp-darwin-x64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+233 silly placeDep ROOT @img/sharp-libvips-darwin-arm64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+234 silly placeDep ROOT @img/sharp-libvips-darwin-x64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+235 silly placeDep ROOT @img/sharp-libvips-linux-arm@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+236 silly placeDep ROOT @img/sharp-libvips-linux-arm64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+237 silly placeDep ROOT @img/sharp-libvips-linux-ppc64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+238 silly placeDep ROOT @img/sharp-libvips-linux-riscv64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+239 silly placeDep ROOT @img/sharp-libvips-linux-s390x@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+240 silly placeDep ROOT @img/sharp-libvips-linux-x64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+241 silly placeDep ROOT @img/sharp-libvips-linuxmusl-arm64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+242 silly placeDep ROOT @img/sharp-libvips-linuxmusl-x64@1.2.4 OK for: sharp@0.34.5 want: 1.2.4
+243 silly placeDep ROOT @img/sharp-linux-arm@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+244 silly placeDep ROOT @img/sharp-linux-arm64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+245 silly placeDep ROOT @img/sharp-linux-ppc64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+246 silly placeDep ROOT @img/sharp-linux-riscv64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+247 silly placeDep ROOT @img/sharp-linux-s390x@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+248 silly placeDep ROOT @img/sharp-linux-x64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+249 silly placeDep ROOT @img/sharp-linuxmusl-arm64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+250 silly placeDep ROOT @img/sharp-linuxmusl-x64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+251 silly placeDep ROOT @img/sharp-wasm32@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+252 silly placeDep ROOT @img/sharp-win32-arm64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+253 silly placeDep ROOT @img/sharp-win32-ia32@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+254 silly placeDep ROOT @img/sharp-win32-x64@0.34.5 OK for: sharp@0.34.5 want: 0.34.5
+255 silly placeDep ROOT detect-libc@2.1.2 OK for: sharp@0.34.5 want: ^2.1.2
+256 silly reify mark retired [
+256 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-darwin-arm64'
+256 silly reify ]
+257 silly reify mark retired [
+257 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-darwin-arm64'
+257 silly reify ]
+258 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/@next/env' ]
+259 silly reify mark retired [
+259 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/eslint-plugin-next'
+259 silly reify ]
+260 silly reify mark retired [
+260 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-darwin-arm64'
+260 silly reify ]
+261 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/@swc/counter' ]
+262 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/@swc/helpers' ]
+263 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/busboy' ]
+264 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/color' ]
+265 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/color-string' ]
+266 silly reify mark retired [
+266 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/eslint-config-next'
+266 silly reify ]
+267 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/is-arrayish' ]
+268 silly reify mark retired [
+268 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/next',
+268 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/.bin/next'
+268 silly reify ]
+269 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/sharp' ]
+270 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/simple-swizzle' ]
+271 silly reify mark retired [ '/Users/joakimnenzen/Documents/distro/node_modules/streamsearch' ]
+272 silly reify moves {
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-darwin-arm64': '/Users/joakimnenzen/Documents/distro/node_modules/@img/.sharp-darwin-arm64-pGX8poBd',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-darwin-arm64': '/Users/joakimnenzen/Documents/distro/node_modules/@img/.sharp-libvips-darwin-arm64-uLsPD9KP',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/env': '/Users/joakimnenzen/Documents/distro/node_modules/@next/.env-fwHsixAu',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/eslint-plugin-next': '/Users/joakimnenzen/Documents/distro/node_modules/@next/.eslint-plugin-next-54IzsQTz',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-darwin-arm64': '/Users/joakimnenzen/Documents/distro/node_modules/@next/.swc-darwin-arm64-vO3MjMac',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@swc/counter': '/Users/joakimnenzen/Documents/distro/node_modules/@swc/.counter-TAHCcvs6',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@swc/helpers': '/Users/joakimnenzen/Documents/distro/node_modules/@swc/.helpers-EUu1c20M',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/busboy': '/Users/joakimnenzen/Documents/distro/node_modules/.busboy-lyObtWEj',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/color': '/Users/joakimnenzen/Documents/distro/node_modules/.color-wWobKmFY',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/color-string': '/Users/joakimnenzen/Documents/distro/node_modules/.color-string-vpZ1n0kM',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/eslint-config-next': '/Users/joakimnenzen/Documents/distro/node_modules/.eslint-config-next-n9ttafEg',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/is-arrayish': '/Users/joakimnenzen/Documents/distro/node_modules/.is-arrayish-6kv8PB2E',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/next': '/Users/joakimnenzen/Documents/distro/node_modules/.next-Bzm7zeMR',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/.bin/next': '/Users/joakimnenzen/Documents/distro/node_modules/.bin/.next-5QtR7NzH',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/sharp': '/Users/joakimnenzen/Documents/distro/node_modules/.sharp-d1YQMSVf',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/simple-swizzle': '/Users/joakimnenzen/Documents/distro/node_modules/.simple-swizzle-sNgp6MjD',
+272 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/streamsearch': '/Users/joakimnenzen/Documents/distro/node_modules/.streamsearch-mAiGHmaE'
+272 silly reify }
+273 silly audit bulk request {
+273 silly audit   '@alloc/quick-lru': [ '5.2.0' ],
+273 silly audit   '@dnd-kit/accessibility': [ '3.1.1' ],
+273 silly audit   '@dnd-kit/core': [ '6.3.1' ],
+273 silly audit   '@dnd-kit/sortable': [ '10.0.0' ],
+273 silly audit   '@dnd-kit/utilities': [ '3.2.2' ],
+273 silly audit   '@emnapi/core': [ '1.7.1' ],
+273 silly audit   '@emnapi/runtime': [ '1.7.1' ],
+273 silly audit   '@emnapi/wasi-threads': [ '1.1.0' ],
+273 silly audit   '@eslint-community/eslint-utils': [ '4.9.0' ],
+273 silly audit   '@eslint-community/regexpp': [ '4.12.2' ],
+273 silly audit   '@eslint/eslintrc': [ '2.1.4' ],
+273 silly audit   '@eslint/js': [ '8.57.1' ],
+273 silly audit   '@floating-ui/core': [ '1.7.3' ],
+273 silly audit   '@floating-ui/dom': [ '1.7.4' ],
+273 silly audit   '@floating-ui/react-dom': [ '2.1.6' ],
+273 silly audit   '@floating-ui/utils': [ '0.2.10' ],
+273 silly audit   '@hookform/resolvers': [ '3.10.0' ],
+273 silly audit   '@humanwhocodes/config-array': [ '0.13.0' ],
+273 silly audit   '@humanwhocodes/module-importer': [ '1.0.1' ],
+273 silly audit   '@humanwhocodes/object-schema': [ '2.0.3' ],
+273 silly audit   '@jridgewell/gen-mapping': [ '0.3.13' ],
+273 silly audit   '@jridgewell/resolve-uri': [ '3.1.2' ],
+273 silly audit   '@jridgewell/sourcemap-codec': [ '1.5.5' ],
+273 silly audit   '@jridgewell/trace-mapping': [ '0.3.31' ],
+273 silly audit   '@napi-rs/wasm-runtime': [ '0.2.12' ],
+273 silly audit   '@nodelib/fs.scandir': [ '2.1.5' ],
+273 silly audit   '@nodelib/fs.stat': [ '2.0.5' ],
+273 silly audit   '@nodelib/fs.walk': [ '1.2.8' ],
+273 silly audit   '@nolyfill/is-core-module': [ '1.0.39' ],
+273 silly audit   '@radix-ui/number': [ '1.1.1' ],
+273 silly audit   '@radix-ui/primitive': [ '1.1.3' ],
+273 silly audit   '@radix-ui/react-arrow': [ '1.1.7' ],
+273 silly audit   '@radix-ui/react-avatar': [ '1.1.11' ],
+273 silly audit   '@radix-ui/react-context': [ '1.1.3', '1.1.2' ],
+273 silly audit   '@radix-ui/react-primitive': [ '2.1.4', '2.1.3' ],
+273 silly audit   '@radix-ui/react-checkbox': [ '1.3.3' ],
+273 silly audit   '@radix-ui/react-collection': [ '1.1.7' ],
+273 silly audit   '@radix-ui/react-slot': [ '1.2.3', '1.2.4' ],
+273 silly audit   '@radix-ui/react-compose-refs': [ '1.1.2' ],
+273 silly audit   '@radix-ui/react-dialog': [ '1.1.15' ],
+273 silly audit   '@radix-ui/react-direction': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-dismissable-layer': [ '1.1.11' ],
+273 silly audit   '@radix-ui/react-dropdown-menu': [ '2.1.16' ],
+273 silly audit   '@radix-ui/react-focus-guards': [ '1.1.3' ],
+273 silly audit   '@radix-ui/react-focus-scope': [ '1.1.7' ],
+273 silly audit   '@radix-ui/react-id': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-label': [ '2.1.8' ],
+273 silly audit   '@radix-ui/react-menu': [ '2.1.16' ],
+273 silly audit   '@radix-ui/react-popper': [ '1.2.8' ],
+273 silly audit   '@radix-ui/react-portal': [ '1.1.9' ],
+273 silly audit   '@radix-ui/react-presence': [ '1.1.5' ],
+273 silly audit   '@radix-ui/react-roving-focus': [ '1.1.11' ],
+273 silly audit   '@radix-ui/react-separator': [ '1.1.8' ],
+273 silly audit   '@radix-ui/react-slider': [ '1.3.6' ],
+273 silly audit   '@radix-ui/react-toast': [ '1.2.15' ],
+273 silly audit   '@radix-ui/react-use-callback-ref': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-use-controllable-state': [ '1.2.2' ],
+273 silly audit   '@radix-ui/react-use-effect-event': [ '0.0.2' ],
+273 silly audit   '@radix-ui/react-use-escape-keydown': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-use-is-hydrated': [ '0.1.0' ],
+273 silly audit   '@radix-ui/react-use-layout-effect': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-use-previous': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-use-rect': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-use-size': [ '1.1.1' ],
+273 silly audit   '@radix-ui/react-visually-hidden': [ '1.2.3' ],
+273 silly audit   '@radix-ui/rect': [ '1.1.1' ],
+273 silly audit   '@rtsao/scc': [ '1.1.0' ],
+273 silly audit   '@rushstack/eslint-patch': [ '1.15.0' ],
+273 silly audit   '@supabase/auth-js': [ '2.86.2' ],
+273 silly audit   '@supabase/functions-js': [ '2.86.2' ],
+273 silly audit   '@supabase/postgrest-js': [ '2.86.2' ],
+273 silly audit   '@supabase/realtime-js': [ '2.86.2' ],
+273 silly audit   '@supabase/ssr': [ '0.5.2' ],
+273 silly audit   '@supabase/storage-js': [ '2.86.2' ],
+273 silly audit   '@supabase/supabase-js': [ '2.86.2' ],
+273 silly audit   '@tailwindcss/line-clamp': [ '0.4.4' ],
+273 silly audit   '@tybys/wasm-util': [ '0.10.1' ],
+273 silly audit   '@types/cookie': [ '0.6.0' ],
+273 silly audit   '@types/json5': [ '0.0.29' ],
+273 silly audit   '@types/node': [ '20.19.25' ],
+273 silly audit   '@types/phoenix': [ '1.6.6' ],
+273 silly audit   '@types/prop-types': [ '15.7.15' ],
+273 silly audit   '@types/react': [ '18.3.27' ],
+273 silly audit   '@types/react-dom': [ '18.3.7' ],
+273 silly audit   '@types/ws': [ '8.18.1' ],
+273 silly audit   '@typescript-eslint/eslint-plugin': [ '8.48.1' ],
+273 silly audit   ignore: [ '7.0.5', '5.3.2' ],
+273 silly audit   '@typescript-eslint/parser': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/project-service': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/scope-manager': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/tsconfig-utils': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/type-utils': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/types': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/typescript-estree': [ '8.48.1' ],
+273 silly audit   'brace-expansion': [ '2.0.2', '1.1.12' ],
+273 silly audit   minimatch: [ '9.0.5', '3.1.2' ],
+273 silly audit   '@typescript-eslint/utils': [ '8.48.1' ],
+273 silly audit   '@typescript-eslint/visitor-keys': [ '8.48.1' ],
+273 silly audit   'eslint-visitor-keys': [ '4.2.1', '3.4.3' ],
+273 silly audit   '@ungap/structured-clone': [ '1.3.0' ],
+273 silly audit   '@unrs/resolver-binding-android-arm-eabi': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-android-arm64': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-darwin-arm64': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-darwin-x64': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-freebsd-x64': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-arm-gnueabihf': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-arm-musleabihf': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-arm64-gnu': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-arm64-musl': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-ppc64-gnu': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-riscv64-gnu': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-riscv64-musl': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-s390x-gnu': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-x64-gnu': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-linux-x64-musl': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-wasm32-wasi': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-win32-arm64-msvc': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-win32-ia32-msvc': [ '1.11.1' ],
+273 silly audit   '@unrs/resolver-binding-win32-x64-msvc': [ '1.11.1' ],
+273 silly audit   acorn: [ '8.15.0' ],
+273 silly audit   'acorn-jsx': [ '5.3.2' ],
+273 silly audit   ajv: [ '6.12.6' ],
+273 silly audit   'ansi-regex': [ '5.0.1' ],
+273 silly audit   'ansi-styles': [ '4.3.0' ],
+273 silly audit   'any-promise': [ '1.3.0' ],
+273 silly audit   anymatch: [ '3.1.3' ],
+273 silly audit   arg: [ '5.0.2' ],
+273 silly audit   argparse: [ '2.0.1' ],
+273 silly audit   'aria-hidden': [ '1.2.6' ],
+273 silly audit   'aria-query': [ '5.3.2' ],
+273 silly audit   'array-buffer-byte-length': [ '1.0.2' ],
+273 silly audit   'array-includes': [ '3.1.9' ],
+273 silly audit   'array.prototype.findlast': [ '1.2.5' ],
+273 silly audit   'array.prototype.findlastindex': [ '1.2.6' ],
+273 silly audit   'array.prototype.flat': [ '1.3.3' ],
+273 silly audit   'array.prototype.flatmap': [ '1.3.3' ],
+273 silly audit   'array.prototype.tosorted': [ '1.1.4' ],
+273 silly audit   'arraybuffer.prototype.slice': [ '1.0.4' ],
+273 silly audit   'ast-types-flow': [ '0.0.8' ],
+273 silly audit   'async-function': [ '1.0.0' ],
+273 silly audit   autoprefixer: [ '10.4.22' ],
+273 silly audit   'available-typed-arrays': [ '1.0.7' ],
+273 silly audit   'axe-core': [ '4.11.0' ],
+273 silly audit   'axobject-query': [ '4.1.0' ],
+273 silly audit   'balanced-match': [ '1.0.2' ],
+273 silly audit   'baseline-browser-mapping': [ '2.9.2' ],
+273 silly audit   'binary-extensions': [ '2.3.0' ],
+273 silly audit   braces: [ '3.0.3' ],
+273 silly audit   browserslist: [ '4.28.1' ],
+273 silly audit   'call-bind': [ '1.0.8' ],
+273 silly audit   'call-bind-apply-helpers': [ '1.0.2' ],
+273 silly audit   'call-bound': [ '1.0.4' ],
+273 silly audit   callsites: [ '3.1.0' ],
+273 silly audit   'camelcase-css': [ '2.0.1' ],
+273 silly audit   'caniuse-lite': [ '1.0.30001759' ],
+273 silly audit   chalk: [ '4.1.2' ],
+273 silly audit   chokidar: [ '3.6.0' ],
+273 silly audit   'glob-parent': [ '5.1.2', '6.0.2' ],
+273 silly audit   'class-variance-authority': [ '0.7.1' ],
+273 silly audit   'client-only': [ '0.0.1' ],
+273 silly audit   clsx: [ '2.1.1' ],
+273 silly audit   'color-convert': [ '2.0.1' ],
+273 silly audit   'color-name': [ '1.1.4' ],
+273 silly audit   commander: [ '4.1.1' ],
+273 silly audit   'concat-map': [ '0.0.1' ],
+273 silly audit   cookie: [ '0.7.2' ],
+273 silly audit   'cross-spawn': [ '7.0.6' ],
+273 silly audit   cssesc: [ '3.0.0' ],
+273 silly audit   csstype: [ '3.2.3' ],
+273 silly audit   'damerau-levenshtein': [ '1.0.8' ],
+273 silly audit   'data-view-buffer': [ '1.0.2' ],
+273 silly audit   'data-view-byte-length': [ '1.0.2' ],
+273 silly audit   'data-view-byte-offset': [ '1.0.1' ],
+273 silly audit   debug: [ '4.4.3', '3.2.7' ],
+273 silly audit   'deep-is': [ '0.1.4' ],
+273 silly audit   'define-data-property': [ '1.1.4' ],
+273 silly audit   'define-properties': [ '1.2.1' ],
+273 silly audit   'detect-node-es': [ '1.1.0' ],
+273 silly audit   didyoumean: [ '1.2.2' ],
+273 silly audit   dlv: [ '1.1.3' ],
+273 silly audit   doctrine: [ '3.0.0', '2.1.0' ],
+273 silly audit   'dunder-proto': [ '1.0.1' ],
+273 silly audit   'electron-to-chromium': [ '1.5.266' ],
+273 silly audit   'embla-carousel': [ '8.6.0' ],
+273 silly audit   'embla-carousel-react': [ '8.6.0' ],
+273 silly audit   'embla-carousel-reactive-utils': [ '8.6.0' ],
+273 silly audit   'emoji-regex': [ '9.2.2' ],
+273 silly audit   'es-abstract': [ '1.24.0' ],
+273 silly audit   'es-define-property': [ '1.0.1' ],
+273 silly audit   'es-errors': [ '1.3.0' ],
+273 silly audit   'es-iterator-helpers': [ '1.2.1' ],
+273 silly audit   'es-object-atoms': [ '1.1.1' ],
+273 silly audit   'es-set-tostringtag': [ '2.1.0' ],
+273 silly audit   'es-shim-unscopables': [ '1.1.0' ],
+273 silly audit   'es-to-primitive': [ '1.3.0' ],
+273 silly audit   escalade: [ '3.2.0' ],
+273 silly audit   'escape-string-regexp': [ '4.0.0' ],
+273 silly audit   eslint: [ '8.57.1' ],
+273 silly audit   'eslint-import-resolver-node': [ '0.3.9' ],
+273 silly audit   'eslint-import-resolver-typescript': [ '3.10.1' ],
+273 silly audit   'eslint-module-utils': [ '2.12.1' ],
+273 silly audit   'eslint-plugin-import': [ '2.32.0' ],
+273 silly audit   semver: [ '6.3.1', '7.7.3' ],
+273 silly audit   'eslint-plugin-jsx-a11y': [ '6.10.2' ],
+273 silly audit   'eslint-plugin-react': [ '7.37.5' ],
+273 silly audit   'eslint-plugin-react-hooks': [ '5.2.0' ],
+273 silly audit   resolve: [ '2.0.0-next.5', '1.22.11' ],
+273 silly audit   'eslint-scope': [ '7.2.2' ],
+273 silly audit   espree: [ '9.6.1' ],
+273 silly audit   esquery: [ '1.6.0' ],
+273 silly audit   esrecurse: [ '4.3.0' ],
+273 silly audit   estraverse: [ '5.3.0' ],
+273 silly audit   esutils: [ '2.0.3' ],
+273 silly audit   'fast-deep-equal': [ '3.1.3' ],
+273 silly audit   'fast-glob': [ '3.3.3', '3.3.1' ],
+273 silly audit   'fast-json-stable-stringify': [ '2.1.0' ],
+273 silly audit   'fast-levenshtein': [ '2.0.6' ],
+273 silly audit   fastq: [ '1.19.1' ],
+273 silly audit   'file-entry-cache': [ '6.0.1' ],
+273 silly audit   'fill-range': [ '7.1.1' ],
+273 silly audit   'find-up': [ '5.0.0' ],
+273 silly audit   'flat-cache': [ '3.2.0' ],
+273 silly audit   flatted: [ '3.3.3' ],
+273 silly audit   'for-each': [ '0.3.5' ],
+273 silly audit   'fraction.js': [ '5.3.4' ],
+273 silly audit   'fs.realpath': [ '1.0.0' ],
+273 silly audit   fsevents: [ '2.3.3' ],
+273 silly audit   'function-bind': [ '1.1.2' ],
+273 silly audit   'function.prototype.name': [ '1.1.8' ],
+273 silly audit   'functions-have-names': [ '1.2.3' ],
+273 silly audit   geist: [ '1.5.1' ],
+273 silly audit   'generator-function': [ '2.0.1' ],
+273 silly audit   'get-intrinsic': [ '1.3.0' ],
+273 silly audit   'get-nonce': [ '1.0.1' ],
+273 silly audit   'get-proto': [ '1.0.1' ],
+273 silly audit   'get-symbol-description': [ '1.1.0' ],
+273 silly audit   'get-tsconfig': [ '4.13.0' ],
+273 silly audit   glob: [ '7.2.3' ],
+273 silly audit   globals: [ '13.24.0' ],
+273 silly audit   globalthis: [ '1.0.4' ],
+273 silly audit   gopd: [ '1.2.0' ],
+273 silly audit   graphemer: [ '1.4.0' ],
+273 silly audit   'has-bigints': [ '1.1.0' ],
+273 silly audit   'has-flag': [ '4.0.0' ],
+273 silly audit   'has-property-descriptors': [ '1.0.2' ],
+273 silly audit   'has-proto': [ '1.2.0' ],
+273 silly audit   'has-symbols': [ '1.1.0' ],
+273 silly audit   'has-tostringtag': [ '1.0.2' ],
+273 silly audit   hasown: [ '2.0.2' ],
+273 silly audit   'iceberg-js': [ '0.8.0' ],
+273 silly audit   'import-fresh': [ '3.3.1' ],
+273 silly audit   imurmurhash: [ '0.1.4' ],
+273 silly audit   inflight: [ '1.0.6' ],
+273 silly audit   inherits: [ '2.0.4' ],
+273 silly audit   'internal-slot': [ '1.1.0' ],
+273 silly audit   'is-array-buffer': [ '3.0.5' ],
+273 silly audit   'is-async-function': [ '2.1.1' ],
+273 silly audit   'is-bigint': [ '1.1.0' ],
+273 silly audit   'is-binary-path': [ '2.1.0' ],
+273 silly audit   'is-boolean-object': [ '1.2.2' ],
+273 silly audit   'is-bun-module': [ '2.0.0' ],
+273 silly audit   'is-callable': [ '1.2.7' ],
+273 silly audit   'is-core-module': [ '2.16.1' ],
+273 silly audit   'is-data-view': [ '1.0.2' ],
+273 silly audit   'is-date-object': [ '1.1.0' ],
+273 silly audit   'is-extglob': [ '2.1.1' ],
+273 silly audit   'is-finalizationregistry': [ '1.1.1' ],
+273 silly audit   'is-generator-function': [ '1.1.2' ],
+273 silly audit   'is-glob': [ '4.0.3' ],
+273 silly audit   'is-map': [ '2.0.3' ],
+273 silly audit   'is-negative-zero': [ '2.0.3' ],
+273 silly audit   'is-number': [ '7.0.0' ],
+273 silly audit   'is-number-object': [ '1.1.1' ],
+273 silly audit   'is-path-inside': [ '3.0.3' ],
+273 silly audit   'is-regex': [ '1.2.1' ],
+273 silly audit   'is-set': [ '2.0.3' ],
+273 silly audit   'is-shared-array-buffer': [ '1.0.4' ],
+273 silly audit   'is-string': [ '1.1.1' ],
+273 silly audit   'is-symbol': [ '1.1.1' ],
+273 silly audit   'is-typed-array': [ '1.1.15' ],
+273 silly audit   'is-weakmap': [ '2.0.2' ],
+273 silly audit   'is-weakref': [ '1.1.1' ],
+273 silly audit   'is-weakset': [ '2.0.4' ],
+273 silly audit   isarray: [ '2.0.5' ],
+273 silly audit   isexe: [ '2.0.0' ],
+273 silly audit   'iterator.prototype': [ '1.1.5' ],
+273 silly audit   jiti: [ '1.21.7' ],
+273 silly audit   'js-tokens': [ '4.0.0' ],
+273 silly audit   'js-yaml': [ '4.1.1' ],
+273 silly audit   'json-buffer': [ '3.0.1' ],
+273 silly audit   'json-schema-traverse': [ '0.4.1' ],
+273 silly audit   'json-stable-stringify-without-jsonify': [ '1.0.1' ],
+273 silly audit   json5: [ '1.0.2' ],
+273 silly audit   'jsx-ast-utils': [ '3.3.5' ],
+273 silly audit   keyv: [ '4.5.4' ],
+273 silly audit   'language-subtag-registry': [ '0.3.23' ],
+273 silly audit   'language-tags': [ '1.0.9' ],
+273 silly audit   levn: [ '0.4.1' ],
+273 silly audit   lilconfig: [ '3.1.3' ],
+273 silly audit   'lines-and-columns': [ '1.2.4' ],
+273 silly audit   'locate-path': [ '6.0.0' ],
+273 silly audit   'lodash.merge': [ '4.6.2' ],
+273 silly audit   'loose-envify': [ '1.4.0' ],
+273 silly audit   'lucide-react': [ '0.439.0' ],
+273 silly audit   'math-intrinsics': [ '1.1.0' ],
+273 silly audit   merge2: [ '1.4.1' ],
+273 silly audit   micromatch: [ '4.0.8' ],
+273 silly audit   minimist: [ '1.2.8' ],
+273 silly audit   ms: [ '2.1.3' ],
+273 silly audit   mz: [ '2.7.0' ],
+273 silly audit   nanoid: [ '3.3.11' ],
+273 silly audit   'napi-postinstall': [ '0.3.4' ],
+273 silly audit   'natural-compare': [ '1.4.0' ],
+273 silly audit   postcss: [ '8.5.6', '8.4.31' ],
+273 silly audit   'node-releases': [ '2.0.27' ],
+273 silly audit   'normalize-path': [ '3.0.0' ],
+273 silly audit   'normalize-range': [ '0.1.2' ],
+273 silly audit   'object-assign': [ '4.1.1' ],
+273 silly audit   'object-hash': [ '3.0.0' ],
+273 silly audit   'object-inspect': [ '1.13.4' ],
+273 silly audit   'object-keys': [ '1.1.1' ],
+273 silly audit   'object.assign': [ '4.1.7' ],
+273 silly audit   'object.entries': [ '1.1.9' ],
+273 silly audit   'object.fromentries': [ '2.0.8' ],
+273 silly audit   'object.groupby': [ '1.0.3' ],
+273 silly audit   'object.values': [ '1.2.1' ],
+273 silly audit   once: [ '1.4.0' ],
+273 silly audit   optionator: [ '0.9.4' ],
+273 silly audit   'own-keys': [ '1.0.1' ],
+273 silly audit   'p-limit': [ '3.1.0' ],
+273 silly audit   'p-locate': [ '5.0.0' ],
+273 silly audit   'parent-module': [ '1.0.1' ],
+273 silly audit   'path-exists': [ '4.0.0' ],
+273 silly audit   'path-is-absolute': [ '1.0.1' ],
+273 silly audit   'path-key': [ '3.1.1' ],
+273 silly audit   'path-parse': [ '1.0.7' ],
+273 silly audit   picocolors: [ '1.1.1' ],
+273 silly audit   picomatch: [ '2.3.1', '4.0.3' ],
+273 silly audit   pify: [ '2.3.0' ],
+273 silly audit   pirates: [ '4.0.7' ],
+273 silly audit   'possible-typed-array-names': [ '1.1.0' ],
+273 silly audit   'postcss-import': [ '15.1.0' ],
+273 silly audit   'postcss-js': [ '4.1.0' ],
+273 silly audit   'postcss-load-config': [ '6.0.1' ],
+273 silly audit   'postcss-nested': [ '6.2.0' ],
+273 silly audit   'postcss-selector-parser': [ '6.1.2' ],
+273 silly audit   'postcss-value-parser': [ '4.2.0' ],
+273 silly audit   'prelude-ls': [ '1.2.1' ],
+273 silly audit   'prop-types': [ '15.8.1' ],
+273 silly audit   punycode: [ '2.3.1' ],
+273 silly audit   'queue-microtask': [ '1.2.3' ],
+273 silly audit   react: [ '18.3.1' ],
+273 silly audit   'react-dom': [ '18.3.1' ],
+273 silly audit   'react-hook-form': [ '7.68.0' ],
+273 silly audit   'react-is': [ '16.13.1' ],
+273 silly audit   'react-remove-scroll': [ '2.7.2' ],
+273 silly audit   'react-remove-scroll-bar': [ '2.3.8' ],
+273 silly audit   'react-style-singleton': [ '2.2.3' ],
+273 silly audit   'read-cache': [ '1.0.0' ],
+273 silly audit   readdirp: [ '3.6.0' ],
+273 silly audit   'reflect.getprototypeof': [ '1.0.10' ],
+273 silly audit   'regexp.prototype.flags': [ '1.5.4' ],
+273 silly audit   'resolve-from': [ '4.0.0' ],
+273 silly audit   'resolve-pkg-maps': [ '1.0.0' ],
+273 silly audit   reusify: [ '1.1.0' ],
+273 silly audit   rimraf: [ '3.0.2' ],
+273 silly audit   'run-parallel': [ '1.2.0' ],
+273 silly audit   'safe-array-concat': [ '1.1.3' ],
+273 silly audit   'safe-push-apply': [ '1.0.0' ],
+273 silly audit   'safe-regex-test': [ '1.1.0' ],
+273 silly audit   scheduler: [ '0.23.2' ],
+273 silly audit   'set-function-length': [ '1.2.2' ],
+273 silly audit   'set-function-name': [ '2.0.2' ],
+273 silly audit   'set-proto': [ '1.0.0' ],
+273 silly audit   'shebang-command': [ '2.0.0' ],
+273 silly audit   'shebang-regex': [ '3.0.0' ],
+273 silly audit   'side-channel': [ '1.1.0' ],
+273 silly audit   'side-channel-list': [ '1.0.0' ],
+273 silly audit   'side-channel-map': [ '1.0.1' ],
+273 silly audit   'side-channel-weakmap': [ '1.0.2' ],
+273 silly audit   'source-map-js': [ '1.2.1' ],
+273 silly audit   'stable-hash': [ '0.0.5' ],
+273 silly audit   'stop-iteration-iterator': [ '1.1.0' ],
+273 silly audit   'string.prototype.includes': [ '2.0.1' ],
+273 silly audit   'string.prototype.matchall': [ '4.0.12' ],
+273 silly audit   'string.prototype.repeat': [ '1.0.0' ],
+273 silly audit   'string.prototype.trim': [ '1.2.10' ],
+273 silly audit   'string.prototype.trimend': [ '1.0.9' ],
+273 silly audit   'string.prototype.trimstart': [ '1.0.8' ],
+273 silly audit   'strip-ansi': [ '6.0.1' ],
+273 silly audit   'strip-bom': [ '3.0.0' ],
+273 silly audit   'strip-json-comments': [ '3.1.1' ],
+273 silly audit   'styled-jsx': [ '5.1.6' ],
+273 silly audit   sucrase: [ '3.35.1' ],
+273 silly audit   'supports-color': [ '7.2.0' ],
+273 silly audit   'supports-preserve-symlinks-flag': [ '1.0.0' ],
+273 silly audit   'tailwind-merge': [ '2.6.0' ],
+273 silly audit   tailwindcss: [ '3.4.18' ],
+273 silly audit   'tailwindcss-animate': [ '1.0.7' ],
+273 silly audit   'text-table': [ '0.2.0' ],
+273 silly audit   thenify: [ '3.3.1' ],
+273 silly audit   'thenify-all': [ '1.6.0' ],
+273 silly audit   tinyglobby: [ '0.2.15' ],
+273 silly audit   fdir: [ '6.5.0' ],
+273 silly audit   'to-regex-range': [ '5.0.1' ],
+273 silly audit   'ts-api-utils': [ '2.1.0' ],
+273 silly audit   'ts-interface-checker': [ '0.1.13' ],
+273 silly audit   'tsconfig-paths': [ '3.15.0' ],
+273 silly audit   tslib: [ '2.8.1' ],
+273 silly audit   'type-check': [ '0.4.0' ],
+273 silly audit   'type-fest': [ '0.20.2' ],
+273 silly audit   'typed-array-buffer': [ '1.0.3' ],
+273 silly audit   'typed-array-byte-length': [ '1.0.3' ],
+273 silly audit   'typed-array-byte-offset': [ '1.0.4' ],
+273 silly audit   'typed-array-length': [ '1.0.7' ],
+273 silly audit   typescript: [ '5.9.3' ],
+273 silly audit   'unbox-primitive': [ '1.1.0' ],
+273 silly audit   'undici-types': [ '6.21.0' ],
+273 silly audit   'unrs-resolver': [ '1.11.1' ],
+273 silly audit   'update-browserslist-db': [ '1.2.2' ],
+273 silly audit   'uri-js': [ '4.4.1' ],
+273 silly audit   'use-callback-ref': [ '1.3.3' ],
+273 silly audit   'use-sidecar': [ '1.1.3' ],
+273 silly audit   'use-sync-external-store': [ '1.6.0' ],
+273 silly audit   'util-deprecate': [ '1.0.2' ],
+273 silly audit   vaul: [ '1.1.2' ],
+273 silly audit   which: [ '2.0.2' ],
+273 silly audit   'which-boxed-primitive': [ '1.1.1' ],
+273 silly audit   'which-builtin-type': [ '1.2.1' ],
+273 silly audit   'which-collection': [ '1.0.2' ],
+273 silly audit   'which-typed-array': [ '1.1.19' ],
+273 silly audit   'word-wrap': [ '1.2.5' ],
+273 silly audit   wrappy: [ '1.0.2' ],
+273 silly audit   ws: [ '8.18.3' ],
+273 silly audit   'yocto-queue': [ '0.1.0' ],
+273 silly audit   zod: [ '3.25.76' ],
+273 silly audit   zustand: [ '4.5.7' ],
+273 silly audit   'eslint-config-next': [ '15.5.7' ],
+273 silly audit   next: [ '15.5.7' ],
+273 silly audit   '@next/eslint-plugin-next': [ '15.5.7' ],
+273 silly audit   '@next/env': [ '15.5.7' ],
+273 silly audit   '@next/swc-darwin-arm64': [ '15.5.7' ],
+273 silly audit   '@next/swc-darwin-x64': [ '15.5.7' ],
+273 silly audit   '@next/swc-linux-arm64-gnu': [ '15.5.7' ],
+273 silly audit   '@next/swc-linux-arm64-musl': [ '15.5.7' ],
+273 silly audit   '@next/swc-linux-x64-gnu': [ '15.5.7' ],
+273 silly audit   '@next/swc-linux-x64-musl': [ '15.5.7' ],
+273 silly audit   '@next/swc-win32-arm64-msvc': [ '15.5.7' ],
+273 silly audit   '@next/swc-win32-x64-msvc': [ '15.5.7' ],
+273 silly audit   '@swc/helpers': [ '0.5.15' ],
+273 silly audit   sharp: [ '0.34.5' ],
+273 silly audit   '@img/colour': [ '1.0.0' ],
+273 silly audit   '@img/sharp-darwin-arm64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-darwin-x64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-libvips-darwin-arm64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-darwin-x64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linux-arm': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linux-arm64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linux-ppc64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linux-riscv64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linux-s390x': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linux-x64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linuxmusl-arm64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-libvips-linuxmusl-x64': [ '1.2.4' ],
+273 silly audit   '@img/sharp-linux-arm': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linux-arm64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linux-ppc64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linux-riscv64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linux-s390x': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linux-x64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linuxmusl-arm64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-linuxmusl-x64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-wasm32': [ '0.34.5' ],
+273 silly audit   '@img/sharp-win32-arm64': [ '0.34.5' ],
+273 silly audit   '@img/sharp-win32-ia32': [ '0.34.5' ],
+273 silly audit   '@img/sharp-win32-x64': [ '0.34.5' ],
+273 silly audit   'detect-libc': [ '2.1.2' ]
+273 silly audit }
+274 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-win32-x64
+275 silly reify mark deleted [
+275 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-win32-x64'
+275 silly reify ]
+276 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-win32-ia32
+277 silly reify mark deleted [
+277 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-win32-ia32'
+277 silly reify ]
+278 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-win32-arm64
+279 silly reify mark deleted [
+279 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-win32-arm64'
+279 silly reify ]
+280 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-wasm32
+281 silly reify mark deleted [
+281 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-wasm32'
+281 silly reify ]
+282 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linuxmusl-x64
+283 silly reify mark deleted [
+283 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linuxmusl-x64'
+283 silly reify ]
+284 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linuxmusl-arm64
+285 silly reify mark deleted [
+285 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linuxmusl-arm64'
+285 silly reify ]
+286 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-x64
+287 silly reify mark deleted [
+287 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-x64'
+287 silly reify ]
+288 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-s390x
+289 silly reify mark deleted [
+289 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-s390x'
+289 silly reify ]
+290 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-riscv64
+291 silly reify mark deleted [
+291 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-riscv64'
+291 silly reify ]
+292 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-ppc64
+293 silly reify mark deleted [
+293 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-ppc64'
+293 silly reify ]
+294 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-arm64
+295 silly reify mark deleted [
+295 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-arm64'
+295 silly reify ]
+296 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-arm
+297 silly reify mark deleted [
+297 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-linux-arm'
+297 silly reify ]
+298 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linuxmusl-x64
+299 silly reify mark deleted [
+299 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linuxmusl-x64'
+299 silly reify ]
+300 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linuxmusl-arm64
+301 silly reify mark deleted [
+301 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linuxmusl-arm64'
+301 silly reify ]
+302 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-x64
+303 silly reify mark deleted [
+303 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-x64'
+303 silly reify ]
+304 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-s390x
+305 silly reify mark deleted [
+305 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-s390x'
+305 silly reify ]
+306 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-riscv64
+307 silly reify mark deleted [
+307 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-riscv64'
+307 silly reify ]
+308 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-ppc64
+309 silly reify mark deleted [
+309 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-ppc64'
+309 silly reify ]
+310 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-arm64
+311 silly reify mark deleted [
+311 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-arm64'
+311 silly reify ]
+312 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-arm
+313 silly reify mark deleted [
+313 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-linux-arm'
+313 silly reify ]
+314 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-darwin-x64
+315 silly reify mark deleted [
+315 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-libvips-darwin-x64'
+315 silly reify ]
+316 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-darwin-x64
+317 silly reify mark deleted [
+317 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@img/sharp-darwin-x64'
+317 silly reify ]
+318 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-win32-x64-msvc
+319 silly reify mark deleted [
+319 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-win32-x64-msvc'
+319 silly reify ]
+320 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-win32-arm64-msvc
+321 silly reify mark deleted [
+321 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-win32-arm64-msvc'
+321 silly reify ]
+322 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-x64-musl
+323 silly reify mark deleted [
+323 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-x64-musl'
+323 silly reify ]
+324 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-x64-gnu
+325 silly reify mark deleted [
+325 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-x64-gnu'
+325 silly reify ]
+326 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-arm64-musl
+327 silly reify mark deleted [
+327 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-arm64-musl'
+327 silly reify ]
+328 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-arm64-gnu
+329 silly reify mark deleted [
+329 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-linux-arm64-gnu'
+329 silly reify ]
+330 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@next/swc-darwin-x64
+331 silly reify mark deleted [
+331 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@next/swc-darwin-x64'
+331 silly reify ]
+332 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-win32-x64-msvc
+333 silly reify mark deleted [
+333 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-win32-x64-msvc'
+333 silly reify ]
+334 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-win32-ia32-msvc
+335 silly reify mark deleted [
+335 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-win32-ia32-msvc'
+335 silly reify ]
+336 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-win32-arm64-msvc
+337 silly reify mark deleted [
+337 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-win32-arm64-msvc'
+337 silly reify ]
+338 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-wasm32-wasi
+339 silly reify mark deleted [
+339 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-wasm32-wasi'
+339 silly reify ]
+340 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@napi-rs/wasm-runtime
+341 silly reify mark deleted [
+341 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@napi-rs/wasm-runtime'
+341 silly reify ]
+342 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@emnapi/core
+343 silly reify mark deleted [ '/Users/joakimnenzen/Documents/distro/node_modules/@emnapi/core' ]
+344 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@tybys/wasm-util
+345 silly reify mark deleted [
+345 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@tybys/wasm-util'
+345 silly reify ]
+346 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@emnapi/wasi-threads
+347 silly reify mark deleted [
+347 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@emnapi/wasi-threads'
+347 silly reify ]
+348 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-x64-musl
+349 silly reify mark deleted [
+349 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-x64-musl'
+349 silly reify ]
+350 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-x64-gnu
+351 silly reify mark deleted [
+351 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-x64-gnu'
+351 silly reify ]
+352 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-s390x-gnu
+353 silly reify mark deleted [
+353 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-s390x-gnu'
+353 silly reify ]
+354 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-riscv64-musl
+355 silly reify mark deleted [
+355 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-riscv64-musl'
+355 silly reify ]
+356 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-riscv64-gnu
+357 silly reify mark deleted [
+357 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-riscv64-gnu'
+357 silly reify ]
+358 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-ppc64-gnu
+359 silly reify mark deleted [
+359 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-ppc64-gnu'
+359 silly reify ]
+360 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm64-musl
+361 silly reify mark deleted [
+361 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm64-musl'
+361 silly reify ]
+362 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm64-gnu
+363 silly reify mark deleted [
+363 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm64-gnu'
+363 silly reify ]
+364 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm-musleabihf
+365 silly reify mark deleted [
+365 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm-musleabihf'
+365 silly reify ]
+366 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm-gnueabihf
+367 silly reify mark deleted [
+367 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-linux-arm-gnueabihf'
+367 silly reify ]
+368 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-freebsd-x64
+369 silly reify mark deleted [
+369 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-freebsd-x64'
+369 silly reify ]
+370 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-darwin-x64
+371 silly reify mark deleted [
+371 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-darwin-x64'
+371 silly reify ]
+372 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-android-arm64
+373 silly reify mark deleted [
+373 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-android-arm64'
+373 silly reify ]
+374 verbose reify failed optional dependency /Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-android-arm-eabi
+375 silly reify mark deleted [
+375 silly reify   '/Users/joakimnenzen/Documents/distro/node_modules/@unrs/resolver-binding-android-arm-eabi'
+375 silly reify ]
+376 silly tarball no local data for @img/colour@https://registry.npmjs.org/@img/colour/-/colour-1.0.0.tgz. Extracting by manifest.
+377 silly tarball no local data for sharp@https://registry.npmjs.org/sharp/-/sharp-0.34.5.tgz. Extracting by manifest.
+378 silly tarball no local data for eslint-config-next@https://registry.npmjs.org/eslint-config-next/-/eslint-config-next-15.5.7.tgz. Extracting by manifest.
+379 silly tarball no local data for next@https://registry.npmjs.org/next/-/next-15.5.7.tgz. Extracting by manifest.
+380 silly tarball no local data for @swc/helpers@https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.15.tgz. Extracting by manifest.
+381 silly tarball no local data for @next/eslint-plugin-next@https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.7.tgz. Extracting by manifest.
+382 silly tarball no local data for @next/env@https://registry.npmjs.org/@next/env/-/env-15.5.7.tgz. Extracting by manifest.
+383 silly tarball no local data for @next/swc-darwin-arm64@https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-15.5.7.tgz. Extracting by manifest.
+384 silly tarball no local data for @img/sharp-libvips-darwin-arm64@https://registry.npmjs.org/@img/sharp-libvips-darwin-arm64/-/sharp-libvips-darwin-arm64-1.2.4.tgz. Extracting by manifest.
+385 silly tarball no local data for @img/sharp-darwin-arm64@https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.34.5.tgz. Extracting by manifest.
+386 http fetch GET 200 https://registry.npmjs.org/eslint-config-next/-/eslint-config-next-15.5.7.tgz 32ms (cache miss)
+387 http fetch GET 200 https://registry.npmjs.org/@img/colour/-/colour-1.0.0.tgz 47ms (cache miss)
+388 http fetch GET 200 https://registry.npmjs.org/sharp/-/sharp-0.34.5.tgz 60ms (cache miss)
+389 http fetch GET 200 https://registry.npmjs.org/@next/env/-/env-15.5.7.tgz 84ms (cache miss)
+390 http fetch GET 200 https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.15.tgz 97ms (cache miss)
+391 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 264ms
+392 silly audit report {
+392 silly audit report   next: [
+392 silly audit report     {
+392 silly audit report       id: 1111376,
+392 silly audit report       url: 'https://github.com/advisories/GHSA-w37m-7fhw-fmv9',
+392 silly audit report       title: 'Next Server Actions Source Code Exposure ',
+392 silly audit report       severity: 'moderate',
+392 silly audit report       vulnerable_versions: '>=15.5.1-canary.0 <15.5.8',
+392 silly audit report       cwe: [Array],
+392 silly audit report       cvss: [Object]
+392 silly audit report     },
+392 silly audit report     {
+392 silly audit report       id: 1111385,
+392 silly audit report       url: 'https://github.com/advisories/GHSA-mwv6-3258-q52c',
+392 silly audit report       title: 'Next Vulnerable to Denial of Service with Server Components',
+392 silly audit report       severity: 'high',
+392 silly audit report       vulnerable_versions: '>=15.5.1-canary.0 <15.5.8',
+392 silly audit report       cwe: [Array],
+392 silly audit report       cvss: [Object]
+392 silly audit report     }
+392 silly audit report   ]
+392 silly audit report }
+393 silly packumentCache corgi:https://registry.npmjs.org/next cache-miss
+394 http fetch GET 200 https://registry.npmjs.org/next 21ms (cache hit)
+395 silly packumentCache corgi:https://registry.npmjs.org/next set size:23079980 disposed:false
+396 silly packumentCache corgi:https://registry.npmjs.org/geist cache-miss
+397 http fetch GET 200 https://registry.npmjs.org/geist 3ms (cache hit)
+398 silly packumentCache corgi:https://registry.npmjs.org/geist set size:36500 disposed:false
+399 http fetch GET 200 https://registry.npmjs.org/@next/eslint-plugin-next/-/eslint-plugin-next-15.5.7.tgz 1461ms (cache miss)
+400 http fetch GET 200 https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.34.5.tgz 1488ms (cache miss)
+401 http fetch GET 200 https://registry.npmjs.org/next/-/next-15.5.7.tgz 4511ms (cache miss)
+402 warn deprecated next@15.5.7: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
+403 http fetch GET 200 https://registry.npmjs.org/@img/sharp-libvips-darwin-arm64/-/sharp-libvips-darwin-arm64-1.2.4.tgz 5108ms (cache miss)
+404 http fetch GET 200 https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-15.5.7.tgz 7421ms (cache miss)
+405 info run sharp@0.34.5 install node_modules/sharp node install/check.js || npm run build
+406 info run sharp@0.34.5 install { code: 0, signal: null }
+407 silly ADD
+408 silly ADD
+409 silly ADD
+410 silly ADD
+411 silly ADD
+412 silly ADD
+413 silly ADD
+414 silly ADD
+415 silly ADD
+416 silly ADD
+417 silly ADD
+418 silly ADD
+419 silly ADD
+420 silly ADD
+421 silly ADD
+422 silly ADD
+423 silly ADD
+424 silly ADD
+425 silly ADD
+426 silly ADD
+427 silly ADD
+428 silly ADD
+429 silly ADD node_modules/@img/colour
+430 silly ADD
+431 silly ADD
+432 silly ADD
+433 silly ADD
+434 silly ADD
+435 silly ADD
+436 silly ADD
+437 silly ADD
+438 silly ADD
+439 silly ADD
+440 silly ADD
+441 silly ADD
+442 silly ADD
+443 silly ADD
+444 silly ADD
+445 silly ADD
+446 silly ADD
+447 silly ADD
+448 silly ADD
+449 silly ADD
+450 silly ADD
+451 silly ADD
+452 silly ADD
+453 silly ADD
+454 silly ADD
+455 silly ADD
+456 silly ADD
+457 silly ADD
+458 silly ADD
+459 silly REMOVE node_modules/streamsearch
+460 silly REMOVE node_modules/simple-swizzle
+461 silly CHANGE node_modules/sharp
+462 silly CHANGE node_modules/next
+463 silly REMOVE node_modules/is-arrayish
+464 silly CHANGE node_modules/eslint-config-next
+465 silly REMOVE node_modules/color-string
+466 silly REMOVE node_modules/color
+467 silly REMOVE node_modules/busboy
+468 silly CHANGE node_modules/@swc/helpers
+469 silly REMOVE node_modules/@swc/counter
+470 silly CHANGE node_modules/@next/swc-darwin-arm64
+471 silly CHANGE node_modules/@next/eslint-plugin-next
+472 silly CHANGE node_modules/@next/env
+473 silly CHANGE node_modules/@img/sharp-libvips-darwin-arm64
+474 silly CHANGE node_modules/@img/sharp-darwin-arm64
+475 verbose cwd /Users/joakimnenzen/Documents/distro
+476 verbose os Darwin 24.1.0
+477 verbose node v20.18.1
+478 verbose npm  v10.8.2
+479 verbose exit 0
+480 info ok
