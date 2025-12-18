@@ -45,7 +45,7 @@ export default function PrivacyPage() {
               3. Data Storage
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
-              We use Supabase for database and file storage. Your data is stored securely on Supabase's infrastructure, 
+              We use Supabase for database and file storage. Your data is stored securely on Supabase&apos;s infrastructure, 
               which provides industry-standard security measures including encryption at rest and in transit. We do not 
               sell your personal information to third parties.
             </p>
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              8. Children's Privacy
+              8. Children&apos;s Privacy
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               Distro is not intended for users under the age of 13. We do not knowingly collect personal 
@@ -133,7 +133,7 @@ export default function PrivacyPage() {
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               We may update this Privacy Policy from time to time. We will notify you of any material changes by 
-              posting the new Privacy Policy on this page and updating the "Last updated" date. Your continued use 
+              posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date. Your continued use 
               of Distro after such changes constitutes your acceptance of the updated Privacy Policy.
             </p>
           </section>

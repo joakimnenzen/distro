@@ -12,7 +12,7 @@ export default function TermsPage() {
               1. Introduction
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
-              Welcome to Distro. These Terms of Service ("Terms") govern your access to and use of 
+              Welcome to Distro. These Terms of Service (&quot;Terms&quot;) govern your access to and use of 
               our music streaming platform. By creating an account, uploading content, or using our services, 
               you agree to be bound by these Terms. If you do not agree to these Terms, please do not use 
               our service.
@@ -69,7 +69,7 @@ export default function TermsPage() {
               <li>Upload content that contains malware, viruses, or other harmful code</li>
               <li>Impersonate other artists, bands, or entities</li>
               <li>Engage in spam, harassment, or abusive behavior toward other users</li>
-              <li>Attempt to gain unauthorized access to our systems or other users' accounts</li>
+              <li>Attempt to gain unauthorized access to our systems or other users&apos; accounts</li>
               <li>Use automated systems to scrape, download, or redistribute content without authorization</li>
             </ul>
           </section>
@@ -92,7 +92,7 @@ export default function TermsPage() {
               6. Disclaimers
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
-              Distro is provided "as is" and "as available" without warranties of any kind, either express 
+              Distro is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, either express 
               or implied. We do not guarantee that:
             </p>
             <ul className="list-disc list-inside text-muted-foreground font-mono text-sm space-y-2 ml-4">
