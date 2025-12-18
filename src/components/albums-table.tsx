@@ -12,6 +12,7 @@ interface Album {
   id: string
   title: string
   cover_image_url: string | null
+  release_date?: string | null
   created_at: string
   band_id: string
   band_name: string

@@ -14,6 +14,7 @@ async function getUserAlbums(userId: string) {
       id,
       title,
       cover_image_url,
+      release_date,
       created_at,
       band_id,
       bands!inner (
@@ -40,6 +41,7 @@ async function getUserAlbums(userId: string) {
       id: album.id,
       title: album.title,
       cover_image_url: album.cover_image_url,
+      release_date: album.release_date,
       created_at: album.created_at,
       band_id: album.band_id,
       band_name: band?.name || '',

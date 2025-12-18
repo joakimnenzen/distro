@@ -37,6 +37,7 @@ interface Album {
   id: string
   title: string
   cover_image_url: string | null
+  release_date?: string | null
   band_id: string
   band_name: string
   band_slug: string
@@ -63,6 +64,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [title, setTitle] = useState(album.title)
+  const [releaseDate, setReleaseDate] = useState<string>(album.release_date || '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(album.cover_image_url)
   const [tracks, setTracks] = useState<Track[]>([])
@@ -77,6 +79,15 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
+
+  // Reset form fields when album changes / sheet opens
+  useEffect(() => {
+    if (!isOpen) return
+    setTitle(album.title)
+    setReleaseDate(album.release_date || '')
+    setImageFile(null)
+    setImagePreview(album.cover_image_url)
+  }, [isOpen, album.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch tracks when sheet opens
   useEffect(() => {
@@ -280,6 +291,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
       console.log('Starting album update process...')
       console.log('Current album data:', { id: album.id, title: album.title })
       console.log('New title:', title)
+      console.log('New release_date:', releaseDate || null)
       console.log('Image file selected:', !!imageFile)
 
       // Upload new image if selected
@@ -295,6 +307,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
       const updateData = {
         title: title,
         cover_image_url: imageUrl,
+        release_date: releaseDate ? releaseDate : null,
       }
 
       console.log('Updating album with data:', updateData)
@@ -473,6 +486,18 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
                 onChange={(e) => setTitle(e.target.value)}
                 className="bg-white/5 border-white/20 text-white font-mono"
                 required
+              />
+            </div>
+
+            {/* Release Date */}
+            <div className="space-y-2">
+              <Label htmlFor="release_date" className="text-white font-sans">Release Date</Label>
+              <Input
+                id="release_date"
+                type="date"
+                value={releaseDate}
+                onChange={(e) => setReleaseDate(e.target.value)}
+                className="bg-white/5 border-white/20 text-white font-mono [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:contrast-100"
               />
             </div>
 
