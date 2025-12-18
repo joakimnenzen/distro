@@ -4,35 +4,54 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase-server'
 
 export async function toggleLike(trackId: string) {
+  console.log('[toggleLike] Called with trackId:', trackId)
+  
   try {
     // Validate trackId
     if (!trackId || trackId.trim() === '') {
+      console.error('[toggleLike] Invalid trackId:', trackId)
       return { success: false, error: 'Invalid Track ID' }
     }
 
     const supabase = await createClient()
+    console.log('[toggleLike] Supabase client created')
 
     // Get authenticated user
     const { data: { user }, error: userError } = await supabase.auth.getUser()
+    console.log('[toggleLike] Auth check:', {
+      hasUser: !!user,
+      userId: user?.id,
+      userError: userError?.message
+    })
+    
     if (userError || !user) {
+      console.error('[toggleLike] Authentication failed:', userError)
       throw new Error('You must be logged in to like tracks')
     }
 
     // Check if the like already exists
+    console.log('[toggleLike] Checking for existing like...')
     const { data: existingLike, error: checkError } = await supabase
       .from('user_track_likes')
       .select('user_id, track_id')
       .eq('user_id', user.id)
       .eq('track_id', trackId)
-      .single()
+      .maybeSingle()
 
-    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "not found"
-      console.error('Error checking like status:', checkError)
-      throw new Error('Failed to check like status')
+    console.log('[toggleLike] Existing like check:', {
+      found: !!existingLike,
+      checkError: checkError?.code,
+      checkErrorMessage: checkError?.message
+    })
+
+    if (checkError) {
+      console.error('[toggleLike] Error checking like status:', checkError)
+      throw new Error(`Failed to check like status: ${checkError.message}`)
     }
 
     if (existingLike) {
       // Unlike: Delete the existing like
+      console.log('[toggleLike] Deleting existing like...')
       const { error: deleteError } = await supabase
         .from('user_track_likes')
         .delete()
@@ -40,14 +59,16 @@ export async function toggleLike(trackId: string) {
         .eq('track_id', trackId)
 
       if (deleteError) {
-        console.error('Error unliking track:', deleteError)
-        throw new Error('Failed to unlike track')
+        console.error('[toggleLike] Error unliking track:', deleteError)
+        throw new Error(`Failed to unlike track: ${deleteError.message}`)
       }
 
+      console.log('[toggleLike] Successfully unliked track')
       revalidatePath('/', 'layout') // Revalidate all pages that might show likes
       return { success: true, isLiked: false }
     } else {
       // Like: Insert a new like
+      console.log('[toggleLike] Inserting new like...')
       const { error: insertError } = await supabase
         .from('user_track_likes')
         .insert({
@@ -56,15 +77,16 @@ export async function toggleLike(trackId: string) {
         })
 
       if (insertError) {
-        console.error('Error liking track:', insertError)
-        throw new Error('Failed to like track')
+        console.error('[toggleLike] Error liking track:', insertError)
+        throw new Error(`Failed to like track: ${insertError.message}`)
       }
 
+      console.log('[toggleLike] Successfully liked track')
       revalidatePath('/', 'layout') // Revalidate all pages that might show likes
       return { success: true, isLiked: true }
     }
   } catch (error) {
-    console.error('Error in toggleLike:', error)
+    console.error('[toggleLike] Exception caught:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'An unexpected error occurred'

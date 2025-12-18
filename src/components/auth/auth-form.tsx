@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
@@ -175,6 +176,25 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
         >
           {isLoading ? 'Sending...' : 'Continue with Email'}
         </Button>
+
+        {/* Legal Disclaimer */}
+        <p className="text-xs text-muted-foreground text-center font-mono">
+          By clicking continue, you agree to our{' '}
+          <Link 
+            href="/terms" 
+            className="underline hover:text-white transition-colors"
+          >
+            Terms of Service
+          </Link>
+          {' '}and{' '}
+          <Link 
+            href="/privacy" 
+            className="underline hover:text-white transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </form>
     </div>
   )

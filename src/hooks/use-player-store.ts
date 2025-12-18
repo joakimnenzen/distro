@@ -6,6 +6,7 @@ interface Track {
   title: string
   file_url: string
   duration: number | null
+  play_count?: number | null
   track_number: number
   album_id: string
   album_title: string

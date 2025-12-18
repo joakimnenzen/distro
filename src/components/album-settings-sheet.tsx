@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { useToast } from '@/hooks/use-toast'
 import { deleteAlbum } from '@/actions/delete-album'
+import { getAlbumTracks } from '@/actions/get-album-tracks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -67,6 +68,8 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   const [tracks, setTracks] = useState<Track[]>([])
   const [isLoadingTracks, setIsLoadingTracks] = useState(false)
   const [activeId, setActiveId] = useState<string | null>(null)
+  const isMountedRef = useRef(true)
+  const isOpenRef = useRef(isOpen)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -77,37 +80,86 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
 
   // Fetch tracks when sheet opens
   useEffect(() => {
-    if (isOpen && album.id) {
-      fetchTracks()
-    }
-  }, [isOpen, album.id])
-
-  const fetchTracks = async () => {
-    setIsLoadingTracks(true)
-    try {
-      const { data, error } = await supabase
-        .from('tracks')
-        .select('id, title, track_number')
-        .eq('album_id', album.id)
-        .order('track_number', { ascending: true })
-
-      if (error) {
-        console.error('Error fetching tracks:', error)
-        toast({
-          title: "Error",
-          description: "Failed to load tracks",
-          variant: "destructive",
-        })
-        return
-      }
-
-      setTracks(data || [])
-    } catch (error) {
-      console.error('Error in fetchTracks:', error)
-    } finally {
+    // Reset state when sheet closes
+    if (!isOpen) {
+      setTracks([])
       setIsLoadingTracks(false)
+      return
     }
-  }
+
+    // Only fetch if sheet is open and we have an album ID
+    if (!album.id) {
+      setIsLoadingTracks(false)
+      return
+    }
+
+    // Set mounted flag
+    isMountedRef.current = true
+    isOpenRef.current = isOpen
+
+    const loadTracksWithCleanup = async () => {
+      setIsLoadingTracks(true)
+      
+      try {
+        console.log('Fetching tracks for album:', album.id)
+        
+        // Use server action instead of direct client query
+        const result = await getAlbumTracks(album.id)
+
+        console.log('Tracks fetch result:', { 
+          success: result.success,
+          tracksLength: result.tracks?.length,
+          error: result.error,
+          isOpen: isOpenRef.current, 
+          isMounted: isMountedRef.current 
+        })
+
+        // Always reset loading state
+        setIsLoadingTracks(false)
+
+        // Only update state if sheet is still open and component is mounted
+        if (!isMountedRef.current || !isOpenRef.current) {
+          console.log('Skipping state update - sheet closed or unmounted')
+          return
+        }
+
+        if (!result.success) {
+          console.error('Error fetching tracks:', result.error)
+          toast({
+            title: "Error",
+            description: result.error || "Failed to load tracks",
+            variant: "destructive",
+          })
+          setTracks([])
+          return
+        }
+
+        console.log('Setting tracks:', result.tracks?.length || 0, 'tracks')
+        setTracks(result.tracks || [])
+      } catch (error) {
+        console.error('Exception in fetchTracks:', error)
+        // Always reset loading state, even on error
+        setIsLoadingTracks(false)
+        
+        // Only show error if still mounted and sheet is open
+        if (isMountedRef.current && isOpenRef.current) {
+          toast({
+            title: "Error",
+            description: error instanceof Error ? error.message : "Failed to load tracks",
+            variant: "destructive",
+          })
+          setTracks([])
+        }
+      }
+    }
+
+    loadTracksWithCleanup()
+
+    // Cleanup on unmount or when sheet closes
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [isOpen, album.id, toast])
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string)
