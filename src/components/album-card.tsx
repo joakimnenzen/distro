@@ -12,20 +12,31 @@ interface AlbumCardProps {
     id: string
     title: string
     cover_image_url: string | null
+    release_date?: string | null
+    created_at?: string
     band_name?: string
     band_slug?: string
     bands?: any // Can be array or object depending on fetch
   }
   showBandName?: boolean
+  subtitle?: 'band' | 'year'
 }
 
-export function AlbumCard({ album, showBandName = true }: AlbumCardProps) {
+export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: AlbumCardProps) {
   const router = useRouter()
 
   // Normalize band data - can be array or object depending on fetch
   const bandData = Array.isArray(album.bands) ? album.bands[0] : album.bands
   const bandName = bandData?.name || album.band_name || "Unknown Artist"
   const bandSlug = bandData?.slug || album.band_slug || "#"
+
+  const getReleaseYear = () => {
+    const dateStr = album.release_date || album.created_at
+    if (!dateStr) return null
+    const date = new Date(dateStr)
+    const year = date.getFullYear()
+    return Number.isFinite(year) ? year : null
+  }
 
   const handleBandClick = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent triggering the album link
@@ -68,13 +79,19 @@ export function AlbumCard({ album, showBandName = true }: AlbumCardProps) {
           <h3 className="font-sans font-medium truncate text-white text-sm leading-tight">
             {album.title}
           </h3>
-          {showBandName && (
-            <span
-              className="font-mono text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate cursor-pointer"
-              onClick={handleBandClick}
-            >
-              {bandName}
+          {subtitle === 'year' ? (
+            <span className="font-mono text-xs text-muted-foreground truncate">
+              {getReleaseYear() ?? ''}
             </span>
+          ) : (
+            showBandName && (
+              <span
+                className="font-mono text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate cursor-pointer"
+                onClick={handleBandClick}
+              >
+                {bandName}
+              </span>
+            )
           )}
         </div>
       </Link>
