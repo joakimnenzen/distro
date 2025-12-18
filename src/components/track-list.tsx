@@ -220,22 +220,22 @@ export function TrackList({
                   size="icon"
 =======
         <Table>
-          <TableHeader>
+          <TableHeader className="hidden md:table-header-group">
             <TableRow className="border-white/10 hover:bg-white/5">
-              <TableHead className="text-white font-sans w-12">#</TableHead>
-              <TableHead className="text-white font-sans">Title</TableHead>
+              <TableHead className="text-white font-sans w-12 hidden md:table-cell">#</TableHead>
+              <TableHead className="text-white font-sans w-full">Title</TableHead>
               {variant === 'playlist' && (
                 <>
-                  <TableHead className="text-white font-sans">Album</TableHead>
+                  <TableHead className="text-white font-sans hidden md:table-cell">Album</TableHead>
                   {!hideDateAdded && (
-                    <TableHead className="text-white font-sans">Date Added</TableHead>
+                    <TableHead className="text-white font-sans hidden md:table-cell">Date Added</TableHead>
                   )}
                 </>
               )}
               {variant === 'album' && (
-                <TableHead className="text-white font-sans">Plays</TableHead>
+                <TableHead className="text-white font-sans hidden md:table-cell">Plays</TableHead>
               )}
-              <TableHead className="text-white font-sans text-right">
+              <TableHead className="text-white font-sans text-right hidden md:table-cell">
                 <Clock className="w-4 h-4 inline" />
               </TableHead>
               <TableHead className="text-white font-sans w-12"></TableHead>
@@ -274,6 +274,7 @@ export function TrackList({
                   }}
 >>>>>>> baf139b (track-list update)
                 >
+<<<<<<< HEAD
                   <TableCell className="text-muted-foreground font-mono text-sm">
 <<<<<<< HEAD
                     {track.track_number}
@@ -290,6 +291,10 @@ export function TrackList({
         </div>
 =======
 =======
+=======
+                  {/* Track number / play icon (hidden on mobile) */}
+                  <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell py-4">
+>>>>>>> 1cac1ad (responsive)
                     {isCurrentTrack ? (
                       isPlaying ? (
                         <Pause fill="currentColor" className="w-4 h-4 text-white" />
@@ -306,15 +311,26 @@ export function TrackList({
                     )}
 >>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      {variant === 'playlist' && (track.cover_image_url || track.album_cover) && (
-                      <img
-                          src={track.cover_image_url || track.album_cover || undefined}
-                          alt={track.album_title || 'Album cover'}
-                          className="w-10 h-10 rounded object-cover"
-                        />
-                      )}
+                  {/* Title (primary column on mobile) */}
+                  <TableCell className="py-4 w-full">
+                    <div className="flex items-center gap-3 min-w-0">
+                      {(() => {
+                        const coverSrc =
+                          track.cover_image_url ||
+                          track.album_cover ||
+                          headerInfo?.cover_image_url ||
+                          null
+
+                        if (!coverSrc) return null
+
+                        return (
+                          <img
+                            src={coverSrc}
+                            alt={track.album_title || headerInfo?.title || 'Album cover'}
+                            className="w-10 h-10 rounded object-cover flex-shrink-0"
+                          />
+                        )
+                      })()}
                       {variant === 'playlist' ? (
                         <div className="flex flex-col min-w-0 flex-1">
                           <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
@@ -331,15 +347,26 @@ export function TrackList({
                           )}
                         </div>
                       ) : (
-                        <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
-                          {track.title}
-                        </span>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
+                            {track.title}
+                          </span>
+                          {track.band_name && (
+                            <Link
+                              href={track.band_slug ? `/band/${track.band_slug}` : '#'}
+                              className="text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {track.band_name}
+                            </Link>
+                          )}
+                        </div>
                       )}
                     </div>
                   </TableCell>
                   {variant === 'playlist' && (
                     <>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         {track.album_title ? (
                           <Link
                             href={track.album_id ? `/album/${track.album_id}` : '#'}
@@ -353,21 +380,23 @@ export function TrackList({
                         )}
                       </TableCell>
                       {!hideDateAdded && (
-                        <TableCell className="text-muted-foreground font-mono text-sm">
+                        <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell">
                           {formatDateAdded(track.liked_at)}
                         </TableCell>
                       )}
                     </>
                   )}
                   {variant === 'album' && (
-                    <TableCell className="text-muted-foreground font-mono text-sm">
+                    <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell">
                       {formatPlayCount(track.play_count)}
                     </TableCell>
                   )}
-                  <TableCell className="text-muted-foreground font-mono text-sm text-right">
+                  {/* Duration (hidden on mobile) */}
+                  <TableCell className="text-muted-foreground font-mono text-sm text-right hidden md:table-cell">
                     {track.duration ? formatTime(track.duration) : '--:--'}
                   </TableCell>
-                  <TableCell onClick={(e) => e.stopPropagation()}>
+                  {/* Like button stays visible on mobile */}
+                  <TableCell className="py-4 w-12" onClick={(e) => e.stopPropagation()}>
                     <LikeButton
                       trackId={track.id}
                       initialIsLiked={likedTrackIds.includes(track.id)}

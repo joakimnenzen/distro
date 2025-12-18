@@ -1,10 +1,9 @@
 import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Music } from 'lucide-react'
-import Link from 'next/link'
+import { Music } from 'lucide-react'
 import { BandsTable } from '@/components/bands-table'
+import { CreateBandDialog } from '@/components/create-band-dialog'
 
 async function getUserBands(userId: string) {
   const supabase = await createClient()
@@ -65,12 +64,7 @@ export default async function BandsPage() {
             Manage your music projects and band profiles
           </p>
         </div>
-        <Button asChild>
-          <Link href="/dashboard">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Band
-          </Link>
-        </Button>
+        <CreateBandDialog />
       </div>
 
       {bands.length === 0 ? (
@@ -81,12 +75,7 @@ export default async function BandsPage() {
             <p className="text-muted-foreground font-mono text-sm mb-6 max-w-md">
               Start your music journey by creating your first band. You can upload albums, manage tracks, and build your artist profile.
             </p>
-            <Button asChild>
-              <Link href="/dashboard">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Your First Band
-              </Link>
-            </Button>
+            <CreateBandDialog />
           </CardContent>
         </Card>
       ) : (

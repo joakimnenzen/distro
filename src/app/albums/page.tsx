@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Music } from 'lucide-react'
 import { AlbumsTable } from '@/components/albums-table'
+import { NewAlbumDialog } from '@/components/new-album-dialog'
 
 async function getUserAlbums(userId: string) {
   const supabase = await createClient()
@@ -48,6 +49,23 @@ async function getUserAlbums(userId: string) {
   })
 }
 
+async function getUserBands(userId: string) {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('bands')
+    .select('id, name, slug, image_url')
+    .eq('owner_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching bands:', error)
+    return []
+  }
+
+  return data || []
+}
+
 export default async function AlbumsPage() {
   const supabase = await createClient()
 
@@ -58,16 +76,20 @@ export default async function AlbumsPage() {
   }
 
   const albums = await getUserAlbums(user.id)
+  const bands = await getUserBands(user.id)
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold font-sans text-white mb-2">
-          My Albums
-        </h1>
-        <p className="text-muted-foreground font-mono text-sm">
-          Manage all albums from your bands
-        </p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold font-sans text-white mb-2">
+            My Albums
+          </h1>
+          <p className="text-muted-foreground font-mono text-sm">
+            Manage all albums from your bands
+          </p>
+        </div>
+        <NewAlbumDialog bands={bands} />
       </div>
 
       {albums.length === 0 ? (
