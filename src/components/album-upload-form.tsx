@@ -7,6 +7,8 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { createAlbum, createTrack, type CreateAlbumData, type CreateTrackData } from '@/actions/upload'
+import { uploadCoverImage } from '@/actions/upload-cover-image'
+import { createAudioUpload } from '@/actions/create-audio-upload'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -189,6 +191,41 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
     return `${timestamp}-${random}.${extension}`
   }
 
+  const getAudioDurationSeconds = (file: File): Promise<number | null> => {
+    return new Promise((resolve) => {
+      try {
+        const url = URL.createObjectURL(file)
+        const audio = new Audio()
+        audio.preload = 'metadata'
+        audio.src = url
+
+        const cleanup = () => {
+          URL.revokeObjectURL(url)
+          // Detach handlers to avoid leaks
+          audio.onloadedmetadata = null
+          audio.onerror = null
+        }
+
+        audio.onloadedmetadata = () => {
+          const seconds = audio.duration
+          cleanup()
+          if (seconds && isFinite(seconds) && !isNaN(seconds) && seconds > 0) {
+            resolve(seconds)
+          } else {
+            resolve(null)
+          }
+        }
+
+        audio.onerror = () => {
+          cleanup()
+          resolve(null)
+        }
+      } catch {
+        resolve(null)
+      }
+    })
+  }
+
   const uploadFile = async (file: File, bucket: string, path: string): Promise<string> => {
     const { data, error } = await supabase.storage
       .from(bucket)
@@ -214,15 +251,32 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
     setUploadProgress('Starting upload...')
 
     try {
+      console.log('[AlbumUpload] submit start', {
+        bandId,
+        bandSlug,
+        title: data.title,
+        releaseDate: data.releaseDate,
+        coverName: data.coverFile?.name,
+        coverSize: data.coverFile?.size,
+        trackCount: (orderedTrackFiles.length > 0 ? orderedTrackFiles : data.trackFiles)?.length,
+      })
+
       // 1. Upload cover image
       setUploadProgress('Uploading cover image...')
       console.log("Starting cover upload...", data.coverFile.name)
 
       let coverUrl: string
       try {
-        const coverFilename = generateUniqueFilename(data.coverFile.name)
-        const coverPath = `${bandId}/${coverFilename}`
-        coverUrl = await uploadFile(data.coverFile, 'covers', coverPath)
+        const coverFormData = new FormData()
+        coverFormData.append('file', data.coverFile)
+        coverFormData.append('bandId', bandId)
+
+        const result = await uploadCoverImage(coverFormData)
+        if (!result.success) {
+          throw new Error(result.error)
+        }
+
+        coverUrl = result.publicUrl
         console.log("Cover upload success:", coverUrl)
       } catch (coverError) {
         console.error("Cover upload failed:", coverError)
@@ -237,6 +291,7 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
 
       // 2. Create album
       setUploadProgress('Creating album...')
+      console.log('[AlbumUpload] creating album row...', { title: data.title, bandId, coverUrl })
       const albumData: CreateAlbumData = {
         title: data.title,
         releaseDate: data.releaseDate,
@@ -250,38 +305,136 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
       }
 
       const albumId = albumResult.albumId
+      console.log('[AlbumUpload] album created', { albumId })
 
       // 3. Upload tracks and create track records
       // Use ordered files if available, otherwise use form files
       const tracksToUpload = orderedTrackFiles.length > 0 ? orderedTrackFiles : data.trackFiles
       setUploadProgress(`Uploading ${tracksToUpload.length} track(s)...`)
+      console.log('[AlbumUpload] starting track uploads', {
+        albumId,
+        count: tracksToUpload.length,
+        files: tracksToUpload.map((f) => ({ name: f.name, size: f.size, type: f.type })),
+      })
 
       for (let i = 0; i < tracksToUpload.length; i++) {
         const trackFile = tracksToUpload[i]
         setUploadProgress(`Uploading track ${i + 1}/${tracksToUpload.length}: ${trackFile.name}`)
+        console.log(`[AlbumUpload] track ${i + 1}/${tracksToUpload.length} start`, {
+          name: trackFile.name,
+          size: trackFile.size,
+          type: trackFile.type,
+        })
 
-        // Upload audio file
-        const trackFilename = generateUniqueFilename(trackFile.name)
-        const trackPath = `${bandId}/${albumId}/${trackFilename}`
-        const trackUrl = await uploadFile(trackFile, 'audio', trackPath)
+        try {
+          // Upload audio file via signed upload token (avoids flaky browser auth/session)
+          const trackFilename = generateUniqueFilename(trackFile.name)
+          console.log(`[AlbumUpload] track ${i + 1} requesting signed upload`, {
+            bandId,
+            albumId,
+            filename: trackFilename,
+          })
 
-        // Create track record
-        const trackData: CreateTrackData = {
-          title: trackFile.name.replace(/\.[^/.]+$/, ''), // Remove extension for title
-          fileUrl: trackUrl,
-          trackNumber: i + 1,
-          albumId: albumId,
-        }
+          // Get duration from file metadata (best-effort)
+          console.log(`[AlbumUpload] track ${i + 1} reading duration metadata...`)
+          const durationSeconds = await getAudioDurationSeconds(trackFile)
+          console.log(`[AlbumUpload] track ${i + 1} duration metadata`, { durationSeconds })
 
-        console.log("Submitting track:", { title: trackData.title, track_number: trackData.trackNumber })
-        const trackResult = await createTrack(trackData)
-        if (!trackResult.success) {
-          console.error(`Failed to create track ${i + 1}:`, trackResult.error)
-          // Continue with other tracks even if one fails
+          const signed = await createAudioUpload({ bandId, albumId, filename: trackFilename })
+          if (!signed.success) {
+            console.error(`[AlbumUpload] track ${i + 1} createAudioUpload failed`, signed)
+            throw new Error(`Failed to start upload: ${signed.error}`)
+          }
+
+          console.log(`[AlbumUpload] track ${i + 1} got signed token`, {
+            path: signed.path,
+            tokenLength: signed.token?.length,
+            signedUrlLength: signed.signedUrl?.length,
+          })
+
+          console.log(`[AlbumUpload] track ${i + 1} uploading to storage...`, { path: signed.path })
+
+          // Use fetch() with signedUrl for max reliability and better status logging
+          const timeoutMs = 10 * 60_000 // 10 minutes
+          const controller = new AbortController()
+          const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs)
+
+          let res: Response
+          try {
+            res = await fetch(signed.signedUrl, {
+              method: 'PUT',
+              body: trackFile,
+              headers: {
+                'Content-Type': trackFile.type || 'application/octet-stream',
+              },
+              signal: controller.signal,
+            })
+          } catch (e) {
+            const aborted = controller.signal.aborted
+            throw new Error(
+              aborted
+                ? `Audio upload timed out after ${timeoutMs / 1000}s`
+                : e instanceof Error
+                  ? e.message
+                  : 'Audio upload failed'
+            )
+          } finally {
+            window.clearTimeout(timeoutId)
+          }
+
+          console.log(`[AlbumUpload] track ${i + 1} upload response`, {
+            ok: res.ok,
+            status: res.status,
+            statusText: res.statusText,
+          })
+
+          if (!res.ok) {
+            const text = await res.text().catch(() => '')
+            console.error(`[AlbumUpload] track ${i + 1} upload failed body`, text)
+            throw new Error(`Audio upload failed (${res.status}): ${text || res.statusText}`)
+          }
+
+          console.log(`[AlbumUpload] track ${i + 1} upload complete`, { path: signed.path })
+
+          const {
+            data: { publicUrl: trackUrl },
+          } = supabase.storage.from('audio').getPublicUrl(signed.path)
+
+          console.log(`[AlbumUpload] track ${i + 1} public URL`, { trackUrl })
+
+          // Create track record
+          const trackData: CreateTrackData = {
+            title: trackFile.name.replace(/\.[^/.]+$/, ''), // Remove extension for title
+            fileUrl: trackUrl,
+            duration: durationSeconds ? Math.floor(durationSeconds) : undefined,
+            trackNumber: i + 1,
+            albumId: albumId,
+          }
+
+          console.log("Submitting track:", { title: trackData.title, track_number: trackData.trackNumber })
+          const trackResult = await createTrack(trackData)
+          if (!trackResult.success) {
+            console.error(`[AlbumUpload] track ${i + 1} db insert failed`, trackResult.error)
+            throw new Error(trackResult.error || 'Failed to create track row')
+          }
+
+          console.log(`[AlbumUpload] track ${i + 1} db row created`, { trackId: trackResult.trackId })
+        } catch (trackErr) {
+          const message =
+            trackErr instanceof Error ? trackErr.message : 'Unknown track upload error'
+          console.error(`[AlbumUpload] track ${i + 1} failed`, trackErr)
+          toast({
+            title: `Track ${i + 1} failed`,
+            description: `${trackFile.name}: ${message}`,
+            variant: 'destructive',
+          })
+          // Stop the whole flow so we don't silently create albums without songs.
+          throw trackErr
         }
       }
 
       setUploadProgress('Upload complete! Redirecting...')
+      console.log('[AlbumUpload] done, redirecting', { to: `/band/${bandSlug}` })
       router.push(`/band/${bandSlug}`)
       router.refresh()
 

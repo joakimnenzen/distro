@@ -64,6 +64,8 @@ export async function middleware(request: NextRequest) {
     '/login',
     '/signup',
     '/auth',
+    '/terms',
+    '/privacy',
   ]
 
   const isPublicRoute = publicRoutes.some(route => 

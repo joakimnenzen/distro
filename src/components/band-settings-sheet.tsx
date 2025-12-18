@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
 import { useToast } from '@/hooks/use-toast'
 import { deleteBand } from '@/actions/delete-band'
+import { uploadBandImage } from '@/actions/upload-band-image'
+import { updateBand } from '@/actions/update-band'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -62,75 +64,32 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
   }
 
   const uploadImage = async (file: File): Promise<string | null> => {
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${band.id}-${Date.now()}.${fileExt}`
-    const filePath = `band-images/${fileName}`
-
-    console.log('Uploading image:', { fileName, filePath, bucket: 'band-images', fileSize: file.size, fileType: file.type })
-
-    // Note: Skipping bucket existence check as it can be unreliable
-    // We'll handle bucket errors during the actual upload attempt
-
-    // Create upload promise with timeout
-    const uploadPromise = supabase.storage
-      .from('band-images')
-      .upload(filePath, file)
-
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Upload timeout after 30 seconds')), 30000)
-    })
-
+    console.log('[uploadImage] Starting upload process via server action...')
+    
     try {
-      const { error: uploadError, data: uploadData } = await Promise.race([uploadPromise, timeoutPromise]) as any
+      // Use server action for more reliable uploads
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('bandId', band.id)
 
-      if (uploadError) {
-        console.error('Upload error:', uploadError)
+      console.log('[uploadImage] Calling server action...')
+      const result = await uploadBandImage(formData)
 
-        // Check for specific bucket-related errors
-        if (uploadError.message?.includes('bucket') || uploadError.message?.includes('Bucket')) {
-          throw new Error('band-images bucket does not exist or is not accessible. Please ensure the bucket was created successfully in Supabase.')
-        }
+      console.log('[uploadImage] Server action result:', {
+        success: result.success,
+        imageUrl: result.success ? result.imageUrl : undefined,
+        error: result.success ? undefined : result.error
+      })
 
-        // Check for permission errors
-        if (uploadError.message?.includes('permission') || uploadError.message?.includes('policy')) {
-          throw new Error('You do not have permission to upload to the band-images bucket. Please check your authentication status.')
-        }
-
-        throw uploadError
+      if (!result.success) {
+        throw new Error(result.error)
       }
 
-      console.log('Upload successful:', uploadData)
-
-    } catch (timeoutError: any) {
-      console.error('Upload timeout or error:', timeoutError)
-
-      if (timeoutError.message.includes('timeout')) {
-        throw new Error('Upload timed out. Please check your internet connection and try again.')
-      }
-
-      // Re-throw the original error if it's not a timeout
-      if (timeoutError.message.includes('bucket') || timeoutError.message.includes('Bucket')) {
-        throw new Error('band-images bucket does not exist or is not accessible. Please ensure the bucket was created successfully in Supabase.')
-      }
-
-      throw timeoutError
-    }
-
-    // Get public URL
-    try {
-      const { data } = supabase.storage
-        .from('band-images')
-        .getPublicUrl(filePath)
-
-      if (!data?.publicUrl) {
-        throw new Error('Failed to get public URL for uploaded image')
-      }
-
-      console.log('Public URL:', data.publicUrl)
-      return data.publicUrl
-    } catch (urlError) {
-      console.error('Error getting public URL:', urlError)
-      throw new Error('Upload succeeded but failed to generate public URL')
+      console.log('[uploadImage] Upload successful, URL:', result.imageUrl)
+      return result.imageUrl
+    } catch (error) {
+      console.error('[uploadImage] Exception caught:', error)
+      throw error instanceof Error ? error : new Error('An unexpected error occurred during upload')
     }
   }
 
@@ -166,19 +125,15 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
 
       console.log('Updating band with data:', updateData)
 
-      // Update band record
-      const { error, data } = await supabase
-        .from('bands')
-        .update(updateData)
-        .eq('id', band.id)
-        .select()
+      // Update band record using server action
+      const result = await updateBand(band.id, updateData)
 
-      if (error) {
-        console.error('Database update error:', error)
-        throw error
+      if (!result.success) {
+        console.error('Database update error:', result.error)
+        throw new Error(result.error)
       }
 
-      console.log('Database update successful:', data)
+      console.log('Database update successful')
 
       toast({
         title: "Success",

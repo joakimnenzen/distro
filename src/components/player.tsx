@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { usePlayerStore } from '@/hooks/use-player-store'
 import { createClient } from '@/lib/supabase-browser'
 import { formatTime } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { incrementTrackPlayCount, saveTrackDuration } from '@/actions/track-metrics'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Slider } from '@/components/ui/slider'
@@ -14,6 +16,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-rea
 export function Player() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const supabase = createClient()
+  const router = useRouter()
 
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -68,17 +71,13 @@ export function Player() {
         const floored = Math.floor(seconds)
         ;(async () => {
           try {
-            const { error } = await supabase
-              .from('tracks')
-              .update({ duration: floored })
-              .eq('id', currentTrack.id)
-
-            if (error) {
-              console.error('❌ Failed to auto-save duration:', error)
+            console.log('[Player] saving duration via server action', { trackId: currentTrack.id, floored })
+            const res = await saveTrackDuration(currentTrack.id, floored)
+            if (!res.success) {
+              console.error('[Player] saveTrackDuration failed', res.error)
               return
             }
-
-            console.log(`💾 Auto-saved duration for ${currentTrack.title} to DB`)
+            console.log('[Player] saveTrackDuration success', { trackId: currentTrack.id, floored })
 
             // Update local state to reflect the new duration
             usePlayerStore.setState((state) => ({
@@ -115,13 +114,30 @@ export function Player() {
       // Fire and forget - don't block UI updates
       ;(async () => {
         try {
-          const { error } = await supabase.rpc('increment_play_count', { t_id: currentTrack.id })
-          if (error) {
-            // Silently fail on error (RLS might block guests, but we try anyway)
-            hasRecordedPlay.current = false // Reset on error so it can retry
+          console.log('[Player] increment play_count via server action (30s threshold)', { trackId: currentTrack.id })
+          const res = await incrementTrackPlayCount(currentTrack.id)
+          if (!res.success) {
+            console.error('[Player] incrementTrackPlayCount failed', res.error)
+            hasRecordedPlay.current = false
+            return
           }
+          console.log('[Player] incrementTrackPlayCount success', { trackId: currentTrack.id })
+
+          // Optimistically bump play_count in the in-memory queue/currentTrack
+          usePlayerStore.setState((state) => ({
+            currentTrack:
+              state.currentTrack && state.currentTrack.id === currentTrack.id
+                ? { ...state.currentTrack, play_count: (state.currentTrack.play_count || 0) + 1 }
+                : state.currentTrack,
+            queue: state.queue.map((t) =>
+              t.id === currentTrack.id ? { ...t, play_count: (t.play_count || 0) + 1 } : t
+            ),
+          }))
+
+          // Refresh current route so server-rendered play counts update (best-effort)
+          router.refresh()
         } catch (error) {
-          // Silently fail on error
+          console.error('[Player] increment_play_count RPC exception', error)
           hasRecordedPlay.current = false // Reset on error so it can retry
         }
       })()
@@ -140,13 +156,28 @@ export function Player() {
         // Fire and forget - don't block autoplay
         ;(async () => {
           try {
-            const { error } = await supabase.rpc('increment_play_count', { t_id: currentTrack.id })
-            if (error) {
-              // Silently fail on error (RLS might block guests, but we try anyway)
-              hasRecordedPlay.current = false // Reset on error
+            console.log('[Player] increment play_count via server action (ended/50%)', { trackId: currentTrack.id })
+            const res = await incrementTrackPlayCount(currentTrack.id)
+            if (!res.success) {
+              console.error('[Player] incrementTrackPlayCount failed (ended/50%)', res.error)
+              hasRecordedPlay.current = false
+              return
             }
+            console.log('[Player] incrementTrackPlayCount success (ended/50%)', { trackId: currentTrack.id })
+
+            usePlayerStore.setState((state) => ({
+              currentTrack:
+                state.currentTrack && state.currentTrack.id === currentTrack.id
+                  ? { ...state.currentTrack, play_count: (state.currentTrack.play_count || 0) + 1 }
+                  : state.currentTrack,
+              queue: state.queue.map((t) =>
+                t.id === currentTrack.id ? { ...t, play_count: (t.play_count || 0) + 1 } : t
+              ),
+            }))
+
+            router.refresh()
           } catch (error) {
-            // Silently fail on error
+            console.error('[Player] increment_play_count RPC exception (ended/50%)', error)
             hasRecordedPlay.current = false // Reset on error
           }
         })()
@@ -219,7 +250,7 @@ export function Player() {
               {currentTrack.band_slug ? (
                 <Link
                   href={`/band/${currentTrack.band_slug}`}
-                  className="text-xs text-muted-foreground hover:text-white transition-colors truncate"
+                  className="text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
                 >
                   {currentTrack.band_name}
                 </Link>

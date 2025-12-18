@@ -1,9 +1,16 @@
 import { createClient } from '@/lib/supabase-server'
+<<<<<<< HEAD
 import { notFound } from 'next/navigation'
+=======
+import { getLikedTrackIds } from '@/actions/likes'
+import { isAlbumSaved } from '@/actions/album-saves'
+import { notFound, redirect } from 'next/navigation'
+>>>>>>> 31e799a (fixes)
 import Image from 'next/image'
 import Link from 'next/link'
 // Import the new Client Component
 import { TrackList } from '@/components/track-list'
+import { AlbumLikeButton } from '@/components/album-like-button'
 import { AlbumWithTracks } from '@/types/album'
 import { formatTime } from '@/lib/utils'
 
@@ -72,6 +79,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
 >>>>>>> b08f707 (feat: add my albums dashboard and implement google oauth login)
 
+  // Check if the current user has saved this album
+  const isSaved = user ? await isAlbumSaved(user.id, album.id) : false
+
   // Calculate total album duration
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)
 
@@ -113,14 +123,22 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           </div>
 
           <div className="flex-1 space-y-4">
-            <div>
-              <h1 className="text-4xl font-bold">{album.title}</h1>
-              <Link
-                href={`/band/${album.bands.slug}`}
-                className="text-xl text-muted-foreground hover:text-foreground hover:underline transition-colors"
-              >
-                {album.bands.name}
-              </Link>
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <h1 className="text-4xl font-bold">{album.title}</h1>
+                <Link
+                  href={`/band/${album.bands.slug}`}
+                  className="text-xl text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  {album.bands.name}
+                </Link>
+              </div>
+              <AlbumLikeButton 
+                albumId={album.id} 
+                initialIsSaved={isSaved}
+                size="default"
+                variant="ghost"
+              />
             </div>
 
             {album.release_date && (

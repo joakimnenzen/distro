@@ -1,12 +1,9 @@
 'use client'
 
 import React, { useOptimistic, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toggleLike } from '@/actions/likes'
-import { createClient } from '@/lib/supabase-browser'
-import { useState, useEffect } from 'react'
 import { useAuthModal } from '@/hooks/use-auth-modal'
 
 interface LikeButtonProps {
@@ -22,62 +19,68 @@ export function LikeButton({
   size = 'sm',
   variant = 'ghost'
 }: LikeButtonProps) {
-  const router = useRouter()
-  const supabase = createClient()
   const { open: openAuthModal } = useAuthModal()
   const [isPending, startTransition] = useTransition()
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
   const [optimisticIsLiked, setOptimisticIsLiked] = useOptimistic(
     initialIsLiked,
     (currentState) => !currentState
   )
 
-  // Check authentication status
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setIsAuthenticated(!!user)
-    }
-    checkAuth()
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session?.user)
+  const handleToggleLike = async () => {
+    console.log('[LikeButton] handleToggleLike called', {
+      trackId,
+      currentState: optimisticIsLiked,
+      isPending
     })
 
-    return () => subscription.unsubscribe()
-  }, [supabase])
-
-  const handleToggleLike = () => {
     // Don't attempt to toggle if trackId is invalid
     if (!trackId || trackId.trim() === '') {
-      console.error('Invalid track ID for like toggle')
-      return
-    }
-
-    // If not authenticated, open auth modal
-    if (isAuthenticated === false) {
-      openAuthModal('signin')
-      return
-    }
-
-    // If auth status is still loading, wait
-    if (isAuthenticated === null) {
+      console.error('[LikeButton] Invalid track ID for like toggle:', trackId)
       return
     }
 
     startTransition(async () => {
+      const previousState = optimisticIsLiked
+      const newOptimisticState = !optimisticIsLiked
+      
+      console.log('[LikeButton] Starting transition', {
+        trackId,
+        previousState,
+        newOptimisticState
+      })
+
       // Optimistically update the UI
-      setOptimisticIsLiked(!optimisticIsLiked)
+      setOptimisticIsLiked(newOptimisticState)
 
-      // Call the server action
-      const result = await toggleLike(trackId)
+      try {
+        // Call the server action
+        console.log('[LikeButton] Calling toggleLike server action...')
+        const result = await toggleLike(trackId)
+        
+        console.log('[LikeButton] Server action result:', {
+          success: result.success,
+          isLiked: result.isLiked,
+          error: result.error
+        })
 
-      // If the server action failed, revert the optimistic update
-      if (!result.success) {
-        setOptimisticIsLiked(optimisticIsLiked)
-        console.error('Failed to toggle like:', result.error)
-        // TODO: Show a toast notification for the error
+        // If the server action failed, revert the optimistic update
+        if (!result.success) {
+          console.error('[LikeButton] Server action failed, reverting optimistic update', {
+            error: result.error,
+            revertingTo: previousState
+          })
+          setOptimisticIsLiked(previousState)
+
+          // If server indicates auth issue, prompt sign-in
+          if (result.error?.toLowerCase().includes('logged in') || result.error?.toLowerCase().includes('auth')) {
+            openAuthModal('signin')
+          }
+        } else {
+          console.log('[LikeButton] Server action succeeded, keeping optimistic state:', newOptimisticState)
+        }
+      } catch (error) {
+        console.error('[LikeButton] Exception in transition:', error)
+        setOptimisticIsLiked(previousState)
       }
     })
   }
