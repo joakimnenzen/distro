@@ -7,6 +7,7 @@ import { TopBar } from '@/components/top-bar'
 import { Sidebar } from '@/components/sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthModal } from '@/components/auth/auth-modal'
+import { MobileNav } from '@/components/mobile-nav'
 
 const geistSans = GeistSans
 const geistMono = GeistMono
@@ -33,7 +34,7 @@ export default function RootLayout({
           {/* Main Content Area */}
           <div className="flex-1 flex flex-col overflow-y-auto">
             <TopBar /> {/* Sticky Top Bar lives here now */}
-            <main className="flex-1 p-6 pb-24"> {/* pb-24 ensures content isn't hidden behind Player */}
+            <main className="flex-1 px-0 md:px-2 lg:px-6 pb-[160px] md:pb-24">
               {children}
             </main>
           </div>
@@ -41,6 +42,9 @@ export default function RootLayout({
 
         {/* Player sits on top of everything */}
         <Player />
+
+        {/* Mobile bottom nav (sits below mini-player) */}
+        <MobileNav />
 
         {/* Toaster for notifications */}
         <Toaster />

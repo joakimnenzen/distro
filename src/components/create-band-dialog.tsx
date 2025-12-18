@@ -41,6 +41,18 @@ export function CreateBandDialog() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const slugify = (value: string) => {
+    return value
+      .toLowerCase()
+      .normalize('NFD') // split accented characters into base + diacritic
+      .replace(/[\u0300-\u036f]/g, '') // remove diacritics (ä -> a)
+      .replace(/[^a-z0-9\s-]/g, '') // remove special characters
+      .replace(/\s+/g, '-') // spaces -> hyphens
+      .replace(/-+/g, '-') // collapse multiple hyphens
+      .trim()
+      .substring(0, 50)
+  }
+
   const form = useForm<CreateBandForm>({
     resolver: zodResolver(createBandSchema),
     defaultValues: {
@@ -56,18 +68,23 @@ export function CreateBandDialog() {
 
   // Update slug when name changes and slug hasn't been manually edited
   React.useEffect(() => {
-    if (watchedName && !watchedSlug) {
-      const generatedSlug = watchedName
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-        .replace(/\s+/g, '-') // Replace spaces with hyphens
-        .replace(/-+/g, '-') // Replace multiple hyphens with single
-        .trim()
-        .substring(0, 50) // Limit length
+    const slugDirty = !!form.formState.dirtyFields.slug
 
-      if (generatedSlug) {
-        form.setValue('slug', generatedSlug)
+    // If user has manually edited the slug, stop auto-updating it
+    if (slugDirty) return
+
+    if (!watchedName) {
+      // If name is cleared, clear slug too (but don't mark as dirty)
+      if (watchedSlug) {
+        form.setValue('slug', '', { shouldDirty: false })
       }
+      return
+    }
+
+    const generated = slugify(watchedName)
+    if (generated && generated !== watchedSlug) {
+      // Set without marking slug as dirty (still considered "auto")
+      form.setValue('slug', generated, { shouldDirty: false })
     }
   }, [watchedName, watchedSlug, form])
 
@@ -101,7 +118,7 @@ export function CreateBandDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
-          Create New Band
+          New band
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

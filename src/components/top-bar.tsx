@@ -145,7 +145,7 @@ export function TopBar() {
     <div className="w-full sticky top-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Left: History Navigation */}
-        <div className="flex items-center space-x-2">
+        <div className="hidden md:flex items-center space-x-2">
           <Button
             variant="ghost"
             size="icon"
@@ -165,7 +165,7 @@ export function TopBar() {
         </div>
 
         {/* Center: Search */}
-        <div className="flex-1 max-w-md mx-8">
+        <div className="flex-1 md:max-w-md mr-8 md:mx-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
