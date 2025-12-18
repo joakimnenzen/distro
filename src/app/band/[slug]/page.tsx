@@ -48,6 +48,7 @@ async function getBandAlbums(bandId: string) {
       )
     `)
     .eq('band_id', bandId)
+    .order('release_date', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -209,6 +210,7 @@ export default async function BandPage({ params }: PageProps) {
                     ...album,
                     bands: { name: band.name, slug: band.slug } // Manually attach band info since we are ON the band page
                   }}
+                  subtitle="year"
                 />
               ))}
             </div>

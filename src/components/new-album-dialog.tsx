@@ -65,7 +65,7 @@ export function NewAlbumDialog({ bands }: { bands: Band[] }) {
                 asChild
                 size="sm"
                 variant="muted"
-                className="cursor-pointer hover:bg-white/10 mt-1"
+                className="cursor-pointer hover:bg-white/10 mt-2"
               >
                 <button
                   type="button"
