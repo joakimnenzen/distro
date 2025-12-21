@@ -259,17 +259,12 @@ export function Player() {
       <div className="md:hidden">
         <Drawer open={isMobileOpen} onOpenChange={setIsMobileOpen}>
           <DrawerTrigger asChild>
-            <div
-              className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] left-3 right-3 z-50 flex items-center gap-3 rounded-xl border border-white/10 bg-black/90 px-3 py-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-black/70"
-            >
-              {/* progress line */}
-              <div className="absolute left-0 top-0 h-0.5 w-full overflow-hidden rounded-t-full bg-white/10">
-                <div
-                  className="h-full bg-white/40"
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
 
+            <div
+              className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] left-3 right-3 z-50 rounded-xl border border-white/10 bg-black/90 px-3 py-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-black/70"
+            >
+
+              <div className="flex items-center gap-3">
               {/* cover */}
               <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-sm bg-white/5">
                 {currentTrack.cover_image_url ? (
@@ -316,6 +311,16 @@ export function Player() {
                   )}
                 </button>
               </div>
+              </div>
+
+              {/* progress line */}
+              <div className="mt-2 h-0.5 w-full overflow-hidden rounded-t-full bg-white/10">
+                <div
+                  className="h-full bg-primary/80"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+
             </div>
           </DrawerTrigger>
 

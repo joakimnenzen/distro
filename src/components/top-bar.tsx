@@ -13,8 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronLeft, ChevronRight, Search, Settings, LogOut, Loader2, LogIn, UserPlus } from 'lucide-react'
-import Link from 'next/link'
+import { ChevronLeft, ChevronRight, Search, LogOut, Loader2, LogIn, UserPlus } from 'lucide-react'
 import { useAuthModal } from '@/hooks/use-auth-modal'
 
 export function TopBar() {
@@ -197,14 +196,6 @@ export function TopBar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-black/90 border-white/20 backdrop-blur-xl" align="end">
-                <DropdownMenuItem
-                  className="font-mono text-sm hover:bg-white/10 cursor-pointer"
-                  onClick={() => router.push('/settings')}
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-white/10" />
                 <DropdownMenuItem
                   className="font-mono text-sm text-red-400 hover:bg-red-400/10 cursor-pointer"
                   onClick={handleLogout}
