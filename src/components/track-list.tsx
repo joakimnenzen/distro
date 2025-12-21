@@ -293,8 +293,12 @@ export function TrackList({
 =======
 =======
                   {/* Track number / play icon (hidden on mobile) */}
+<<<<<<< HEAD
                   <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell py-4">
 >>>>>>> 1cac1ad (responsive)
+=======
+                  <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell py-4 w-12 text-center">
+>>>>>>> fc2a1f1 (vercel analytics)
                     {isCurrentTrack ? (
                       isPlaying ? (
                         <Pause fill="currentColor" className="w-4 h-4 text-white" />
@@ -303,10 +307,12 @@ export function TrackList({
                       )
                     ) : (
                       <>
-                        <span className="group-hover:hidden">
+                        <span className="inline-flex w-6 items-center justify-center group-hover:hidden">
                           {variant === 'album' ? track.track_number : index + 1}
                         </span>
-                        <Play fill="currentColor" className="w-4 h-4 text-white hidden group-hover:block" />
+                        <span className="hidden w-6 items-center justify-center group-hover:inline-flex">
+                          <Play fill="currentColor" className="w-4 h-4 text-white" />
+                        </span>
                       </>
                     )}
 >>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)

@@ -260,7 +260,7 @@ export function Player() {
         <Drawer open={isMobileOpen} onOpenChange={setIsMobileOpen}>
           <DrawerTrigger asChild>
             <div
-              className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] left-3 right-3 z-50 flex items-center gap-3 rounded-full border border-white/10 bg-black/90 px-3 py-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-black/70"
+              className="fixed bottom-[calc(72px+env(safe-area-inset-bottom))] left-3 right-3 z-50 flex items-center gap-3 rounded-xl border border-white/10 bg-black/90 px-3 py-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-black/70"
             >
               {/* progress line */}
               <div className="absolute left-0 top-0 h-0.5 w-full overflow-hidden rounded-t-full bg-white/10">
@@ -271,7 +271,7 @@ export function Player() {
               </div>
 
               {/* cover */}
-              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-md bg-white/5">
+              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-sm bg-white/5">
                 {currentTrack.cover_image_url ? (
                   <img
                     src={currentTrack.cover_image_url}
@@ -325,7 +325,6 @@ export function Player() {
             <DrawerDescription className="sr-only">
               Music player controls and track progress
             </DrawerDescription>
-            <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-white/20" />
 
             <div className="px-5 pb-8 pt-6">
               {/* cover */}
@@ -350,7 +349,11 @@ export function Player() {
                     {currentTrack.title}
                   </div>
                   <div className="mt-1 truncate text-left text-sm text-white/60">
+                  <Link
+                    href={`/band/${currentTrack.band_slug}`}
+                  >
                     {currentTrack.band_name}
+                    </Link>
                   </div>
                 </div>
                 <div className="flex-shrink-0">

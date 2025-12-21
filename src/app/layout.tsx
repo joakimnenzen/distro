@@ -8,6 +8,8 @@ import { Sidebar } from '@/components/sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { MobileNav } from '@/components/mobile-nav'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/next'
 
 const geistSans = GeistSans
 const geistMono = GeistMono
@@ -51,6 +53,12 @@ export default function RootLayout({
 
         {/* Auth Modal - Available globally */}
         <AuthModal />
+
+        {/* Vercel Speed Insights */}
+        <SpeedInsights />
+
+        {/* Vercel Analytics */}
+        <Analytics />
       </body>
     </html>
   )
