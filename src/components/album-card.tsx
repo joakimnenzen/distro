@@ -92,7 +92,7 @@ export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: Alb
               src={album.cover_image_url}
               alt={`${album.title} cover`}
               fill
-              className="object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+              className="object-cover transition-all duration-300 [@media(hover:hover)]:group-hover:scale-105 [@media(hover:hover)]:group-hover:brightness-110"
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
             />
           ) : (
@@ -102,7 +102,7 @@ export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: Alb
           )}
 
           {/* Play button - sits above overlay */}
-          <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+          <div className="absolute bottom-2 right-2 z-20 opacity-100 transition-opacity duration-200 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
             <Button
               size="icon"
               className="relative z-20 h-10 w-10 rounded-full bg-[#ff565f] hover:bg-[#ff565f]/80"
