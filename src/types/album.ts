@@ -3,6 +3,7 @@ export interface AlbumWithTracks {
   title: string
   release_date: string | null
   cover_image_url: string | null
+  band_id: string
   bands: {
     name: string
     slug: string

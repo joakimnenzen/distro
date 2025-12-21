@@ -4,15 +4,25 @@ import { notFound } from 'next/navigation'
 =======
 import { getLikedTrackIds } from '@/actions/likes'
 import { isAlbumSaved } from '@/actions/album-saves'
+<<<<<<< HEAD
 import { notFound, redirect } from 'next/navigation'
 >>>>>>> 31e799a (fixes)
+=======
+import { notFound } from 'next/navigation'
+>>>>>>> 848ba80 (More by added to Album page)
 import Image from 'next/image'
 import Link from 'next/link'
-// Import the new Client Component
 import { TrackList } from '@/components/track-list'
 import { AlbumLikeButton } from '@/components/album-like-button'
 import { AlbumWithTracks } from '@/types/album'
-import { formatTime } from '@/lib/utils'
+import { AlbumCard } from '@/components/album-card'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
 
 async function getAlbumWithTracks(albumId: string): Promise<AlbumWithTracks | null> {
   const supabase = await createClient()
@@ -24,6 +34,7 @@ async function getAlbumWithTracks(albumId: string): Promise<AlbumWithTracks | nu
       title,
       release_date,
       cover_image_url,
+      band_id,
       bands!inner (
         name,
         slug
@@ -45,6 +56,65 @@ async function getAlbumWithTracks(albumId: string): Promise<AlbumWithTracks | nu
   }
 
   return album as unknown as AlbumWithTracks
+}
+
+async function getMoreAlbumsByBand(bandId: string, currentAlbumId: string) {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('albums')
+    .select(`
+      id,
+      title,
+      cover_image_url,
+      created_at,
+      release_date,
+      bands (
+        name,
+        slug
+      )
+    `)
+    .eq('band_id', bandId)
+    .neq('id', currentAlbumId)
+    .order('created_at', { ascending: false })
+    .limit(20)
+
+  if (error) {
+    console.error('Error fetching more albums by band:', error)
+    return []
+  }
+
+  return data || []
+}
+
+function AlbumCarousel({
+  albums,
+}: {
+  albums: Array<{
+    id: string
+    title: string
+    cover_image_url: string | null
+    created_at?: string
+    release_date?: string | null
+    bands?: any
+    band_name?: string
+    band_slug?: string
+  }>
+}) {
+  return (
+    <Carousel opts={{ align: 'start', containScroll: 'trimSnaps' }} className="relative">
+      <CarouselContent className="px-2 md:px-10">
+        {albums.map((a) => (
+          <CarouselItem key={a.id} className="basis-[45%] sm:basis-1/2 md:basis-1/3 lg:basis-1/5">
+            <AlbumCard album={a} />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+
+      <CarouselPrevious className="hidden md:inline-flex left-2 bg-black/70 border-white/15 text-white hover:bg-black/90" />
+      <CarouselNext className="hidden md:inline-flex right-2 bg-black/70 border-white/15 text-white hover:bg-black/90" />
+    </Carousel>
+  )
 }
 
 interface AlbumPageProps {
@@ -81,6 +151,8 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
 
   // Check if the current user has saved this album
   const isSaved = user ? await isAlbumSaved(user.id, album.id) : false
+
+  const moreAlbums = await getMoreAlbumsByBand(album.band_id, album.id)
 
   // Calculate total album duration
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)
@@ -188,7 +260,21 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           }}
           likedTrackIds={likedTrackIds}
         />
+<<<<<<< HEAD
 >>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
+=======
+
+        {moreAlbums.length > 0 && (
+          <section className="mt-10 space-y-4">
+            <div className="flex items-end justify-between">
+              <h2 className="text-2xl font-sans font-semibold text-white">
+                More by {album.bands.name}
+              </h2>
+            </div>
+            <AlbumCarousel albums={moreAlbums as any} />
+          </section>
+        )}
+>>>>>>> 848ba80 (More by added to Album page)
       </div>
     </div>
   )
