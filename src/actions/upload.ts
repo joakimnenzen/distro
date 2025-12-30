@@ -9,6 +9,9 @@ const createAlbumSchema = z.object({
   releaseDate: z.string().optional(),
   coverImageUrl: z.string().url('Invalid cover image URL'),
   bandId: z.string().uuid('Invalid band ID'),
+  isPurchasable: z.boolean().optional(),
+  priceOre: z.number().int().min(1).optional(),
+  currency: z.string().optional(),
 })
 
 const createTrackSchema = z.object({
@@ -24,6 +27,7 @@ export type CreateTrackData = z.infer<typeof createTrackSchema>
 
 export async function createAlbum(data: CreateAlbumData) {
   try {
+    const validated = createAlbumSchema.parse(data)
     const supabase = await createClient()
 
     // Verify user owns the band
@@ -47,10 +51,13 @@ export async function createAlbum(data: CreateAlbumData) {
     const { data: album, error: albumError } = await supabase
       .from('albums')
       .insert({
-        title: data.title,
-        release_date: data.releaseDate ? new Date(data.releaseDate).toISOString().split('T')[0] : null,
-        cover_image_url: data.coverImageUrl,
-        band_id: data.bandId,
+        title: validated.title,
+        release_date: validated.releaseDate ? new Date(validated.releaseDate).toISOString().split('T')[0] : null,
+        cover_image_url: validated.coverImageUrl,
+        band_id: validated.bandId,
+        is_purchasable: Boolean(validated.isPurchasable),
+        price_ore: validated.isPurchasable ? validated.priceOre ?? null : null,
+        currency: validated.currency ?? 'sek',
       })
       .select()
       .single()

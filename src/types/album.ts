@@ -4,6 +4,9 @@ export interface AlbumWithTracks {
   release_date: string | null
   cover_image_url: string | null
   band_id: string
+  is_purchasable?: boolean
+  price_ore?: number | null
+  currency?: string | null
   bands: {
     name: string
     slug: string

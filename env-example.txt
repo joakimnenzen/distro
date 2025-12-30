@@ -1,3 +1,18 @@
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
+# Supabase (Server-only)
+# Used by server actions / webhooks to bypass RLS safely.
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+
+# App URL (Server + Client)
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Stripe (Server-only)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Resend (Server-only)
+RESEND_API_KEY=re_...
+RESEND_FROM="Distro <no-reply@your-domain.com>"

@@ -318,8 +318,8 @@ export function TrackList({
 >>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
                   </TableCell>
                   {/* Title (primary column on mobile) */}
-                  <TableCell className="py-4 w-full">
-                    <div className="flex items-center gap-3 min-w-0">
+                  <TableCell className="py-4 w-full md:w-auto">
+                    <div className="inline-flex items-center gap-3 min-w-0">
                       {(() => {
                         const coverSrc =
                           track.cover_image_url ||
@@ -338,14 +338,14 @@ export function TrackList({
                         )
                       })()}
                       {variant === 'playlist' ? (
-                        <div className="flex flex-col min-w-0 flex-1">
+                        <div className="inline-flex flex-col items-start justify-start min-w-0 flex-1">
                           <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
                             {track.title}
                           </span>
                           {track.band_name && (
                             <Link
                               href={track.band_slug ? `/band/${track.band_slug}` : '#'}
-                              className="text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
+                              className="grow-0 text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {track.band_name}

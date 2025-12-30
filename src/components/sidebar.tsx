@@ -95,10 +95,10 @@ export function Sidebar() {
               Dashboard
             </SidebarLink>
             <SidebarLink href="/bands" icon={Mic}>
-              My Bands
+              Bands
             </SidebarLink>
             <SidebarLink href="/albums" icon={Disc}>
-              My Albums
+              Albums
             </SidebarLink>
           </div>
         </div>

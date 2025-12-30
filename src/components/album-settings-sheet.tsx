@@ -9,6 +9,7 @@ import { getAlbumTracks } from '@/actions/get-album-tracks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Upload, X, Trash2, GripVertical } from 'lucide-react'
@@ -41,6 +42,8 @@ interface Album {
   band_id: string
   band_name: string
   band_slug: string
+  is_purchasable?: boolean
+  price_ore?: number | null
 }
 
 interface Track {
@@ -67,6 +70,11 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   const [releaseDate, setReleaseDate] = useState<string>(album.release_date || '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(album.cover_image_url)
+  const [isPurchasable, setIsPurchasable] = useState<boolean>(Boolean(album.is_purchasable))
+  const [priceSek, setPriceSek] = useState<string>(
+    album.price_ore && album.price_ore > 0 ? String(Math.round(album.price_ore / 100)) : ''
+  )
+  const [donationsEnabled, setDonationsEnabled] = useState<boolean>(false)
   const [tracks, setTracks] = useState<Track[]>([])
   const [isLoadingTracks, setIsLoadingTracks] = useState(false)
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -87,7 +95,38 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
     setReleaseDate(album.release_date || '')
     setImageFile(null)
     setImagePreview(album.cover_image_url)
+    setIsPurchasable(Boolean(album.is_purchasable))
+    setPriceSek(album.price_ore && album.price_ore > 0 ? String(Math.round(album.price_ore / 100)) : '')
   }, [isOpen, album.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch band donation status (needed to allow enabling digital sales)
+  useEffect(() => {
+    if (!isOpen) return
+    if (!album.band_id) return
+
+    let cancelled = false
+    const run = async () => {
+      const { data, error } = await supabase
+        .from('bands')
+        .select('stripe_account_id, stripe_payouts_enabled')
+        .eq('id', album.band_id)
+        .single()
+
+      if (cancelled) return
+      if (error) {
+        console.error('[AlbumSettingsSheet] failed to load band stripe status', error)
+        setDonationsEnabled(false)
+        return
+      }
+
+      setDonationsEnabled(Boolean(data?.stripe_account_id && data?.stripe_payouts_enabled))
+    }
+
+    void run()
+    return () => {
+      cancelled = true
+    }
+  }, [isOpen, album.band_id, supabase])
 
   // Fetch tracks when sheet opens
   useEffect(() => {
@@ -286,6 +325,19 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
     setIsLoading(true)
 
     try {
+      if (isPurchasable && !donationsEnabled) {
+        throw new Error('Enable donations for this band before selling digital albums.')
+      }
+
+      let priceOre: number | null = null
+      if (isPurchasable) {
+        const n = Number(priceSek)
+        if (!Number.isFinite(n) || n <= 0) {
+          throw new Error('Please set a valid price (SEK).')
+        }
+        priceOre = Math.round(n) * 100
+      }
+
       let imageUrl = album.cover_image_url
 
       console.log('Starting album update process...')
@@ -308,6 +360,9 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
         title: title,
         cover_image_url: imageUrl,
         release_date: releaseDate ? releaseDate : null,
+        is_purchasable: isPurchasable,
+        price_ore: priceOre,
+        currency: 'sek',
       }
 
       console.log('Updating album with data:', updateData)
@@ -500,6 +555,62 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
                 className="bg-white/5 border-white/20 text-white font-mono [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:contrast-100"
               />
             </div>
+
+          {/* Digital Purchase */}
+          <div className="space-y-2 pt-2 border-t border-white/10">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <Label className="text-white font-sans">Sell digital album</Label>
+                <p className="text-xs font-mono text-white/50">
+                  Requires donations enabled (Stripe payouts) for this band.
+                </p>
+              </div>
+              <Switch
+                checked={isPurchasable}
+                onCheckedChange={(checked) => {
+                  if (checked && !donationsEnabled) {
+                    toast({
+                      title: 'Enable donations first',
+                      description: 'Go to the band page and enable donations to sell digital albums.',
+                      variant: 'destructive',
+                    })
+                    return
+                  }
+                  setIsPurchasable(checked)
+                  if (checked && !priceSek) setPriceSek('50')
+                  if (!checked) setPriceSek('')
+                }}
+                disabled={!donationsEnabled}
+                className="data-[state=checked]:bg-[#ff565f]"
+              />
+            </div>
+
+            {isPurchasable && (
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="col-span-2 space-y-2">
+                  <Label htmlFor="priceSek" className="text-white font-sans">
+                    Price (SEK)
+                  </Label>
+                  <Input
+                    id="priceSek"
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={priceSek}
+                    onChange={(e) => setPriceSek(e.target.value)}
+                    className="bg-white/5 border-white/20 text-white font-mono"
+                    placeholder="50"
+                    required
+                  />
+                </div>
+                <div className="col-span-1 flex items-end">
+                  <div className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-xs font-mono text-white/60">
+                    Stored as öre
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
             {/* Sortable Track List */}
             <div className="space-y-2">

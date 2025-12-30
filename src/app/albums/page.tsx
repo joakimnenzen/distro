@@ -17,6 +17,8 @@ async function getUserAlbums(userId: string) {
       release_date,
       created_at,
       band_id,
+      is_purchasable,
+      price_ore,
       bands!inner (
         name,
         slug,
@@ -44,6 +46,8 @@ async function getUserAlbums(userId: string) {
       release_date: album.release_date,
       created_at: album.created_at,
       band_id: album.band_id,
+      is_purchasable: (album as any).is_purchasable,
+      price_ore: (album as any).price_ore,
       band_name: band?.name || '',
       band_slug: band?.slug || '',
       tracksCount: album.tracks?.length || 0,

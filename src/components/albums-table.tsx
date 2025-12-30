@@ -18,6 +18,8 @@ interface Album {
   band_name: string
   band_slug: string
   tracksCount: number
+  is_purchasable?: boolean
+  price_ore?: number | null
 }
 
 interface AlbumsTableProps {

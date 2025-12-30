@@ -18,6 +18,7 @@ export default function PrivacyPage() {
               <li><strong>Account Information:</strong> Email address, username (if provided), and authentication credentials</li>
               <li><strong>Content:</strong> Music files, album artwork, band information, and other content you upload</li>
               <li><strong>Usage Data:</strong> Songs played, play counts, likes, saved albums, and other interaction data</li>
+              <li><strong>Payments (if you purchase/support):</strong> Limited transaction details such as amount, currency, item/band, and payment status. Payment card details are processed by Stripe.</li>
               <li><strong>Technical Data:</strong> IP address, browser type, device information, and usage patterns</li>
             </ul>
           </section>
@@ -33,7 +34,7 @@ export default function PrivacyPage() {
               <li>Provide, maintain, and improve our music streaming service</li>
               <li>Process your authentication and manage your account</li>
               <li>Deliver content you request and personalize your experience</li>
-              <li>Send transactional emails (e.g., authentication links, account notifications)</li>
+              <li>Send transactional emails (e.g., authentication links, purchase/download links, account notifications)</li>
               <li>Analyze usage patterns to improve our platform and recommendations</li>
               <li>Ensure platform security and prevent fraud or abuse</li>
               <li>Comply with legal obligations</li>
@@ -42,7 +43,22 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              3. Data Storage
+              3. Payments and Emails (Stripe and Resend)
+            </h2>
+            <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
+              If you support a band or purchase a digital album, payments are processed by Stripe. Stripe may collect
+              and process payment and identity information as required to provide payment services. We do not store full
+              payment card details on our servers.
+            </p>
+            <p className="text-muted-foreground font-mono text-sm leading-relaxed">
+              We use Resend to send transactional emails (for example, download links after a purchase). To send these
+              emails, we share your email address and the email content with Resend.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold font-sans text-white mb-4">
+              4. Data Storage
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               We use Supabase for database and file storage. Your data is stored securely on Supabase&apos;s infrastructure, 
@@ -53,7 +69,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              4. Cookies and Session Management
+              5. Cookies and Session Management
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
               We use cookies and similar technologies for:
@@ -71,13 +87,15 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              5. Data Sharing
+              6. Data Sharing
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
               We do not sell your personal information. We may share your information only in the following circumstances:
             </p>
             <ul className="list-disc list-inside text-muted-foreground font-mono text-sm space-y-2 ml-4">
               <li>With service providers (like Supabase) who help us operate our platform, subject to confidentiality agreements</li>
+              <li>With payment processors (Stripe) to process payments and payouts, and to prevent fraud</li>
+              <li>With email providers (Resend) to send transactional emails such as download links</li>
               <li>When required by law or to respond to legal process</li>
               <li>To protect the rights, property, or safety of Distro, our users, or others</li>
               <li>In connection with a merger, acquisition, or sale of assets (with notice to users)</li>
@@ -86,7 +104,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              6. Your Rights
+              7. Your Rights
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
               You have the right to:
@@ -106,7 +124,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              7. Data Retention
+              8. Data Retention
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               We retain your personal information for as long as your account is active or as needed to provide you 
@@ -118,7 +136,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              8. Children&apos;s Privacy
+              9. Children&apos;s Privacy
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               Distro is not intended for users under the age of 13. We do not knowingly collect personal 
@@ -129,7 +147,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              9. Changes to This Policy
+              10. Changes to This Policy
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               We may update this Privacy Policy from time to time. We will notify you of any material changes by 
@@ -140,7 +158,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              10. Contact Us
+              11. Contact Us
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, 

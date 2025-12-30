@@ -9,11 +9,13 @@ import { createClient } from '@/lib/supabase-browser'
 import { createAlbum, createTrack, type CreateAlbumData, type CreateTrackData } from '@/actions/upload'
 import { uploadCoverImage } from '@/actions/upload-cover-image'
 import { createAudioUpload } from '@/actions/create-audio-upload'
+import { generateAlbumZip } from '@/actions/generate-album-zip'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import {
   Form,
   FormControl,
@@ -55,6 +57,8 @@ const uploadFormSchema = z.object({
     .max(50, 'Maximum 50 tracks allowed')
     .refine((files) => files.every(file => file.size <= 50 * 1024 * 1024), 'Each track must be less than 50MB')
     .refine((files) => files.every(file => file.type.startsWith('audio/')), 'All files must be audio files'),
+  isPurchasable: z.boolean().optional(),
+  priceSek: z.string().optional(),
 })
 
 type UploadFormData = z.infer<typeof uploadFormSchema>
@@ -62,6 +66,7 @@ type UploadFormData = z.infer<typeof uploadFormSchema>
 interface AlbumUploadFormProps {
   bandId: string
   bandSlug: string
+  donationsEnabled: boolean
 }
 
 interface FileWithId extends File {
@@ -109,7 +114,7 @@ function SortableFileItem({ file }: { file: FileWithId }) {
   )
 }
 
-export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
+export function AlbumUploadForm({ bandId, bandSlug, donationsEnabled }: AlbumUploadFormProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -131,6 +136,8 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
       title: '',
       releaseDate: '',
       trackFiles: [],
+      isPurchasable: false,
+      priceSek: '50',
     },
   })
 
@@ -292,11 +299,22 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
       // 2. Create album
       setUploadProgress('Creating album...')
       console.log('[AlbumUpload] creating album row...', { title: data.title, bandId, coverUrl })
+
+      const wantsPurchase = Boolean(data.isPurchasable && donationsEnabled)
+      const priceSekNum = Number(data.priceSek)
+      const priceOre =
+        wantsPurchase && Number.isFinite(priceSekNum) && priceSekNum > 0
+          ? Math.round(priceSekNum) * 100
+          : undefined
+
       const albumData: CreateAlbumData = {
         title: data.title,
         releaseDate: data.releaseDate,
         coverImageUrl: coverUrl,
         bandId: bandId,
+        isPurchasable: wantsPurchase,
+        priceOre: wantsPurchase ? priceOre : undefined,
+        currency: 'sek',
       }
 
       const albumResult = await createAlbum(albumData)
@@ -430,6 +448,19 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
           })
           // Stop the whole flow so we don't silently create albums without songs.
           throw trackErr
+        }
+      }
+
+      // 4. If digital sales enabled, generate ZIP for download delivery
+      if (wantsPurchase) {
+        setUploadProgress('Creating ZIP for digital purchase...')
+        const zipRes = await generateAlbumZip(albumId)
+        if (!zipRes.success) {
+          toast({
+            title: 'ZIP generation failed',
+            description: zipRes.error,
+            variant: 'destructive',
+          })
         }
       }
 
@@ -589,6 +620,63 @@ export function AlbumUploadForm({ bandId, bandSlug }: AlbumUploadFormProps) {
                 </FormItem>
               )}
             />
+
+            {/* Digital sales (optional) */}
+            <div className="rounded-lg border border-white/10 bg-black/30 p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1">
+                  <Label className="text-white font-sans">Sell as digital download</Label>
+                  <p className="text-xs font-mono text-white/50">
+                    Generates a single ZIP and enables “Buy” on the album page.
+                  </p>
+                  {!donationsEnabled && (
+                    <p className="text-xs font-mono text-white/50">
+                      Enable donations for this band first to sell digital albums.
+                    </p>
+                  )}
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="isPurchasable"
+                  render={({ field }) => (
+                    <Switch
+                      checked={Boolean(field.value)}
+                      onCheckedChange={(checked) => field.onChange(checked)}
+                      disabled={!donationsEnabled}
+                      className="data-[state=checked]:bg-[#ff565f]"
+                    />
+                  )}
+                />
+              </div>
+
+              {form.watch('isPurchasable') && (
+                <div className="mt-4 grid grid-cols-3 gap-3">
+                  <div className="col-span-2">
+                    <FormField
+                      control={form.control}
+                      name="priceSek"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price (SEK)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={1}
+                              step={1}
+                              {...field}
+                              className="bg-white/5 border-white/20 text-white font-mono"
+                            />
+                          </FormControl>
+                          <FormDescription>Stored as öre in the database.</FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
 
             {error && (
               <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">

@@ -89,7 +89,36 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              6. Disclaimers
+              6. Payments, Support, and Digital Purchases
+            </h2>
+            <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
+              Distro may allow fans to support bands with one-time payments and may allow the purchase of digital
+              albums (for example, a downloadable ZIP). Payments are processed by Stripe (our payment processor).
+              Distro does not store full payment card details.
+            </p>
+            <ul className="list-disc list-inside text-muted-foreground font-mono text-sm space-y-2 ml-4">
+              <li>
+                <strong>Platform role:</strong> Distro facilitates payments and routes proceeds to bands using Stripe
+                Connect. We may charge a platform fee.
+              </li>
+              <li>
+                <strong>Band onboarding:</strong> Bands may need to complete identity/verification steps required by
+                Stripe and regulators to receive payouts.
+              </li>
+              <li>
+                <strong>Digital delivery:</strong> For digital purchases, we provide access via a download link.
+                Delivery may be time-limited or single-use.
+              </li>
+              <li>
+                <strong>Refunds:</strong> Payments are generally final. Refunds may be issued at our discretion or where
+                required by law. If a payment is refunded, access to digital downloads may be revoked.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold font-sans text-white mb-4">
+              7. Disclaimers
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed mb-3">
               Distro is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, either express 
@@ -108,7 +137,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              7. Changes to Terms
+              8. Changes to Terms
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               We reserve the right to modify these Terms at any time. We will notify users of material changes 
@@ -119,7 +148,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-semibold font-sans text-white mb-4">
-              8. Contact
+              9. Contact
             </h2>
             <p className="text-muted-foreground font-mono text-sm leading-relaxed">
               If you have questions about these Terms, please contact us at support@distro.music.

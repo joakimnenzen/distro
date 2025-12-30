@@ -1,9 +1,11 @@
 import { createClient } from '@/lib/supabase-server'
 import { getLikedTrackIds } from '@/actions/likes'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { AlbumCard } from '@/components/album-card'
 import { TrackList } from '@/components/track-list'
+import { BandDonateControls } from '@/components/band-donate-controls'
+import { syncBandStripeStatus } from '@/actions/sync-band-stripe-status'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -94,25 +96,38 @@ interface PageProps {
   params: Promise<{
     slug: string
   }>
+  searchParams?: Promise<{
+    stripe?: string
+  }>
 }
 
-export default async function BandPage({ params }: PageProps) {
+export default async function BandPage({ params, searchParams }: PageProps) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
 
   const { slug } = await params
+  const sp = searchParams ? await searchParams : undefined
   // Get band for public viewing (no ownership check)
-  const band = await getBand(slug)
+  let band = await getBand(slug)
 
   if (!band) {
     notFound()
+  }
+
+  // If we just returned from Stripe onboarding, sync account status now
+  // (useful especially in local dev where Connect webhooks may not forward cleanly).
+  if (sp?.stripe === 'return' && user && band.owner_id === user.id) {
+    await syncBandStripeStatus(band.id)
+    band = await getBand(slug)
+    if (!band) notFound()
   }
 
   const topTracks = await getBandTopTracks(band.id)
   const albums = await getBandAlbums(band.id)
   const isOwner = user && band.owner_id === user.id
   const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
+  const donationsEnabled = Boolean(band.stripe_payouts_enabled && band.stripe_account_id)
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,14 +162,22 @@ export default async function BandPage({ params }: PageProps) {
               )}
             </div>
 
-            {isOwner && (
-              <Button asChild className="bg-white text-black hover:bg-white/90">
-                <Link href={`/band/${band.slug}/upload`}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Upload Album
-                </Link>
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {isOwner && (
+                <Button asChild className="bg-white text-black hover:bg-white/90">
+                  <Link href={`/band/${band.slug}/upload`}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Upload Album
+                  </Link>
+                </Button>
+              )}
+              <BandDonateControls
+                bandId={band.id}
+                bandName={band.name}
+                donationsEnabled={donationsEnabled}
+                isOwner={Boolean(isOwner)}
+              />
+            </div>
           </div>
         </div>
 

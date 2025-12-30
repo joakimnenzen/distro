@@ -16,6 +16,8 @@ import { TrackList } from '@/components/track-list'
 import { AlbumLikeButton } from '@/components/album-like-button'
 import { AlbumWithTracks } from '@/types/album'
 import { AlbumCard } from '@/components/album-card'
+import { BandDonateControls } from '@/components/band-donate-controls'
+import { BuyAlbumDialog } from '@/components/buy-album-dialog'
 import {
   Carousel,
   CarouselContent,
@@ -35,6 +37,9 @@ async function getAlbumWithTracks(albumId: string): Promise<AlbumWithTracks | nu
       release_date,
       cover_image_url,
       band_id,
+      is_purchasable,
+      price_ore,
+      currency,
       bands!inner (
         name,
         slug
@@ -154,6 +159,17 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
 
   const moreAlbums = await getMoreAlbumsByBand(album.band_id, album.id)
 
+  // Band donation status (public read)
+  const { data: bandRow } = await supabase
+    .from('bands')
+    .select('id, owner_id, stripe_account_id, stripe_payouts_enabled')
+    .eq('id', album.band_id)
+    .single()
+
+  const donationsEnabled = Boolean(bandRow?.stripe_account_id && bandRow?.stripe_payouts_enabled)
+  const isBandOwner = Boolean(user && bandRow?.owner_id === user.id)
+  const canBuyAlbum = Boolean(album.is_purchasable && album.price_ore && album.price_ore > 0)
+
   // Calculate total album duration
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)
 
@@ -205,12 +221,27 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
                   {album.bands.name}
                 </Link>
               </div>
-              <AlbumLikeButton 
-                albumId={album.id} 
-                initialIsSaved={isSaved}
-                size="default"
-                variant="ghost"
-              />
+              <div className="flex items-center gap-2">
+                {canBuyAlbum && (
+                  <BuyAlbumDialog
+                    albumId={album.id}
+                    albumTitle={album.title}
+                    priceOre={album.price_ore as number}
+                  />
+                )}
+                <BandDonateControls
+                  bandId={album.band_id}
+                  bandName={album.bands.name}
+                  donationsEnabled={donationsEnabled}
+                  isOwner={isBandOwner}
+                />
+                <AlbumLikeButton
+                  albumId={album.id}
+                  initialIsSaved={isSaved}
+                  size="default"
+                  variant="ghost"
+                />
+              </div>
             </div>
 
             {album.release_date && (
