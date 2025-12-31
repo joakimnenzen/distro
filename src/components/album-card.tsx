@@ -11,7 +11,7 @@ import { getAlbumPlaybackTracks } from '@/actions/get-album-playback'
 interface AlbumCardProps {
   album: {
     id: string
-    slug?: string
+    slug?: string | null
     title: string
     cover_image_url: string | null
     release_date?: string | null

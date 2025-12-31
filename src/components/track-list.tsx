@@ -18,7 +18,7 @@ export interface TrackListTrack {
   play_count?: number | null
   album_id?: string
   album_title?: string
-  album_slug?: string
+  album_slug?: string | null
   cover_image_url?: string | null
   band_name?: string
   band_slug?: string
