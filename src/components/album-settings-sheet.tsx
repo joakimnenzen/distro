@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast'
 import { deleteAlbum } from '@/actions/delete-album'
 import { getAlbumTracks } from '@/actions/get-album-tracks'
 import { BandDonateControls } from '@/components/band-donate-controls'
+import { MIN_PAYMENT_SEK } from '@/lib/payments-fees'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -333,8 +334,8 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
       let priceOre: number | null = null
       if (isPurchasable) {
         const n = Number(priceSek)
-        if (!Number.isFinite(n) || n <= 0) {
-          throw new Error('Please set a valid price (SEK).')
+        if (!Number.isFinite(n) || n < MIN_PAYMENT_SEK) {
+          throw new Error(`Please set a valid price (minimum ${MIN_PAYMENT_SEK} SEK).`)
         }
         priceOre = Math.round(n) * 100
       }
@@ -609,7 +610,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
                   <Input
                     id="priceSek"
                     type="number"
-                    min={1}
+                    min={MIN_PAYMENT_SEK}
                     step={1}
                     value={priceSek}
                     onChange={(e) => setPriceSek(e.target.value)}

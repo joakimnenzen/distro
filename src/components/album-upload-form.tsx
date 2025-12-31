@@ -12,6 +12,7 @@ import { createAudioUpload } from '@/actions/create-audio-upload'
 import { generateAlbumZip } from '@/actions/generate-album-zip'
 import { toast } from '@/hooks/use-toast'
 import { BandDonateControls } from '@/components/band-donate-controls'
+import { MIN_PAYMENT_SEK } from '@/lib/payments-fees'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -308,6 +309,9 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
         wantsPurchase && Number.isFinite(priceSekNum) && priceSekNum > 0
           ? Math.round(priceSekNum) * 100
           : undefined
+      if (wantsPurchase && (!priceOre || priceOre < MIN_PAYMENT_SEK * 100)) {
+        throw new Error(`Minimum price is ${MIN_PAYMENT_SEK} SEK.`)
+      }
 
       const albumData: CreateAlbumData = {
         title: data.title,
@@ -673,7 +677,7 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
                           <FormControl>
                             <Input
                               type="number"
-                              min={1}
+                              min={MIN_PAYMENT_SEK}
                               step={1}
                               {...field}
                               className="bg-white/5 border-white/20 text-white font-mono"

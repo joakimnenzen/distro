@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Spinner } from '@/components/ui/spinner'
+import { MIN_PAYMENT_SEK } from '@/lib/payments-fees'
 
 const PRESETS_SEK = [25, 50, 100, 200] as const
 
@@ -49,7 +50,7 @@ export function DonateDialog({
   const amountSek = useMemo(() => {
     const customNum = Number(custom)
     if (Number.isFinite(customNum) && custom.trim() !== '') {
-      return Math.max(1, Math.floor(customNum))
+      return Math.max(MIN_PAYMENT_SEK, Math.floor(customNum))
     }
     return selected
   }, [custom, selected])
@@ -114,7 +115,7 @@ export function DonateDialog({
             <input type="hidden" name="amountSek" value={amountSek} />
             <DonateSubmitButton amountSek={amountSek} />
             <p className="mt-2 text-xs text-white/50 font-mono">
-              Secure payment via Stripe. Distro takes 5% + 0.50 SEK.
+              Minimum {MIN_PAYMENT_SEK} SEK. Secure payment via Stripe. Fees: Stripe (1.5% + 1.80 SEK) + Distro (5% + 0.50 SEK).
             </p>
           </form>
         </div>

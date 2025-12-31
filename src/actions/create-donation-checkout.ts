@@ -5,25 +5,17 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase-server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { getStripe } from '@/lib/stripe'
+import { computeApplicationFeeOre, MIN_PAYMENT_SEK, toOreFromSek } from '@/lib/payments-fees'
 
 const donateSchema = z.object({
   bandId: z.string().uuid(),
-  amountSek: z.coerce.number().int().min(1),
+  amountSek: z.coerce.number().int().min(MIN_PAYMENT_SEK),
 })
 
 function getSiteUrl() {
   const url = process.env.NEXT_PUBLIC_SITE_URL
   if (!url) throw new Error('Missing env: NEXT_PUBLIC_SITE_URL')
   return url.replace(/\/$/, '')
-}
-
-function toOre(amountSek: number) {
-  return amountSek * 100
-}
-
-function computeFeeOre(amountOre: number) {
-  // 5% + 0.50 SEK, rounded to nearest öre
-  return Math.round(amountOre * 0.05) + 50
 }
 
 type CreateDonationCheckoutResult =
@@ -42,8 +34,8 @@ export async function createDonationCheckout(formData: FormData): Promise<void> 
     }
 
     const { bandId, amountSek } = parsed.data
-    const amountOre = toOre(amountSek)
-    const feeOre = computeFeeOre(amountOre)
+    const amountOre = toOreFromSek(amountSek)
+    const feeOre = computeApplicationFeeOre(amountOre)
 
     if (feeOre >= amountOre) {
       return

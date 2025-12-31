@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { createClient } from '@/lib/supabase-server'
 import { getStripe } from '@/lib/stripe'
+import { computeApplicationFeeOre, MIN_PAYMENT_SEK } from '@/lib/payments-fees'
 
 const purchaseSchema = z.object({
   albumId: z.string().uuid(),
@@ -15,11 +16,6 @@ function getSiteUrl() {
   const url = process.env.NEXT_PUBLIC_SITE_URL
   if (!url) throw new Error('Missing env: NEXT_PUBLIC_SITE_URL')
   return url.replace(/\/$/, '')
-}
-
-function computeFeeOre(amountOre: number) {
-  // 5% + 0.50 SEK (50 öre), rounded to nearest öre
-  return Math.round(amountOre * 0.05) + 50
 }
 
 export async function createAlbumPurchaseCheckout(formData: FormData): Promise<void> {
@@ -50,6 +46,7 @@ export async function createAlbumPurchaseCheckout(formData: FormData): Promise<v
     if (!album) return
     if (!album.is_purchasable) return
     if (!album.price_ore || album.price_ore <= 0) return
+    if (album.price_ore < MIN_PAYMENT_SEK * 100) return
     if (!album.download_zip_path) return
 
     const { data: band } = await admin
@@ -63,7 +60,7 @@ export async function createAlbumPurchaseCheckout(formData: FormData): Promise<v
     if (!band.stripe_payouts_enabled) return
 
     const amountOre = album.price_ore
-    const feeOre = computeFeeOre(amountOre)
+    const feeOre = computeApplicationFeeOre(amountOre)
     if (feeOre >= amountOre) return
 
     const { data: purchase } = await admin

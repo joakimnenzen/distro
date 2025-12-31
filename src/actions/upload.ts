@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase-server'
 import { z } from 'zod'
 import { slugify } from '@/lib/slug'
+import { MIN_PAYMENT_SEK } from '@/lib/payments-fees'
 
 const createAlbumSchema = z.object({
   title: z.string().min(1, 'Album title is required').max(200, 'Album title too long'),
@@ -11,7 +12,7 @@ const createAlbumSchema = z.object({
   coverImageUrl: z.string().url('Invalid cover image URL'),
   bandId: z.string().uuid('Invalid band ID'),
   isPurchasable: z.boolean().optional(),
-  priceOre: z.number().int().min(1).optional(),
+  priceOre: z.number().int().min(MIN_PAYMENT_SEK * 100).optional(),
   currency: z.string().optional(),
 })
 
