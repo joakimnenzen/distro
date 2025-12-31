@@ -43,7 +43,7 @@ export async function createAlbumPurchaseCheckout(formData: FormData): Promise<v
 
     const { data: album } = await admin
       .from('albums')
-      .select('id, title, band_id, is_purchasable, price_ore, currency, download_bucket, download_zip_path')
+      .select('id, slug, title, band_id, is_purchasable, price_ore, currency, download_bucket, download_zip_path')
       .eq('id', albumId)
       .single()
 
@@ -88,7 +88,7 @@ export async function createAlbumPurchaseCheckout(formData: FormData): Promise<v
       mode: 'payment',
       customer_email: buyerEmail,
       success_url: `${siteUrl}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/album/${album.id}`,
+      cancel_url: album.slug ? `${siteUrl}/${band.slug}/${album.slug}` : `${siteUrl}/${band.slug}`,
       line_items: [
         {
           quantity: 1,

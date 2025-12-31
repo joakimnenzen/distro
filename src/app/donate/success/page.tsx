@@ -59,7 +59,7 @@ export default async function DonateSuccessPage({ searchParams }: DonateSuccessP
           <div className="mt-6 flex flex-wrap gap-3">
             {band?.slug ? (
               <Link
-                href={`/band/${band.slug}`}
+                href={`/${band.slug}`}
                 className="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-mono text-black hover:bg-white/90"
               >
                 Back to {band.name}

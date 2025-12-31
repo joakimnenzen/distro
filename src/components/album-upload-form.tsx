@@ -467,8 +467,8 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
       }
 
       setUploadProgress('Upload complete! Redirecting...')
-      console.log('[AlbumUpload] done, redirecting', { to: `/band/${bandSlug}` })
-      router.push(`/band/${bandSlug}`)
+      console.log('[AlbumUpload] done, redirecting', { to: `/${bandSlug}` })
+      router.push(`/${bandSlug}`)
       router.refresh()
 
     } catch (err) {
@@ -705,7 +705,7 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push(`/band/${bandSlug}`)}
+                onClick={() => router.push(`/${bandSlug}`)}
                 disabled={isUploading}
                 className="flex-1"
               >

@@ -64,7 +64,7 @@ export async function updateBand(
     // Revalidate relevant paths
     revalidatePath('/dashboard')
     revalidatePath('/bands')
-    revalidatePath(`/band/${band.slug}`)
+    revalidatePath(`/${band.slug}`)
     revalidatePath('/', 'layout')
 
     return { success: true }

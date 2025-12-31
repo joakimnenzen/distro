@@ -76,7 +76,7 @@ export function DashboardClient({ bands }: DashboardClientProps) {
                     </div>
                   </div>
                   <Button asChild variant="outline" className="w-full">
-                    <Link href={`/band/${band.slug}`}>
+                    <Link href={`/${band.slug}`}>
                       Manage Band
                     </Link>
                   </Button>

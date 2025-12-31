@@ -72,8 +72,8 @@ export async function startStripeConnectOnboarding(formData: FormData): Promise<
     }
 
     const siteUrl = getSiteUrl()
-    const returnUrl = `${siteUrl}/band/${band.slug}?stripe=return`
-    const refreshUrl = `${siteUrl}/band/${band.slug}?stripe=refresh`
+    const returnUrl = `${siteUrl}/${band.slug}?stripe=return`
+    const refreshUrl = `${siteUrl}/${band.slug}?stripe=refresh`
 
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,

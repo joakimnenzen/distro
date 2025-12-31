@@ -18,6 +18,7 @@ export interface TrackListTrack {
   play_count?: number | null
   album_id?: string
   album_title?: string
+  album_slug?: string
   cover_image_url?: string | null
   band_name?: string
   band_slug?: string
@@ -203,7 +204,16 @@ export function TrackList({
                     <>
                       <TableCell className="text-white/70 font-mono text-xs hidden md:table-cell">
                         {albumId && albumTitle ? (
-                          <Link href={`/album/${albumId}`} className="hover:underline">
+                          <Link
+                            href={
+                              t.band_slug && t.album_slug
+                                ? `/${t.band_slug}/${t.album_slug}`
+                                : t.band_slug
+                                  ? `/${t.band_slug}`
+                                  : '#'
+                            }
+                            className="hover:underline"
+                          >
                             {albumTitle}
                           </Link>
                         ) : (

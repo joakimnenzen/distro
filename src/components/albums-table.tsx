@@ -10,6 +10,7 @@ import { AlbumSettingsSheet } from '@/components/album-settings-sheet'
 
 interface Album {
   id: string
+  slug?: string | null
   title: string
   cover_image_url: string | null
   release_date?: string | null
@@ -77,7 +78,7 @@ export function AlbumsTable({ albums }: AlbumsTableProps) {
               </TableCell>
               <TableCell>
                 <Link
-                  href={`/album/${album.id}`}
+                  href={album.slug ? `/${album.band_slug}/${album.slug}` : `/${album.band_slug}`}
                   className="font-sans font-medium text-white hover:text-white/80 transition-colors"
                 >
                   {album.title}
@@ -85,7 +86,7 @@ export function AlbumsTable({ albums }: AlbumsTableProps) {
               </TableCell>
               <TableCell>
                 <Link
-                  href={`/band/${album.band_slug}`}
+                  href={`/${album.band_slug}`}
                   className="text-sm text-muted-foreground hover:text-white hover:underline transition-colors font-mono"
                 >
                   {album.band_name}

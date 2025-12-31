@@ -16,6 +16,7 @@ async function getLatestAlbums() {
     .from('albums')
     .select(`
       id,
+      slug,
       title,
       cover_image_url,
       created_at,

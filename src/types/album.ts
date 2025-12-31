@@ -1,5 +1,6 @@
 export interface AlbumWithTracks {
   id: string
+  slug?: string | null
   title: string
   release_date: string | null
   cover_image_url: string | null

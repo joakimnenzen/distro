@@ -12,7 +12,7 @@ interface SearchPageProps {
 
 function ArtistCard({ band }: { band: { id: string; name: string; slug: string; bio: string | null; image_url: string | null } }) {
   return (
-    <Link href={`/band/${band.slug}`} className="group">
+    <Link href={`/${band.slug}`} className="group">
       <div className="flex flex-col items-center space-y-3 p-4 rounded-lg hover:bg-white/5 transition-colors">
         <Avatar className="w-20 h-20">
           <AvatarImage src={band.image_url || undefined} alt={band.name} />
@@ -79,6 +79,7 @@ async function SearchResults({ query }: { query: string }) {
                 track_number: track.track_number,
                 album_id: track.album_id || undefined,
                 album_title: track.album_title || undefined,
+                album_slug: (track as any).album_slug || undefined,
                 cover_image_url: track.album_cover || undefined,
                 band_name: track.band_name || undefined,
                 band_slug: track.band_slug || undefined,
@@ -100,6 +101,7 @@ async function SearchResults({ query }: { query: string }) {
                 key={album.id}
                 album={{
                   id: album.id,
+                  slug: (album as any).slug,
                   title: album.title,
                   cover_image_url: album.cover_image_url,
                   band_name: album.band_name,

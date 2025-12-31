@@ -4,6 +4,7 @@ import { AlbumCard } from '@/components/album-card'
 
 interface AlbumWithBand {
   id: string
+  slug?: string | null
   title: string
   cover_image_url: string | null
   created_at: string
@@ -19,7 +20,7 @@ async function getAllAlbums(): Promise<AlbumWithBand[]> {
   // First get albums with band_id
   const { data: albums, error } = await supabase
     .from('albums')
-    .select('id, title, cover_image_url, created_at, band_id')
+    .select('id, slug, title, cover_image_url, created_at, band_id')
     .order('created_at', { ascending: false })
 
   if (error || !albums) {

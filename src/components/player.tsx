@@ -343,7 +343,7 @@ export function Player() {
                   </div>
                   <div className="mt-1 truncate text-left text-sm text-white/60">
                   <Link
-                    href={`/band/${currentTrack.band_slug}`}
+                    href={`/${currentTrack.band_slug}`}
                   >
                     {currentTrack.band_name}
                     </Link>
@@ -431,7 +431,7 @@ export function Player() {
                 <h3 className="font-mono truncate text-sm">{currentTrack.title}</h3>
                 {currentTrack.band_slug ? (
                   <Link
-                    href={`/band/${currentTrack.band_slug}`}
+                    href={`/${currentTrack.band_slug}`}
                     className="text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
                   >
                     {currentTrack.band_name}

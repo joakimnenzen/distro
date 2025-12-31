@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase-server'
 import { z } from 'zod'
+import { slugify } from '@/lib/slug'
 
 const createAlbumSchema = z.object({
   title: z.string().min(1, 'Album title is required').max(200, 'Album title too long'),
@@ -24,6 +25,30 @@ const createTrackSchema = z.object({
 
 export type CreateAlbumData = z.infer<typeof createAlbumSchema>
 export type CreateTrackData = z.infer<typeof createTrackSchema>
+
+async function generateUniqueAlbumSlug(opts: {
+  supabase: Awaited<ReturnType<typeof createClient>>
+  bandId: string
+  title: string
+}) {
+  const base = slugify(opts.title, 60) || `album-${Date.now()}`
+
+  // Try base, then base-2, base-3, ...
+  for (let i = 0; i < 50; i++) {
+    const candidate = i === 0 ? base : `${base}-${i + 1}`
+    const { data } = await opts.supabase
+      .from('albums')
+      .select('id')
+      .eq('band_id', opts.bandId)
+      .eq('slug', candidate)
+      .maybeSingle()
+
+    if (!data) return candidate
+  }
+
+  // Extremely unlikely fallback
+  return `${base}-${Date.now()}`
+}
 
 export async function createAlbum(data: CreateAlbumData) {
   try {
@@ -47,11 +72,18 @@ export async function createAlbum(data: CreateAlbumData) {
       throw new Error('Band not found or access denied')
     }
 
+    const albumSlug = await generateUniqueAlbumSlug({
+      supabase,
+      bandId: validated.bandId,
+      title: validated.title,
+    })
+
     // Create the album
     const { data: album, error: albumError } = await supabase
       .from('albums')
       .insert({
         title: validated.title,
+        slug: albumSlug,
         release_date: validated.releaseDate ? new Date(validated.releaseDate).toISOString().split('T')[0] : null,
         cover_image_url: validated.coverImageUrl,
         band_id: validated.bandId,

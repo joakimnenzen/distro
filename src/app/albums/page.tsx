@@ -12,6 +12,7 @@ async function getUserAlbums(userId: string) {
     .from('albums')
     .select(`
       id,
+      slug,
       title,
       cover_image_url,
       release_date,
@@ -41,6 +42,7 @@ async function getUserAlbums(userId: string) {
 
     return {
       id: album.id,
+      slug: (album as any).slug,
       title: album.title,
       cover_image_url: album.cover_image_url,
       release_date: album.release_date,

@@ -15,6 +15,7 @@ export interface SearchResult {
     duration: number | null
     track_number: number
     album_id: string | null
+    album_slug: string | null
     album_title: string
     album_cover: string | null
     band_name: string
@@ -22,6 +23,7 @@ export interface SearchResult {
   }>
   albums: Array<{
     id: string
+    slug: string | null
     title: string
     cover_image_url: string | null
     band_name: string
@@ -58,6 +60,7 @@ export async function searchDistro(query: string): Promise<SearchResult> {
         album_id,
         albums (
           id,
+          slug,
           title,
           cover_image_url,
           bands (
@@ -74,6 +77,7 @@ export async function searchDistro(query: string): Promise<SearchResult> {
       .from('albums')
       .select(`
         id,
+        slug,
         title,
         cover_image_url,
         bands!inner (
@@ -104,6 +108,7 @@ export async function searchDistro(query: string): Promise<SearchResult> {
       duration: track.duration,
       track_number: track.track_number,
       album_id: track.album_id || album?.id || null,
+      album_slug: (album as any)?.slug ?? null,
       album_title: album?.title || '',
       album_cover: album?.cover_image_url || null,
       band_name: band?.name || '',
@@ -120,6 +125,7 @@ export async function searchDistro(query: string): Promise<SearchResult> {
 
     return {
       id: album.id,
+      slug: (album as any).slug ?? null,
       title: album.title,
       cover_image_url: album.cover_image_url,
       band_name: band?.name || '',

@@ -123,6 +123,7 @@ interface SavedAlbumRaw {
   album_id: string
   albums: {
     id: string
+    slug?: string | null
     title: string
     cover_image_url: string | null
     release_date: string | null
@@ -144,6 +145,7 @@ export async function getSavedAlbums(userId: string) {
         album_id,
         albums (
           id,
+          slug,
           title,
           cover_image_url,
           release_date,
@@ -179,6 +181,7 @@ export async function getSavedAlbums(userId: string) {
 
         return {
           id: item.albums.id,
+          slug: item.albums.slug ?? null,
           title: item.albums.title,
           cover_image_url: item.albums.cover_image_url,
           release_date: item.albums.release_date,

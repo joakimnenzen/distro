@@ -89,7 +89,7 @@ export async function createDonationCheckout(formData: FormData): Promise<void> 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       success_url: `${siteUrl}/donate/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/band/${band.slug}`,
+      cancel_url: `${siteUrl}/${band.slug}`,
       line_items: [
         {
           quantity: 1,

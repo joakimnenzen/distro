@@ -32,7 +32,9 @@ export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: Alb
   const bandName = bandData?.name || album.band_name || "Unknown Artist"
   const bandSlug = bandData?.slug || album.band_slug || "#"
 
-  const albumHref = `/album/${album.slug || album.id}`
+  const albumSlug = album.slug
+  const albumHref =
+    bandSlug !== '#' && albumSlug ? `/${bandSlug}/${albumSlug}` : bandSlug !== '#' ? `/${bandSlug}` : '#'
 
   const getReleaseYear = () => {
     const dateStr = album.release_date || album.created_at
@@ -134,7 +136,7 @@ export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: Alb
           ) : (
             showBandName && bandSlug !== '#' && (
               <Link
-                href={`/band/${bandSlug}`}
+                href={`/${bandSlug}`}
                 className="relative z-20 inline-block font-mono text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
                 onClick={(e) => e.stopPropagation()}
               >

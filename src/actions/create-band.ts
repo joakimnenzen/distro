@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase-server'
 import { z } from 'zod'
+import { isReservedBandSlug } from '@/lib/reserved-slugs'
+import { slugify } from '@/lib/slug'
 
 const createBandSchema = z.object({
   name: z.string().min(1, 'Band name is required').max(100, 'Band name too long'),
@@ -43,19 +45,16 @@ export async function createBand(formData: FormData): Promise<CreateBandResult> 
     const validatedData = createBandSchema.parse(rawData)
 
     // Generate slug if not provided
-    let slug = validatedData.slug
-    if (!slug) {
-      slug = validatedData.name
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-        .replace(/\s+/g, '-') // Replace spaces with hyphens
-        .replace(/-+/g, '-') // Replace multiple hyphens with single
-        .trim()
-        .substring(0, 50) // Limit length
+    const desired = validatedData.slug ?? validatedData.name
+    let slug = slugify(desired, 50)
 
-      // Ensure slug is not empty after cleaning
-      if (!slug) {
-        slug = `band-${Date.now()}`
+    // Ensure slug is not empty after cleaning
+    if (!slug) slug = `band-${Date.now()}`
+
+    if (isReservedBandSlug(slug)) {
+      return {
+        success: false,
+        error: 'This band URL is reserved by Distro. Please choose a different name or slug.',
       }
     }
 

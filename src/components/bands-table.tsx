@@ -53,7 +53,7 @@ export function BandsTable({ bands }: BandsTableProps) {
                   </Avatar>
                   <div>
                     <Link
-                      href={`/band/${band.slug}`}
+                      href={`/${band.slug}`}
                       className="font-sans font-medium text-white hover:text-white/80 transition-colors"
                     >
                       {band.name}
