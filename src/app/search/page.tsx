@@ -68,13 +68,6 @@ async function SearchResults({ query }: { query: string }) {
       {results.tracks.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold font-sans text-white mb-6">Songs</h2>
-<<<<<<< HEAD
-          <div className="space-y-2">
-            {results.tracks.map((track) => (
-              <SearchTrackRow key={track.id} track={track} />
-            ))}
-          </div>
-=======
           <TrackList
             tracks={results.tracks
               .filter((track) => track.id && track.id.trim() !== '')
@@ -93,9 +86,7 @@ async function SearchResults({ query }: { query: string }) {
             variant="playlist"
             hideHeader={true}
             hideDateAdded={true}
-            likedTrackIds={likedTrackIds}
           />
->>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
         </section>
       )}
 

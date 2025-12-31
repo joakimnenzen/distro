@@ -1,15 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
-<<<<<<< HEAD
-import { notFound } from 'next/navigation'
-=======
 import { getLikedTrackIds } from '@/actions/likes'
 import { isAlbumSaved } from '@/actions/album-saves'
-<<<<<<< HEAD
-import { notFound, redirect } from 'next/navigation'
->>>>>>> 31e799a (fixes)
-=======
 import { notFound } from 'next/navigation'
->>>>>>> 848ba80 (More by added to Album page)
 import Image from 'next/image'
 import Link from 'next/link'
 import { TrackList } from '@/components/track-list'
@@ -129,13 +121,9 @@ interface AlbumPageProps {
 }
 
 export default async function AlbumPage({ params }: AlbumPageProps) {
-<<<<<<< HEAD
-=======
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-
->>>>>>> b08f707 (feat: add my albums dashboard and implement google oauth login)
   // In Next.js 15, params is a Promise, so we await it
   const { id } = await params
   const album = await getAlbumWithTracks(id)
@@ -144,15 +132,8 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
     notFound()
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  // Fetch user's liked track IDs
-  const likedTrackIds = await getLikedTrackIds(user.id)
-=======
   // Fetch user's liked track IDs (empty array if not logged in)
   const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
->>>>>>> b08f707 (feat: add my albums dashboard and implement google oauth login)
 
   // Check if the current user has saved this album
   const isSaved = user ? await isAlbumSaved(user.id, album.id) : false
@@ -185,8 +166,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
     }
     return `${minutes}m ${remainingSeconds}s`
   }
-
->>>>>>> c19dc7c (band page updates)
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -261,13 +240,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
         </div>
 
         {/* Track List - Now a Client Component */}
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <TrackList album={album} />
-=======
-        <TrackList album={album} likedTrackIds={likedTrackIds} totalDuration={totalDuration} />
->>>>>>> c19dc7c (band page updates)
-=======
         <TrackList 
           tracks={album.tracks.map(track => ({
             id: track.id,
@@ -291,9 +263,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           }}
           likedTrackIds={likedTrackIds}
         />
-<<<<<<< HEAD
->>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
-=======
 
         {moreAlbums.length > 0 && (
           <section className="mt-10 space-y-4">
@@ -305,7 +274,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
             <AlbumCarousel albums={moreAlbums as any} />
           </section>
         )}
->>>>>>> 848ba80 (More by added to Album page)
       </div>
     </div>
   )

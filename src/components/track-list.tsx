@@ -4,41 +4,12 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { usePlayerStore } from '@/hooks/use-player-store'
-<<<<<<< HEAD
-=======
 import { LikeButton } from '@/components/like-button'
+import { usePlayerStore } from '@/hooks/use-player-store'
 import { formatTime } from '@/lib/utils'
-<<<<<<< HEAD
->>>>>>> b3487da (duration on album page)
-import { Play, Clock } from 'lucide-react'
-=======
 import { Play, Pause, Clock } from 'lucide-react'
-<<<<<<< HEAD
->>>>>>> baf139b (track-list update)
-import { AlbumWithTracks } from '@/types/album'
 
-<<<<<<< HEAD
-export function TrackList({ album }: { album: AlbumWithTracks }) {
-=======
-export function TrackList({ album, likedTrackIds = [], totalDuration }: {
-  album: AlbumWithTracks
-  likedTrackIds?: string[]
-  totalDuration?: number
-}) {
-<<<<<<< HEAD
->>>>>>> c19dc7c (band page updates)
-  const { playTrack, setQueue } = usePlayerStore()
-=======
-  const { playTrack, setQueue, isPlaying, currentTrack, togglePlay } = usePlayerStore()
-
-  // Check if this album is currently playing
-  const isCurrentAlbum = currentTrack?.album_id === album.id
->>>>>>> baf139b (track-list update)
-=======
-
-// Generic track interface that works for both album and playlist tracks
-interface GenericTrack {
+export interface TrackListTrack {
   id: string
   title: string
   file_url: string
@@ -47,140 +18,91 @@ interface GenericTrack {
   play_count?: number | null
   album_id?: string
   album_title?: string
-  album_cover?: string | null // Alias for cover_image_url
+  cover_image_url?: string | null
   band_name?: string
   band_slug?: string
+  liked_at?: string
+}
+
+export interface TrackListHeaderInfo {
+  id: string
+  title: string
   cover_image_url?: string | null
-  liked_at?: string // For playlist tracks (date added)
+  type: 'album' | 'playlist' | 'liked'
 }
 
-interface TrackListProps {
-  tracks: GenericTrack[]
-  variant?: 'album' | 'playlist'
-  hideHeader?: boolean
-  hideDateAdded?: boolean
-  headerInfo?: {
-    id: string
-    title: string
-    cover_image_url?: string | null
-    type: 'album' | 'playlist' | 'liked'
-  }
-  likedTrackIds?: string[]
-}
-
-export function TrackList({ 
-  tracks, 
-  variant = 'album', 
+export function TrackList({
+  tracks,
+  variant = 'album',
   hideHeader = false,
   hideDateAdded = false,
   headerInfo,
-  likedTrackIds = [] 
-}: TrackListProps) {
+  likedTrackIds = [],
+}: {
+  tracks: TrackListTrack[]
+  variant?: 'album' | 'playlist'
+  hideHeader?: boolean
+  hideDateAdded?: boolean
+  headerInfo?: TrackListHeaderInfo
+  likedTrackIds?: string[]
+}) {
   const { playTrack, setQueue, isPlaying, currentTrack, togglePlay } = usePlayerStore()
 
-  // Check if this context (album/playlist) is currently playing
-  const isCurrentContext = headerInfo 
-    ? (variant === 'album' && currentTrack?.album_id === headerInfo.id) ||
-      (variant === 'playlist' && tracks.some(t => t.id === currentTrack?.id))
-    : false
->>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
+  const normalized = tracks
+    .filter((t) => t?.id && t.id.trim() !== '')
+    .sort((a, b) => {
+      if (variant !== 'album') return 0
+      const an = typeof a.track_number === 'number' ? a.track_number : 0
+      const bn = typeof b.track_number === 'number' ? b.track_number : 0
+      return an - bn
+    })
+
+  const queueTracks = normalized.map((t) => ({
+    id: t.id,
+    title: t.title,
+    file_url: t.file_url,
+    duration: t.duration,
+    play_count: t.play_count ?? null,
+    track_number: t.track_number ?? 0,
+    album_id: t.album_id ?? headerInfo?.id ?? '',
+    album_title: t.album_title ?? headerInfo?.title ?? '',
+    band_name: t.band_name ?? '',
+    band_slug: t.band_slug,
+    cover_image_url: t.cover_image_url ?? headerInfo?.cover_image_url ?? undefined,
+  }))
+
+  const isCurrentContext = Boolean(
+    headerInfo &&
+      ((variant === 'album' && currentTrack?.album_id === headerInfo.id) ||
+        (variant === 'playlist' && queueTracks.some((t) => t.id === currentTrack?.id)))
+  )
 
   const handlePlayContext = () => {
-    // If this context is already playing, toggle play/pause
     if (isCurrentContext) {
       togglePlay()
       return
     }
-
-    // Otherwise, start playing from the beginning
-    const queueTracks = tracks
-      .filter((track) => track.id && track.id.trim() !== '')
-      .sort((a, b) => {
-        // Sort by track_number for albums, maintain order for playlists
-        if (variant === 'album' && a.track_number && b.track_number) {
-          return a.track_number - b.track_number
-        }
-        return 0
-      })
-      .map(t => ({
-        id: t.id,
-        title: t.title,
-        file_url: t.file_url,
-        duration: t.duration,
-        track_number: t.track_number || 0,
-        album_id: t.album_id || headerInfo?.id || '',
-        album_title: t.album_title || headerInfo?.title || '',
-        band_name: t.band_name || '',
-        band_slug: t.band_slug,
-        cover_image_url: t.cover_image_url || headerInfo?.cover_image_url || undefined,
-      }))
-
     setQueue(queueTracks)
+    if (queueTracks.length > 0) playTrack(queueTracks[0])
+  }
 
-    // Play the first track
-    if (queueTracks.length > 0) {
-      playTrack(queueTracks[0])
+  const handlePlayTrack = (trackId: string) => {
+    const isCurrentTrack = currentTrack?.id === trackId
+    if (isCurrentTrack) {
+      togglePlay()
+      return
     }
-  }
-
-  const handlePlayTrack = (track: GenericTrack) => {
-    // Set queue to all tracks from this context
-    const queueTracks = tracks
-      .filter((track) => track.id && track.id.trim() !== '')
-      .sort((a, b) => {
-        if (variant === 'album' && a.track_number && b.track_number) {
-          return a.track_number - b.track_number
-        }
-        return 0
-      })
-      .map(t => ({
-        id: t.id,
-        title: t.title,
-        file_url: t.file_url,
-        duration: t.duration,
-        track_number: t.track_number || 0,
-        album_id: t.album_id || headerInfo?.id || '',
-        album_title: t.album_title || headerInfo?.title || '',
-        band_name: t.band_name || '',
-        band_slug: t.band_slug,
-        cover_image_url: t.cover_image_url || headerInfo?.cover_image_url || undefined,
-      }))
-
+    const next = queueTracks.find((t) => t.id === trackId)
+    if (!next) return
     setQueue(queueTracks)
-
-    // Play the selected track
-    playTrack({
-      id: track.id,
-      title: track.title,
-      file_url: track.file_url,
-      duration: track.duration,
-      track_number: track.track_number || 0,
-      album_id: track.album_id || headerInfo?.id || '',
-      album_title: track.album_title || headerInfo?.title || '',
-      band_name: track.band_name || '',
-      band_slug: track.band_slug,
-      cover_image_url: track.cover_image_url || headerInfo?.cover_image_url || undefined,
-    })
-  }
-
-
-  const formatPlayCount = (count: number | null | undefined) => {
-    if (!count) return '0'
-    return count.toLocaleString()
+    playTrack(next)
   }
 
   const formatDateAdded = (dateString: string | undefined) => {
     if (!dateString) return '--'
-    try {
-      const date = new Date(dateString)
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric' 
-      })
-    } catch {
-      return '--'
-    }
+    const d = new Date(dateString)
+    if (Number.isNaN(d.getTime())) return '--'
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
   return (
@@ -199,30 +121,19 @@ export function TrackList({
                 <Play fill="currentColor" className="w-5 h-5 ml-1" />
               )}
             </Button>
-            {headerInfo && (
-              <CardTitle className="text-white font-sans">{headerInfo.title}</CardTitle>
-            )}
+
+            {headerInfo && <CardTitle className="text-white font-sans">{headerInfo.title}</CardTitle>}
           </div>
         </CardHeader>
       )}
+
       <CardContent className="p-0">
-<<<<<<< HEAD
-        <div className="divide-y">
-          {album.tracks
-            .sort((a, b) => a.track_number - b.track_number)
-            .map((track) => (
-              <div
-                key={track.id}
-                className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors group"
-              >
-                <Button
-                  variant="ghost"
-                  size="icon"
-=======
         <Table>
           <TableHeader className="hidden md:table-header-group">
             <TableRow className="border-white/10 hover:bg-white/5">
-              <TableHead className="text-white font-sans w-12 hidden md:table-cell">#</TableHead>
+              <TableHead className="text-white font-sans w-12 hidden md:table-cell">
+                {variant === 'album' ? '#' : ''}
+              </TableHead>
               <TableHead className="text-white font-sans w-full">Title</TableHead>
               {variant === 'playlist' && (
                 <>
@@ -238,67 +149,25 @@ export function TrackList({
               <TableHead className="text-white font-sans text-right hidden md:table-cell">
                 <Clock className="w-4 h-4 inline" />
               </TableHead>
-              <TableHead className="text-white font-sans w-12"></TableHead>
+              <TableHead className="text-white font-sans w-12" />
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {tracks
-              .filter((track) => track.id && track.id.trim() !== '') // Filter out tracks with invalid IDs
-              .sort((a, b) => {
-                if (variant === 'album' && a.track_number && b.track_number) {
-                  return a.track_number - b.track_number
-                }
-                return 0
-              })
-              .map((track, index) => {
-                const isCurrentTrack = currentTrack?.id === track.id
-                
-                return (
-                <TableRow
-                  key={track.id}
-<<<<<<< HEAD
-                  className="border-white/10 hover:bg-white/5 group cursor-pointer"
-<<<<<<< HEAD
->>>>>>> c19dc7c (band page updates)
-                  onClick={() => handlePlayTrack(track)}
-=======
-=======
-                  className={`${isCurrentTrack ? 'bg-white/5' : 'border-white/10 hover:bg-white/5'} group cursor-pointer`}
->>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
-                  onClick={() => {
-                    if (isCurrentTrack) {
-                      togglePlay()
-                    } else {
-                      handlePlayTrack(track)
-                    }
-                  }}
->>>>>>> baf139b (track-list update)
-                >
-<<<<<<< HEAD
-                  <TableCell className="text-muted-foreground font-mono text-sm">
-<<<<<<< HEAD
-                    {track.track_number}
-<<<<<<< HEAD
-                  </span>
-                  <span className="font-medium truncate">{track.title}</span>
-                </div>
 
-                <span className="text-sm text-muted-foreground">
-                  {formatDuration(track.duration)}
-                </span>
-              </div>
-            ))}
-        </div>
-=======
-=======
-=======
-                  {/* Track number / play icon (hidden on mobile) */}
-<<<<<<< HEAD
-                  <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell py-4">
->>>>>>> 1cac1ad (responsive)
-=======
+          <TableBody>
+            {normalized.map((t, index) => {
+              const isCurrentTrack = currentTrack?.id === t.id
+              const initialIsLiked = likedTrackIds.includes(t.id)
+
+              const albumTitle = t.album_title
+              const albumId = t.album_id
+
+              return (
+                <TableRow
+                  key={t.id}
+                  className={`${isCurrentTrack ? 'bg-white/5' : 'border-white/10 hover:bg-white/5'} group cursor-pointer`}
+                  onClick={() => handlePlayTrack(t.id)}
+                >
                   <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell py-4 w-12 text-center">
->>>>>>> fc2a1f1 (vercel analytics)
                     {isCurrentTrack ? (
                       isPlaying ? (
                         <Pause fill="currentColor" className="w-4 h-4 text-white" />
@@ -308,115 +177,71 @@ export function TrackList({
                     ) : (
                       <>
                         <span className="inline-flex w-6 items-center justify-center group-hover:hidden">
-                          {variant === 'album' ? track.track_number : index + 1}
+                          {variant === 'album' ? t.track_number : index + 1}
                         </span>
                         <span className="hidden w-6 items-center justify-center group-hover:inline-flex">
                           <Play fill="currentColor" className="w-4 h-4 text-white" />
                         </span>
                       </>
                     )}
->>>>>>> d590fff (refactor: make TrackList reusable and fix liked songs data fetching)
                   </TableCell>
-                  {/* Title (primary column on mobile) */}
-                  <TableCell className="py-4 w-full md:w-auto">
-                    <div className="inline-flex items-center gap-3 min-w-0">
-                      {(() => {
-                        const coverSrc =
-                          track.cover_image_url ||
-                          track.album_cover ||
-                          headerInfo?.cover_image_url ||
-                          null
 
-                        if (!coverSrc) return null
-
-                        return (
-                          <img
-                            src={coverSrc}
-                            alt={track.album_title || headerInfo?.title || 'Album cover'}
-                            className="w-10 h-10 rounded object-cover flex-shrink-0"
-                          />
-                        )
-                      })()}
-                      {variant === 'playlist' ? (
-                        <div className="inline-flex flex-col items-start justify-start min-w-0 flex-1">
-                          <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
-                            {track.title}
-                          </span>
-                          {track.band_name && (
-                            <Link
-                              href={track.band_slug ? `/band/${track.band_slug}` : '#'}
-                              className="grow-0 text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {track.band_name}
-                            </Link>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col min-w-0 flex-1">
-                          <span className={`font-medium truncate ${isCurrentTrack ? 'text-[#ff565f]' : 'text-white'}`}>
-                            {track.title}
-                          </span>
-                          {track.band_name && (
-                            <Link
-                              href={track.band_slug ? `/band/${track.band_slug}` : '#'}
-                              className="text-xs text-muted-foreground hover:text-white hover:underline transition-colors truncate"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {track.band_name}
-                            </Link>
-                          )}
-                        </div>
-                      )}
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-col min-w-0">
+                        <span className={`font-sans text-sm truncate ${isCurrentTrack ? 'text-white' : 'text-white'}`}>
+                          {t.title}
+                        </span>
+                        {variant === 'playlist' && t.band_name ? (
+                          <span className="text-xs text-white/60 truncate">{t.band_name}</span>
+                        ) : null}
+                      </div>
                     </div>
                   </TableCell>
+
                   {variant === 'playlist' && (
                     <>
-                      <TableCell className="hidden md:table-cell">
-                        {track.album_title ? (
-                          <Link
-                            href={track.album_id ? `/album/${track.album_id}` : '#'}
-                            className="text-sm text-muted-foreground hover:text-white hover:underline transition-colors truncate"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {track.album_title}
+                      <TableCell className="text-white/70 font-mono text-xs hidden md:table-cell">
+                        {albumId && albumTitle ? (
+                          <Link href={`/album/${albumId}`} className="hover:underline">
+                            {albumTitle}
                           </Link>
                         ) : (
-                          <span className="text-sm text-muted-foreground">--</span>
+                          '--'
                         )}
                       </TableCell>
+
                       {!hideDateAdded && (
-                        <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell">
-                          {formatDateAdded(track.liked_at)}
+                        <TableCell className="text-white/70 font-mono text-xs hidden md:table-cell">
+                          {formatDateAdded(t.liked_at)}
                         </TableCell>
                       )}
                     </>
                   )}
+
                   {variant === 'album' && (
-                    <TableCell className="text-muted-foreground font-mono text-sm hidden md:table-cell">
-                      {formatPlayCount(track.play_count)}
+                    <TableCell className="text-white/70 font-mono text-xs hidden md:table-cell">
+                      {(t.play_count ?? 0).toLocaleString()}
                     </TableCell>
                   )}
-                  {/* Duration (hidden on mobile) */}
-                  <TableCell className="text-muted-foreground font-mono text-sm text-right hidden md:table-cell">
-                    {track.duration ? formatTime(track.duration) : '--:--'}
+
+                  <TableCell className="text-white/70 font-mono text-xs text-right hidden md:table-cell">
+                    {formatTime(t.duration ?? 0)}
                   </TableCell>
-                  {/* Like button stays visible on mobile */}
-                  <TableCell className="py-4 w-12" onClick={(e) => e.stopPropagation()}>
-                    <LikeButton
-                      trackId={track.id}
-                      initialIsLiked={likedTrackIds.includes(track.id)}
-                      size="sm"
-                      variant="ghost"
-                    />
+
+                  <TableCell className="py-4 text-right">
+                    <div onClick={(e) => e.stopPropagation()} className="flex justify-end">
+                      <LikeButton trackId={t.id} initialIsLiked={initialIsLiked} size="sm" variant="ghost" />
+                    </div>
                   </TableCell>
                 </TableRow>
-                )
-              })}
+              )
+            })}
           </TableBody>
         </Table>
->>>>>>> c19dc7c (band page updates)
       </CardContent>
     </Card>
   )
 }
+
+

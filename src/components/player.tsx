@@ -229,16 +229,9 @@ export function Player() {
   const progressPct = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0
 
   return (
-<<<<<<< HEAD
-    <Card className="fixed bottom-0 left-0 right-0 z-50 rounded-none border-x-0 border-b-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center py-4 px-6 gap-6 mx-auto">
-        
-        {/* THE AUDIO ELEMENT - No crossOrigin, using Props */}
-=======
     <>
       {/* THE AUDIO ELEMENT (shared between desktop + mobile UIs) */}
       {currentTrack.file_url && (
->>>>>>> 1cac1ad (responsive)
         <audio
           ref={audioRef}
           src={currentTrack.file_url}
@@ -246,14 +239,9 @@ export function Player() {
           onLoadedMetadata={onLoadedMetadata}
           onTimeUpdate={onTimeUpdate}
           onEnded={onEnded}
-<<<<<<< HEAD
           onError={onError} // <--- This catches the silent errors
         />
-=======
-          onError={onError}
-        />
       )}
->>>>>>> 1cac1ad (responsive)
 
       {/* Mobile: Mini player + Drawer full player */}
       <div className="md:hidden">

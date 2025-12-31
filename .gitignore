@@ -1,4 +1,16 @@
 node_modules
 .next
-.next
-.next
+
+# env files (never commit)
+.env
+.env.local
+.env.*.local
+
+# local tooling caches (never commit)
+.npm-cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vercel
+.DS_Store
