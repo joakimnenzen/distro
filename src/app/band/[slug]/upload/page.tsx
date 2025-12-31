@@ -57,7 +57,8 @@ export default async function UploadPage({ params }: UploadPageProps) {
         <AlbumUploadForm
           bandId={band.id}
           bandSlug={band.slug}
-          donationsEnabled={Boolean(band.stripe_account_id && band.stripe_payouts_enabled)}
+          bandName={band.name}
+          paymentsEnabled={Boolean(band.stripe_account_id && band.stripe_payouts_enabled)}
         />
       </div>
     </div>

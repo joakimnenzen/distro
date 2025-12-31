@@ -1,14 +1,37 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { HeartHandshake } from 'lucide-react'
 import { createDonationCheckout } from '@/actions/create-donation-checkout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Spinner } from '@/components/ui/spinner'
 
 const PRESETS_SEK = [25, 50, 100, 200] as const
+
+function DonateSubmitButton({ amountSek }: { amountSek: number }) {
+  const { pending } = useFormStatus()
+
+  return (
+    <Button
+      type="submit"
+      disabled={pending}
+      className="w-full bg-[#ff565f] hover:bg-[#ff565f]/80 text-black disabled:opacity-70"
+    >
+      {pending ? (
+        <span className="inline-flex items-center gap-2">
+          <Spinner className="text-black" />
+          Redirecting…
+        </span>
+      ) : (
+        <>Continue to Stripe Checkout ({amountSek} SEK)</>
+      )}
+    </Button>
+  )
+}
 
 export function DonateDialog({
   bandId,
@@ -89,9 +112,7 @@ export function DonateDialog({
           <form action={createDonationCheckout} className="pt-2">
             <input type="hidden" name="bandId" value={bandId} />
             <input type="hidden" name="amountSek" value={amountSek} />
-            <Button type="submit" className="w-full bg-[#ff565f] hover:bg-[#ff565f]/80 text-black">
-              Continue to Stripe Checkout ({amountSek} SEK)
-            </Button>
+            <DonateSubmitButton amountSek={amountSek} />
             <p className="mt-2 text-xs text-white/50 font-mono">
               Secure payment via Stripe. Distro takes 5% + 0.50 SEK.
             </p>

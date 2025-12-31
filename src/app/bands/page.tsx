@@ -18,6 +18,8 @@ async function getUserBands(userId: string) {
       image_url,
       genre,
       location,
+      stripe_account_id,
+      stripe_payouts_enabled,
       created_at,
       albums (
         id,

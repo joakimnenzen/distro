@@ -54,7 +54,7 @@ export async function startStripeConnectOnboarding(formData: FormData): Promise<
           transfers: { requested: true },
         },
         business_profile: {
-          product_description: 'Support/donate payments to bands on Distro',
+          product_description: 'Payments & support for bands on Distro (digital albums + fan support)',
         },
         metadata: {
           band_id: band.id,

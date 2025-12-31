@@ -11,6 +11,7 @@ import { uploadCoverImage } from '@/actions/upload-cover-image'
 import { createAudioUpload } from '@/actions/create-audio-upload'
 import { generateAlbumZip } from '@/actions/generate-album-zip'
 import { toast } from '@/hooks/use-toast'
+import { BandDonateControls } from '@/components/band-donate-controls'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -66,7 +67,8 @@ type UploadFormData = z.infer<typeof uploadFormSchema>
 interface AlbumUploadFormProps {
   bandId: string
   bandSlug: string
-  donationsEnabled: boolean
+  bandName: string
+  paymentsEnabled: boolean
 }
 
 interface FileWithId extends File {
@@ -114,7 +116,7 @@ function SortableFileItem({ file }: { file: FileWithId }) {
   )
 }
 
-export function AlbumUploadForm({ bandId, bandSlug, donationsEnabled }: AlbumUploadFormProps) {
+export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }: AlbumUploadFormProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -300,7 +302,7 @@ export function AlbumUploadForm({ bandId, bandSlug, donationsEnabled }: AlbumUpl
       setUploadProgress('Creating album...')
       console.log('[AlbumUpload] creating album row...', { title: data.title, bandId, coverUrl })
 
-      const wantsPurchase = Boolean(data.isPurchasable && donationsEnabled)
+      const wantsPurchase = Boolean(data.isPurchasable && paymentsEnabled)
       const priceSekNum = Number(data.priceSek)
       const priceOre =
         wantsPurchase && Number.isFinite(priceSekNum) && priceSekNum > 0
@@ -625,15 +627,10 @@ export function AlbumUploadForm({ bandId, bandSlug, donationsEnabled }: AlbumUpl
             <div className="rounded-lg border border-white/10 bg-black/30 p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
-                  <Label className="text-white font-sans">Sell as digital download</Label>
+                  <Label className="text-white font-sans">Sell as Digital Download</Label>
                   <p className="text-xs font-mono text-white/50">
-                    Generates a single ZIP and enables “Buy” on the album page.
+                    Generates a secure ZIP file for buyers. You set the price.
                   </p>
-                  {!donationsEnabled && (
-                    <p className="text-xs font-mono text-white/50">
-                      Enable donations for this band first to sell digital albums.
-                    </p>
-                  )}
                 </div>
 
                 <FormField
@@ -643,12 +640,26 @@ export function AlbumUploadForm({ bandId, bandSlug, donationsEnabled }: AlbumUpl
                     <Switch
                       checked={Boolean(field.value)}
                       onCheckedChange={(checked) => field.onChange(checked)}
-                      disabled={!donationsEnabled}
+                      disabled={!paymentsEnabled}
                       className="data-[state=checked]:bg-[#ff565f]"
                     />
                   )}
                 />
               </div>
+
+              {!paymentsEnabled && (
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-xs font-mono text-white/60">
+                    Connect to Stripe to enable digital sales for this album.
+                  </p>
+                  <BandDonateControls
+                    bandId={bandId}
+                    bandName={bandName}
+                    donationsEnabled={false}
+                    isOwner={true}
+                  />
+                </div>
+              )}
 
               {form.watch('isPurchasable') && (
                 <div className="mt-4 grid grid-cols-3 gap-3">

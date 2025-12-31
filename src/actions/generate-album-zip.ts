@@ -67,7 +67,7 @@ export async function generateAlbumZip(albumId: string): Promise<{ success: true
     if (band.owner_id !== user.id) return { success: false, error: 'Not allowed' }
 
     if (!band.stripe_account_id || !band.stripe_payouts_enabled) {
-      return { success: false, error: 'Enable donations for this band before generating a ZIP.' }
+      return { success: false, error: 'Connect payouts for this band before generating a ZIP.' }
     }
 
     if (!album.is_purchasable || !album.price_ore) {

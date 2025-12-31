@@ -1,15 +1,38 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { ShoppingCart } from 'lucide-react'
 import { createAlbumPurchaseCheckout } from '@/actions/create-album-purchase-checkout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Spinner } from '@/components/ui/spinner'
 
 function formatSekFromOre(ore: number) {
   return `${(ore / 100).toFixed(0)} SEK`
+}
+
+function BuySubmitButton({ priceLabel }: { priceLabel: string }) {
+  const { pending } = useFormStatus()
+
+  return (
+    <Button
+      type="submit"
+      disabled={pending}
+      className="w-full bg-[#ff565f] hover:bg-[#ff565f]/80 text-black disabled:opacity-70"
+    >
+      {pending ? (
+        <span className="inline-flex items-center gap-2">
+          <Spinner className="text-black" />
+          Redirecting…
+        </span>
+      ) : (
+        <>Continue to Stripe Checkout ({priceLabel})</>
+      )}
+    </Button>
+  )
 }
 
 export function BuyAlbumDialog({
@@ -60,9 +83,7 @@ export function BuyAlbumDialog({
             />
           </div>
 
-          <Button type="submit" className="w-full bg-[#ff565f] hover:bg-[#ff565f]/80 text-black">
-            Continue to Stripe Checkout ({priceLabel})
-          </Button>
+          <BuySubmitButton priceLabel={priceLabel} />
 
           <p className="text-xs text-white/50 font-mono">
             We’ll email you a single-use download link after payment.

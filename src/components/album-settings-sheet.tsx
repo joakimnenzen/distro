@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase-browser'
 import { useToast } from '@/hooks/use-toast'
 import { deleteAlbum } from '@/actions/delete-album'
 import { getAlbumTracks } from '@/actions/get-album-tracks'
+import { BandDonateControls } from '@/components/band-donate-controls'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -74,7 +75,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   const [priceSek, setPriceSek] = useState<string>(
     album.price_ore && album.price_ore > 0 ? String(Math.round(album.price_ore / 100)) : ''
   )
-  const [donationsEnabled, setDonationsEnabled] = useState<boolean>(false)
+  const [paymentsEnabled, setPaymentsEnabled] = useState<boolean>(false)
   const [tracks, setTracks] = useState<Track[]>([])
   const [isLoadingTracks, setIsLoadingTracks] = useState(false)
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -99,7 +100,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
     setPriceSek(album.price_ore && album.price_ore > 0 ? String(Math.round(album.price_ore / 100)) : '')
   }, [isOpen, album.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch band donation status (needed to allow enabling digital sales)
+  // Fetch band Stripe payout status (needed to allow enabling digital sales)
   useEffect(() => {
     if (!isOpen) return
     if (!album.band_id) return
@@ -115,11 +116,11 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
       if (cancelled) return
       if (error) {
         console.error('[AlbumSettingsSheet] failed to load band stripe status', error)
-        setDonationsEnabled(false)
+        setPaymentsEnabled(false)
         return
       }
 
-      setDonationsEnabled(Boolean(data?.stripe_account_id && data?.stripe_payouts_enabled))
+      setPaymentsEnabled(Boolean(data?.stripe_account_id && data?.stripe_payouts_enabled))
     }
 
     void run()
@@ -325,8 +326,8 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
     setIsLoading(true)
 
     try {
-      if (isPurchasable && !donationsEnabled) {
-        throw new Error('Enable donations for this band before selling digital albums.')
+      if (isPurchasable && !paymentsEnabled) {
+        throw new Error('Connect payouts for this band before enabling digital sales.')
       }
 
       let priceOre: number | null = null
@@ -560,18 +561,18 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
           <div className="space-y-2 pt-2 border-t border-white/10">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-1">
-                <Label className="text-white font-sans">Sell digital album</Label>
+                <Label className="text-white font-sans">Sell as Digital Download</Label>
                 <p className="text-xs font-mono text-white/50">
-                  Requires donations enabled (Stripe payouts) for this band.
+                  Generates a secure ZIP file for buyers. You set the price.
                 </p>
               </div>
               <Switch
                 checked={isPurchasable}
                 onCheckedChange={(checked) => {
-                  if (checked && !donationsEnabled) {
+                  if (checked && !paymentsEnabled) {
                     toast({
-                      title: 'Enable donations first',
-                      description: 'Go to the band page and enable donations to sell digital albums.',
+                      title: 'Connect payouts first',
+                      description: 'Connect Stripe payouts for this band to enable digital sales.',
                       variant: 'destructive',
                     })
                     return
@@ -580,10 +581,24 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
                   if (checked && !priceSek) setPriceSek('50')
                   if (!checked) setPriceSek('')
                 }}
-                disabled={!donationsEnabled}
+                disabled={!paymentsEnabled}
                 className="data-[state=checked]:bg-[#ff565f]"
               />
             </div>
+
+            {!paymentsEnabled && (
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <p className="text-xs font-mono text-white/60">
+                  Connect to Stripe to enable digital sales for this album.
+                </p>
+                <BandDonateControls
+                  bandId={album.band_id}
+                  bandName={album.band_name}
+                  donationsEnabled={false}
+                  isOwner={true}
+                />
+              </div>
+            )}
 
             {isPurchasable && (
               <div className="grid grid-cols-3 gap-3 pt-2">

@@ -7,7 +7,9 @@ import { useToast } from '@/hooks/use-toast'
 import { deleteBand } from '@/actions/delete-band'
 import { uploadBandImage } from '@/actions/upload-band-image'
 import { updateBand } from '@/actions/update-band'
+import { BandDonateControls } from '@/components/band-donate-controls'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -26,6 +28,8 @@ interface Band {
   location: string | null
   albumsCount: number
   tracksCount: number
+  stripe_account_id?: string | null
+  stripe_payouts_enabled?: boolean | null
 }
 
 interface BandSettingsSheetProps {
@@ -50,6 +54,7 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
   })
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(band.image_url)
+  const payoutsEnabled = Boolean(band.stripe_account_id && band.stripe_payouts_enabled)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -321,19 +326,47 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
             </Button>
           </div>
 
-          {/* Delete Button */}
-          <div className="pt-6 border-t border-white/10">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setShowDeleteDialog(true)}
-              className="w-full border-red-500/50 text-red-500 hover:bg-red-500/10 hover:border-red-500"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete Band
-            </Button>
-          </div>
         </form>
+
+        {/* Payouts & Support */}
+        <div className="mt-6 space-y-2 border-t border-white/10 pt-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <h3 className="text-sm font-sans text-white">Payouts &amp; Support</h3>
+              <p className="text-xs font-mono text-white/60">
+                Connect your Stripe account to sell digital albums and receive direct support from fans.
+              </p>
+            </div>
+
+            {payoutsEnabled ? (
+              <Badge className="border-transparent bg-[#62E9A8] text-black">Payouts Enabled</Badge>
+            ) : null}
+          </div>
+
+          {!payoutsEnabled ? (
+            <div className="pt-2">
+              <BandDonateControls
+                bandId={band.id}
+                bandName={band.name}
+                donationsEnabled={false}
+                isOwner={true}
+              />
+            </div>
+          ) : null}
+        </div>
+
+        {/* Delete Button */}
+        <div className="mt-6 pt-6 border-t border-white/10">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowDeleteDialog(true)}
+            className="w-full border-red-500/50 text-red-500 hover:bg-red-500/10 hover:border-red-500"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Band
+          </Button>
+        </div>
 
         {/* Delete Confirmation Dialog */}
         <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

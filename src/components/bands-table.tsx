@@ -18,6 +18,8 @@ interface Band {
   location: string | null
   albumsCount: number
   tracksCount: number
+  stripe_account_id?: string | null
+  stripe_payouts_enabled?: boolean | null
 }
 
 interface BandsTableProps {
