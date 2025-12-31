@@ -201,13 +201,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                {canBuyAlbum && (
-                  <BuyAlbumDialog
-                    albumId={album.id}
-                    albumTitle={album.title}
-                    priceOre={album.price_ore as number}
-                  />
-                )}
                 <BandDonateControls
                   bandId={album.band_id}
                   bandName={album.bands.name}
@@ -236,6 +229,13 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
               <span>•</span>
               <span>{formatTotalDuration(totalDuration)}</span>
             </div>
+            {canBuyAlbum && (
+                  <BuyAlbumDialog
+                    albumId={album.id}
+                    albumTitle={album.title}
+                    priceOre={album.price_ore as number}
+                  />
+                )}
           </div>
         </div>
 

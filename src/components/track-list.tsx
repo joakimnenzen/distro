@@ -189,7 +189,7 @@ export function TrackList({
                   <TableCell className="py-4">
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col min-w-0">
-                        <span className={`font-sans text-sm truncate ${isCurrentTrack ? 'text-white' : 'text-white'}`}>
+                        <span className={`font-mono text-sm truncate ${isCurrentTrack ? 'text-white' : 'text-white'}`}>
                           {t.title}
                         </span>
                         {variant === 'playlist' && t.band_name ? (

@@ -33,7 +33,7 @@ export function BuyAlbumDialog({
       <DialogTrigger asChild>
         <Button disabled={disabled} variant="outline" className="border-white/20 text-white hover:bg-white/10">
           <ShoppingCart className="w-4 h-4 mr-2" />
-          Buy ({priceLabel})
+          Buy Digital Album ({priceLabel})
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-black border-white/10 text-white">
