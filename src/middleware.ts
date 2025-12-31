@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { isReservedBandSlug } from './lib/reserved-slugs'
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -59,19 +60,34 @@ export async function middleware(request: NextRequest) {
     '/',
     '/browse',
     '/search',
-    '/band',
-    '/album',
+    // Auth pages
     '/login',
     '/signup',
     '/auth',
+    // Legal
     '/terms',
     '/privacy',
+    // Guest checkout + delivery should be public
+    '/purchase',
+    '/donate',
+    '/download',
   ]
 
-  const isPublicRoute = publicRoutes.some(route => 
-    request.nextUrl.pathname === route || 
-    request.nextUrl.pathname.startsWith(`${route}/`)
+  const pathname = request.nextUrl.pathname
+
+  const isExplicitPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
   )
+
+  // New public routing:
+  // - /:bandSlug
+  // - /:bandSlug/:albumSlug
+  // We keep protected routes safe by blocking reserved slugs (dashboard, api, albums, etc.)
+  const parts = pathname.split('/').filter(Boolean)
+  const isPublicBandRoute = parts.length === 1 && !isReservedBandSlug(parts[0])
+  const isPublicBandAlbumRoute = parts.length === 2 && !isReservedBandSlug(parts[0])
+
+  const isPublicRoute = isExplicitPublicRoute || isPublicBandRoute || isPublicBandAlbumRoute
 
   // For public routes, just refresh the session but don't redirect
   if (isPublicRoute) {
