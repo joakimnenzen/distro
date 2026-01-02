@@ -198,12 +198,6 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <BandDonateControls
-                  bandId={album.band_id}
-                  bandName={album.bands.name}
-                  donationsEnabled={paymentsEnabled}
-                  isOwner={isBandOwner}
-                />
                 <AlbumLikeButton albumId={album.id} initialIsSaved={isSaved} size="default" variant="ghost" />
               </div>
             </div>
@@ -240,6 +234,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
             cover_image_url: album.cover_image_url,
           }))}
           variant="album"
+          showBandNameInAlbumVariant={true}
           headerInfo={{
             id: album.id,
             title: 'Tracks',

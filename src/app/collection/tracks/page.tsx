@@ -51,14 +51,16 @@ export default async function LikedSongsPage() {
             duration: track.duration,
             album_id: track.album_id || '',
             album_title: track.album_title || '',
+            album_slug: (track as any).album_slug || null,
             band_name: track.band_name || '',
             band_slug: track.band_slug || '',
-            album_cover: track.album_cover || null,
             cover_image_url: track.cover_image_url || track.album_cover || null,
             liked_at: track.liked_at,
           }))}
           variant="playlist"
           hideHeader={true}
+          showCoverImage={true}
+          linkTitleToAlbum={true}
           headerInfo={{
             id: 'liked-songs',
             title: 'Liked Songs',

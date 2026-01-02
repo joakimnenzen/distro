@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LikeButton } from '@/components/like-button'
 import { usePlayerStore } from '@/hooks/use-player-store'
 import { formatTime } from '@/lib/utils'
-import { Play, Pause, Clock } from 'lucide-react'
+import { Play, Pause, Clock, Music } from 'lucide-react'
 
 export interface TrackListTrack {
   id: string
@@ -37,6 +38,10 @@ export function TrackList({
   variant = 'album',
   hideHeader = false,
   hideDateAdded = false,
+  hideTableHeader = false,
+  showCoverImage = false,
+  linkTitleToAlbum = false,
+  showBandNameInAlbumVariant = false,
   headerInfo,
   likedTrackIds = [],
 }: {
@@ -44,6 +49,10 @@ export function TrackList({
   variant?: 'album' | 'playlist'
   hideHeader?: boolean
   hideDateAdded?: boolean
+  hideTableHeader?: boolean
+  showCoverImage?: boolean
+  linkTitleToAlbum?: boolean
+  showBandNameInAlbumVariant?: boolean
   headerInfo?: TrackListHeaderInfo
   likedTrackIds?: string[]
 }) {
@@ -106,6 +115,12 @@ export function TrackList({
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
+  const getAlbumHref = (t: TrackListTrack) => {
+    if (t.band_slug && t.album_slug) return `/${t.band_slug}/${t.album_slug}`
+    if (t.band_slug) return `/${t.band_slug}`
+    return '#'
+  }
+
   return (
     <Card className="bg-black/20 border-white/10">
       {!hideHeader && (
@@ -130,29 +145,37 @@ export function TrackList({
 
       <CardContent className="p-0">
         <Table>
-          <TableHeader className="hidden md:table-header-group">
-            <TableRow className="border-white/10 hover:bg-white/5">
-              <TableHead className="text-white font-sans w-12 hidden md:table-cell">
-                {variant === 'album' ? '#' : ''}
-              </TableHead>
-              <TableHead className="text-white font-sans w-full">Title</TableHead>
-              {variant === 'playlist' && (
-                <>
-                  <TableHead className="text-white font-sans hidden md:table-cell">Album</TableHead>
-                  {!hideDateAdded && (
-                    <TableHead className="text-white font-sans hidden md:table-cell">Date Added</TableHead>
-                  )}
-                </>
-              )}
-              {variant === 'album' && (
-                <TableHead className="text-white font-sans hidden md:table-cell">Plays</TableHead>
-              )}
-              <TableHead className="text-white font-sans text-right hidden md:table-cell">
-                <Clock className="w-4 h-4 inline" />
-              </TableHead>
-              <TableHead className="text-white font-sans w-12" />
-            </TableRow>
-          </TableHeader>
+          {!hideTableHeader && (
+            <TableHeader className="hidden md:table-header-group">
+              <TableRow className="border-white/10 hover:bg-white/5">
+                <TableHead className="text-white font-sans w-12 hidden md:table-cell">
+                  {variant === 'album' ? '#' : ''}
+                </TableHead>
+
+                {showCoverImage ? <TableHead className="w-12" /> : null}
+
+                <TableHead className="text-white font-sans w-full">Title</TableHead>
+
+                {variant === 'playlist' && (
+                  <>
+                    <TableHead className="text-white font-sans hidden md:table-cell">Album</TableHead>
+                    {!hideDateAdded && (
+                      <TableHead className="text-white font-sans hidden md:table-cell">Date Added</TableHead>
+                    )}
+                  </>
+                )}
+
+                {variant === 'album' && (
+                  <TableHead className="text-white font-sans hidden md:table-cell">Plays</TableHead>
+                )}
+
+                <TableHead className="text-white font-sans text-right hidden md:table-cell">
+                  <Clock className="w-4 h-4 inline" />
+                </TableHead>
+                <TableHead className="text-white font-sans w-12" />
+              </TableRow>
+            </TableHeader>
+          )}
 
           <TableBody>
             {normalized.map((t, index) => {
@@ -161,6 +184,7 @@ export function TrackList({
 
               const albumTitle = t.album_title
               const albumId = t.album_id
+              const albumHref = getAlbumHref(t)
 
               return (
                 <TableRow
@@ -187,14 +211,69 @@ export function TrackList({
                     )}
                   </TableCell>
 
+                  {showCoverImage ? (
+                    <TableCell className="py-4 w-12">
+                      <div className="relative h-10 w-10 overflow-hidden rounded bg-white/10">
+                        {t.cover_image_url ? (
+                          <Image
+                            src={t.cover_image_url}
+                            alt=""
+                            fill
+                            className="object-cover"
+                            sizes="40px"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-white/40">
+                            <Music className="h-4 w-4" />
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                  ) : null}
+
                   <TableCell className="py-4">
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col min-w-0">
-                        <span className={`font-mono text-sm truncate ${isCurrentTrack ? 'text-white' : 'text-white'}`}>
-                          {t.title}
-                        </span>
+                        {linkTitleToAlbum && albumHref !== '#' ? (
+                          <Link
+                            href={albumHref}
+                            onClick={(e) => e.stopPropagation()}
+                            className={`font-mono text-sm truncate hover:underline ${isCurrentTrack ? 'text-white' : 'text-white'}`}
+                          >
+                            {t.title}
+                          </Link>
+                        ) : (
+                          <span className={`font-mono text-sm truncate ${isCurrentTrack ? 'text-white' : 'text-white'}`}>
+                            {t.title}
+                          </span>
+                        )}
+
                         {variant === 'playlist' && t.band_name ? (
-                          <span className="text-xs text-white/60 truncate">{t.band_name}</span>
+                          t.band_slug ? (
+                            <Link
+                              href={`/${t.band_slug}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs text-white/60 truncate hover:underline"
+                            >
+                              {t.band_name}
+                            </Link>
+                          ) : (
+                            <span className="text-xs text-white/60 truncate">{t.band_name}</span>
+                          )
+                        ) : null}
+
+                        {variant === 'album' && showBandNameInAlbumVariant && t.band_name ? (
+                          t.band_slug ? (
+                            <Link
+                              href={`/${t.band_slug}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-xs text-white/60 truncate hover:underline"
+                            >
+                              {t.band_name}
+                            </Link>
+                          ) : (
+                            <span className="text-xs text-white/60 truncate">{t.band_name}</span>
+                          )
                         ) : null}
                       </div>
                     </div>
@@ -204,16 +283,7 @@ export function TrackList({
                     <>
                       <TableCell className="text-white/70 font-mono text-xs hidden md:table-cell">
                         {albumId && albumTitle ? (
-                          <Link
-                            href={
-                              t.band_slug && t.album_slug
-                                ? `/${t.band_slug}/${t.album_slug}`
-                                : t.band_slug
-                                  ? `/${t.band_slug}`
-                                  : '#'
-                            }
-                            className="hover:underline"
-                          >
+                          <Link href={albumHref} onClick={(e) => e.stopPropagation()} className="hover:underline">
                             {albumTitle}
                           </Link>
                         ) : (

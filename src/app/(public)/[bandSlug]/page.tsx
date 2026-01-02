@@ -136,7 +136,7 @@ export default async function BandPage({ params, searchParams }: PageProps) {
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
 
-          <div className="relative flex h-56 md:h-72 items-end justify-between gap-4 p-6">
+          <div className="relative flex flex-col h-56 md:h-72 items-start justify-end gap-4 p-6">
             <div className="min-w-0">
               <h1 className="truncate font-sans text-4xl md:text-6xl font-bold tracking-tight text-white">
                 {band.name}
@@ -173,6 +173,8 @@ export default async function BandPage({ params, searchParams }: PageProps) {
             <TrackList
               variant="album"
               hideHeader={true}
+              hideTableHeader={true}
+              showCoverImage={true}
               tracks={topTracks.map((t: any, index: number) => ({
                 id: t.id,
                 title: t.title,

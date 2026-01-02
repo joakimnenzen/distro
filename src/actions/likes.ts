@@ -125,6 +125,7 @@ interface LikedTrackRaw {
     duration: number | null
     file_url: string
     albums: {
+      slug?: string | null
       title: string
       cover_image_url: string | null
       bands: { name: string; slug: string }[] | null
@@ -149,6 +150,7 @@ export async function getLikedTracks(userId: string) {
           album_id,
           albums (
             id,
+            slug,
             title,
             cover_image_url,
             bands ( name, slug )
@@ -198,6 +200,7 @@ export async function getLikedTracks(userId: string) {
           // Ensure we handle the nested relationships safely
           album_id: item.tracks.album_id || album?.id || '',
           album_title: album?.title || '',
+          album_slug: (album as any)?.slug ?? null,
           album_cover: album?.cover_image_url || null,
           band_name: band?.name || '',
           band_slug: band?.slug || '',
