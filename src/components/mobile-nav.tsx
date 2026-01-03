@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Disc, Heart, Home, Music2 } from 'lucide-react'
+import { Disc, Heart, Home, Music2, ListMusic } from 'lucide-react'
 
 type NavItem = {
   href: string
@@ -30,12 +30,18 @@ const items: NavItem[] = [
     icon: Heart,
     isActive: (p) => p.startsWith('/collection/tracks'),
   },
-  {
-    href: '/collection/albums',
-    label: 'Albums',
-    icon: Disc,
-    isActive: (p) => p.startsWith('/collection/albums'),
-  },
+    {
+      href: '/collection/albums',
+      label: 'Albums',
+      icon: Disc,
+      isActive: (p) => p.startsWith('/collection/albums'),
+    },
+    {
+      href: '/collection/playlists',
+      label: 'Playlists',
+      icon: ListMusic,
+      isActive: (p) => p.startsWith('/collection/playlists'),
+    },
 ]
 
 export function MobileNav() {
@@ -49,7 +55,7 @@ export function MobileNav() {
       }}
       aria-label="Mobile navigation"
     >
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-5">
         {items.map((item) => {
           const active = item.isActive(pathname)
           const Icon = item.icon

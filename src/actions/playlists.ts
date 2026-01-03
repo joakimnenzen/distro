@@ -174,6 +174,60 @@ export async function addTrackToPlaylist(formData: FormData): Promise<void> {
   revalidatePath('/', 'layout')
 }
 
+export async function addTrackToPlaylistResult(input: {
+  playlistId: string
+  trackId: string
+}): Promise<
+  | { status: 'added' }
+  | { status: 'exists' }
+  | { status: 'error'; error: string }
+> {
+  try {
+    const { supabase, user } = await requireUser()
+    const playlistId = input?.playlistId?.toString()
+    const trackId = input?.trackId?.toString()
+    if (!playlistId || !trackId) return { status: 'error', error: 'Missing ids' }
+
+    const { data: playlist } = await supabase
+      .from('playlists')
+      .select('id')
+      .eq('id', playlistId)
+      .eq('owner_id', user.id)
+      .single()
+    if (!playlist) return { status: 'error', error: 'Playlist not found' }
+
+    const { data: maxRow } = await supabase
+      .from('playlist_tracks')
+      .select('position')
+      .eq('playlist_id', playlistId)
+      .order('position', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    const nextPos = (maxRow?.position ?? 0) + 1
+
+    const { error: insertErr } = await supabase
+      .from('playlist_tracks')
+      .insert({ playlist_id: playlistId, track_id: trackId, position: nextPos })
+
+    if (insertErr) {
+      if (isDuplicateError(insertErr)) {
+        return { status: 'exists' }
+      }
+      console.error('[addTrackToPlaylistResult] insert error', insertErr)
+      return { status: 'error', error: 'Failed to add track' }
+    }
+
+    revalidatePath(`/playlist/${playlistId}`)
+    revalidatePath('/collection/playlists')
+    revalidatePath('/', 'layout')
+    return { status: 'added' }
+  } catch (e) {
+    console.error('[addTrackToPlaylistResult] unexpected error', e)
+    return { status: 'error', error: 'Failed to add track' }
+  }
+}
+
 export async function removeTrackFromPlaylist(formData: FormData): Promise<void> {
   const { supabase, user } = await requireUser()
   const playlistId = formData.get('playlistId')?.toString()

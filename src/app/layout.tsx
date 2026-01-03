@@ -5,7 +5,8 @@ import './globals.css'
 import { Player } from '@/components/player'
 import { TopBar } from '@/components/top-bar'
 import { Sidebar } from '@/components/sidebar'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster as ToastToaster } from '@/components/ui/toaster'
+import { Toaster as SonnerToaster } from '@/components/ui/sonner'
 import { AuthModal } from '@/components/auth/auth-modal'
 import { MobileNav } from '@/components/mobile-nav'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -49,7 +50,8 @@ export default function RootLayout({
         <MobileNav />
 
         {/* Toaster for notifications */}
-        <Toaster />
+        <ToastToaster />
+        <SonnerToaster />
 
         {/* Auth Modal - Available globally */}
         <AuthModal />

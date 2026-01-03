@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase-browser'
-import { addTrackToPlaylist } from '@/actions/playlists'
+import { addTrackToPlaylistResult } from '@/actions/playlists'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ListPlus } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 type PlaylistRow = { id: string; name: string }
 
@@ -19,6 +20,7 @@ export function AddToPlaylistMenu({ trackId }: { trackId: string }) {
   const supabase = createClient()
   const [userId, setUserId] = useState<string | null>(null)
   const [playlists, setPlaylists] = useState<PlaylistRow[]>([])
+  const [isAddingTo, setIsAddingTo] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -65,15 +67,37 @@ export function AddToPlaylistMenu({ trackId }: { trackId: string }) {
           </DropdownMenuItem>
         ) : (
           playlists.map((p) => (
-            <form key={p.id} action={addTrackToPlaylist}>
-              <input type="hidden" name="playlistId" value={p.id} />
-              <input type="hidden" name="trackId" value={trackId} />
-              <DropdownMenuItem asChild className="font-mono text-xs focus:bg-white/10">
-                <button type="submit" onClick={(e) => e.stopPropagation()} className="w-full text-left">
-                  Add to {p.name}
-                </button>
-              </DropdownMenuItem>
-            </form>
+            <DropdownMenuItem
+              key={p.id}
+              className="font-mono text-xs focus:bg-white/10"
+              disabled={isAddingTo === p.id}
+              onSelect={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                if (isAddingTo) return
+                setIsAddingTo(p.id)
+
+                const toastId = toast.loading(`Adding to ${p.name}…`)
+                void addTrackToPlaylistResult({ playlistId: p.id, trackId })
+                  .then((res) => {
+                    if (res.status === 'added') {
+                      toast.success(`Added to ${p.name}`, { id: toastId })
+                    } else if (res.status === 'exists') {
+                      toast.info(`Already in ${p.name}`, { id: toastId })
+                    } else {
+                      toast.error(res.error || 'Could not add track', { id: toastId })
+                    }
+                  })
+                  .catch(() => {
+                    toast.error('Could not add track', { id: toastId })
+                  })
+                  .finally(() => {
+                    setIsAddingTo(null)
+                  })
+              }}
+            >
+              Add to {p.name}
+            </DropdownMenuItem>
           ))
         )}
       </DropdownMenuContent>
