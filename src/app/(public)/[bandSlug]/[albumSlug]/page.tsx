@@ -214,7 +214,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
               <span>{formatTotalDuration(totalDuration)}</span>
             </div>
 
-            {canBuyAlbum && <BuyAlbumDialog albumId={album.id} albumTitle={album.title} priceOre={album.price_ore as number} />}
+            {canBuyAlbum && (
+              <BuyAlbumDialog albumId={album.id} albumTitle={album.title} priceOre={album.price_ore as number} />
+            )}
           </div>
         </div>
 

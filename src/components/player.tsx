@@ -12,6 +12,7 @@ import { Card } from '@/components/ui/card'
 import { Slider } from '@/components/ui/slider'
 import { RetroVisualizer } from '@/components/retro-visualizer'
 import { LikeButton } from '@/components/like-button'
+import { AddToPlaylistMenu } from '@/components/add-to-playlist-menu'
 import {
   Drawer,
   DrawerContent,
@@ -335,7 +336,7 @@ export function Player() {
                 </div>
               </div>
 
-              {/* meta + like */}
+              {/* meta + like + playlist */}
               <div className="mt-6 flex items-start gap-4">
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-left font-sans text-2xl font-bold">
@@ -349,7 +350,8 @@ export function Player() {
                     </Link>
                   </div>
                 </div>
-                <div className="flex-shrink-0">
+                <div className="flex shrink-0 items-center gap-2">
+                  <AddToPlaylistMenu trackId={currentTrack.id} />
                   <LikeButton trackId={currentTrack.id} initialIsLiked={false} size="default" variant="ghost" />
                 </div>
               </div>

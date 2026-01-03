@@ -22,6 +22,7 @@ export function TopBar() {
   const [isSearching, setIsSearching] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [profileSlug, setProfileSlug] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
   const { open: openAuthModal } = useAuthModal()
@@ -36,13 +37,14 @@ export function TopBar() {
         // Fetch profile data for avatar
         const { data: profile } = await supabase
           .from('profiles')
-          .select('avatar_url')
+          .select('avatar_url, slug')
           .eq('id', user.id)
           .single()
 
         if (profile?.avatar_url) {
           setAvatarUrl(profile.avatar_url)
         }
+        if (profile?.slug) setProfileSlug(profile.slug)
       }
     }
 
@@ -55,16 +57,18 @@ export function TopBar() {
 
         const { data: profile } = await supabase
           .from('profiles')
-          .select('avatar_url')
+          .select('avatar_url, slug')
           .eq('id', session.user.id)
           .single()
 
         if (profile?.avatar_url) {
           setAvatarUrl(profile.avatar_url)
         }
+        if (profile?.slug) setProfileSlug(profile.slug)
       } else {
         setUser(null)
         setAvatarUrl(null)
+        setProfileSlug(null)
       }
     })
 
@@ -196,6 +200,17 @@ export function TopBar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-black/90 border-white/20 backdrop-blur-xl" align="end">
+                {profileSlug ? (
+                  <>
+                    <DropdownMenuItem
+                      className="font-mono text-sm text-white hover:bg-white/10 cursor-pointer"
+                      onClick={() => router.push(`/user/${profileSlug}`)}
+                    >
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-white/10" />
+                  </>
+                ) : null}
                 <DropdownMenuItem
                   className="font-mono text-sm text-red-400 hover:bg-red-400/10 cursor-pointer"
                   onClick={handleLogout}

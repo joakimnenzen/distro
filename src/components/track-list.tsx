@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LikeButton } from '@/components/like-button'
+import { AddToPlaylistMenu } from '@/components/add-to-playlist-menu'
 import { usePlayerStore } from '@/hooks/use-player-store'
 import { formatTime } from '@/lib/utils'
 import { Play, Pause, Clock, Music } from 'lucide-react'
@@ -238,12 +239,12 @@ export function TrackList({
                           <Link
                             href={albumHref}
                             onClick={(e) => e.stopPropagation()}
-                            className={`font-mono text-sm truncate hover:underline ${isCurrentTrack ? 'text-white' : 'text-white'}`}
+                            className={`font-mono text-sm truncate hover:underline ${isCurrentTrack ? 'text-[#E96263]' : 'text-white'}`}
                           >
                             {t.title}
                           </Link>
                         ) : (
-                          <span className={`font-mono text-sm truncate ${isCurrentTrack ? 'text-white' : 'text-white'}`}>
+                          <span className={`font-mono text-sm truncate ${isCurrentTrack ? 'text-[#E96263]' : 'text-white'}`}>
                             {t.title}
                           </span>
                         )}
@@ -311,6 +312,7 @@ export function TrackList({
 
                   <TableCell className="py-4 text-right">
                     <div onClick={(e) => e.stopPropagation()} className="flex justify-end">
+                      <AddToPlaylistMenu trackId={t.id} />
                       <LikeButton trackId={t.id} initialIsLiked={initialIsLiked} size="sm" variant="ghost" />
                     </div>
                   </TableCell>
