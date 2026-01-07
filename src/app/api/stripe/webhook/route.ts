@@ -37,14 +37,23 @@ export async function POST(req: Request) {
 
   const sig = req.headers.get('stripe-signature')
   if (!sig) {
+    console.error('[stripe-webhook] Missing stripe-signature header')
     return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 })
   }
 
-  const rawBody = await req.text()
+  // In Next.js 15, we need to handle the body differently for webhooks
+  let body: string
+  try {
+    const rawBody = await req.arrayBuffer()
+    body = Buffer.from(rawBody).toString('utf8')
+  } catch (err) {
+    console.error('[stripe-webhook] Failed to read request body:', err)
+    return NextResponse.json({ error: 'Failed to read request body' }, { status: 400 })
+  }
 
   let event: Stripe.Event
   try {
-    event = stripe.webhooks.constructEvent(rawBody, sig, getWebhookSecret())
+    event = stripe.webhooks.constructEvent(body, sig, getWebhookSecret())
   } catch (err) {
     console.error('[stripe-webhook] signature verification failed', err)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
