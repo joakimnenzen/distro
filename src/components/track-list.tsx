@@ -153,8 +153,6 @@ export function TrackList({
                   {variant === 'album' ? '#' : ''}
                 </TableHead>
 
-                {showCoverImage ? <TableHead className="w-12" /> : null}
-
                 <TableHead className="text-white font-sans w-full">Title</TableHead>
 
                 {variant === 'playlist' && (
@@ -212,8 +210,9 @@ export function TrackList({
                     )}
                   </TableCell>
 
-                  {showCoverImage ? (
-                    <TableCell className="py-4 w-12">
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-4">
+                    {showCoverImage ? (
                       <div className="relative h-10 w-10 overflow-hidden rounded bg-white/10">
                         {t.cover_image_url ? (
                           <Image
@@ -229,11 +228,7 @@ export function TrackList({
                           </div>
                         )}
                       </div>
-                    </TableCell>
                   ) : null}
-
-                  <TableCell className="py-4">
-                    <div className="flex items-center gap-3">
                       <div className="flex flex-col min-w-0">
                         {linkTitleToAlbum && albumHref !== '#' ? (
                           <Link

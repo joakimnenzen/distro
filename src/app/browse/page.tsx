@@ -85,6 +85,7 @@ export default async function BrowsePage() {
             key={album.id}
             album={{
               id: album.id,
+              slug: album.slug,
               title: album.title,
               cover_image_url: album.cover_image_url,
               bands: album.bands // Pass the array - AlbumCard will normalize it
