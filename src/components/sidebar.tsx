@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
   Home,
@@ -50,11 +51,7 @@ export function Sidebar() {
       {/* Logo/Header */}
       <div className="p-6 border-b border-white/10">
         <Link href="/" className="flex items-center">
-          <img
-            src="/distro_logo.svg"
-            alt="Distro"
-            className="h-5 w-auto"
-          />
+          <Image src="/distro_logo.svg" alt="Distro" width={86} height={20} className="h-5 w-auto" priority />
         </Link>
       </div>
 

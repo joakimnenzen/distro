@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getLikedTrackIds } from '@/actions/likes'
 import { isAlbumSaved } from '@/actions/album-saves'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { TrackList } from '@/components/track-list'
@@ -92,6 +93,46 @@ async function getMoreAlbumsByBand(bandId: string, currentAlbumId: string) {
   return data || []
 }
 
+function renderAlbumTrackList(album: AlbumWithTracks, likedTrackIds: string[]) {
+  return (
+    <TrackList
+      tracks={album.tracks.map((track) => ({
+        id: track.id,
+        title: track.title,
+        file_url: track.file_url,
+        duration: track.duration,
+        track_number: track.track_number,
+        play_count: track.play_count,
+        album_id: album.id,
+        album_title: album.title,
+        album_slug: album.slug,
+        band_name: album.bands.name,
+        band_slug: album.bands.slug,
+        cover_image_url: album.cover_image_url,
+      }))}
+      variant="album"
+      showBandNameInAlbumVariant={true}
+      headerInfo={{
+        id: album.id,
+        title: 'Tracks',
+        cover_image_url: album.cover_image_url,
+        type: 'album',
+      }}
+      likedTrackIds={likedTrackIds}
+    />
+  )
+}
+
+async function AlbumLikeButtonWithState({ albumId, userId }: { albumId: string; userId?: string }) {
+  const isSaved = userId ? await isAlbumSaved(userId, albumId) : false
+  return <AlbumLikeButton albumId={albumId} initialIsSaved={isSaved} size="default" variant="ghost" />
+}
+
+async function AlbumTrackListWithLikes({ album, userId }: { album: AlbumWithTracks; userId?: string }) {
+  const likedTrackIds = userId ? await getLikedTrackIds(userId) : []
+  return renderAlbumTrackList(album, likedTrackIds)
+}
+
 function AlbumCarousel({
   albums,
 }: {
@@ -140,9 +181,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   const album = await getAlbumWithTracks(bandSlug, albumSlug)
   if (!album) notFound()
 
-  const [likedTrackIds, isSaved, moreAlbums, bandRowRes] = await Promise.all([
-    user ? getLikedTrackIds(user.id) : Promise.resolve([]),
-    user ? isAlbumSaved(user.id, album.id) : Promise.resolve(false),
+  const [moreAlbums, bandRowRes] = await Promise.all([
     getMoreAlbumsByBand(album.band_id, album.id),
     supabase
       .from('bands')
@@ -211,7 +250,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <AlbumLikeButton albumId={album.id} initialIsSaved={isSaved} size="default" variant="ghost" />
+                <Suspense fallback={<AlbumLikeButton albumId={album.id} initialIsSaved={false} size="default" variant="ghost" />}>
+                  <AlbumLikeButtonWithState albumId={album.id} userId={user?.id} />
+                </Suspense>
               </div>
             </div>
 
@@ -235,31 +276,9 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
           </div>
         </div>
 
-        <TrackList
-          tracks={album.tracks.map((track) => ({
-            id: track.id,
-            title: track.title,
-            file_url: track.file_url,
-            duration: track.duration,
-            track_number: track.track_number,
-            play_count: track.play_count,
-            album_id: album.id,
-            album_title: album.title,
-            album_slug: album.slug,
-            band_name: album.bands.name,
-            band_slug: album.bands.slug,
-            cover_image_url: album.cover_image_url,
-          }))}
-          variant="album"
-          showBandNameInAlbumVariant={true}
-          headerInfo={{
-            id: album.id,
-            title: 'Tracks',
-            cover_image_url: album.cover_image_url,
-            type: 'album',
-          }}
-          likedTrackIds={likedTrackIds}
-        />
+        <Suspense fallback={renderAlbumTrackList(album, [])}>
+          <AlbumTrackListWithLikes album={album} userId={user?.id} />
+        </Suspense>
 
         {moreAlbums.length > 0 && (
           <section className="mt-10 space-y-4">

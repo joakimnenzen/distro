@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { getLikedTrackIds } from '@/actions/likes'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { AlbumCard } from '@/components/album-card'
 import { TrackList } from '@/components/track-list'
@@ -87,6 +88,52 @@ async function getBandTopTracks(bandId: string) {
   return data || []
 }
 
+function mapTopTracksForList(topTracks: any[], band: { id: string; name: string; slug: string; image_url: string | null }) {
+  return topTracks.map((t: any, index: number) => ({
+    id: t.id,
+    title: t.title,
+    file_url: t.file_url,
+    duration: t.duration,
+    track_number: index + 1,
+    play_count: t.play_count,
+    album_id: t.album_id,
+    album_title: t.albums?.title,
+    album_slug: t.albums?.slug,
+    cover_image_url: t.albums?.cover_image_url,
+    band_name: band.name,
+    band_slug: band.slug,
+  }))
+}
+
+async function BandTopTracksWithLikes({
+  topTracks,
+  band,
+  userId,
+}: {
+  topTracks: any[]
+  band: { id: string; name: string; slug: string; image_url: string | null }
+  userId?: string
+}) {
+  const likedTrackIds = userId ? await getLikedTrackIds(userId) : []
+
+  return (
+    <TrackList
+      variant="album"
+      hideHeader={true}
+      hideTableHeader={true}
+      showCoverImage={true}
+      tracks={mapTopTracksForList(topTracks, band)}
+      likedTrackIds={likedTrackIds}
+      headerInfo={{
+        id: band.id,
+        title: 'Most played',
+        cover_image_url: band.image_url,
+        type: 'playlist',
+      }}
+    />
+  )
+}
+
 interface PageProps {
   params: Promise<{
     bandSlug: string
@@ -114,10 +161,9 @@ export default async function BandPage({ params, searchParams }: PageProps) {
     if (!band) notFound()
   }
 
-  const [topTracks, albums, likedTrackIds] = await Promise.all([
+  const [topTracks, albums] = await Promise.all([
     getBandTopTracks(band.id),
     getBandAlbums(band.id),
-    user ? getLikedTrackIds(user.id) : Promise.resolve([]),
   ])
   const isOwner = user && band.owner_id === user.id
   const paymentsEnabled = Boolean(band.stripe_payouts_enabled && band.stripe_account_id)
@@ -173,33 +219,26 @@ export default async function BandPage({ params, searchParams }: PageProps) {
         {topTracks.length > 0 && (
           <div className="mt-10">
             <h2 className="text-2xl font-sans font-semibold text-white mb-4">Most played</h2>
-            <TrackList
-              variant="album"
-              hideHeader={true}
-              hideTableHeader={true}
-              showCoverImage={true}
-              tracks={topTracks.map((t: any, index: number) => ({
-                id: t.id,
-                title: t.title,
-                file_url: t.file_url,
-                duration: t.duration,
-                track_number: index + 1,
-                play_count: t.play_count,
-                album_id: t.album_id,
-                album_title: t.albums?.title,
-                album_slug: t.albums?.slug,
-                cover_image_url: t.albums?.cover_image_url,
-                band_name: band.name,
-                band_slug: band.slug,
-              }))}
-              likedTrackIds={likedTrackIds}
-              headerInfo={{
-                id: band.id,
-                title: 'Most played',
-                cover_image_url: band.image_url,
-                type: 'playlist',
-              }}
-            />
+            <Suspense
+              fallback={
+                <TrackList
+                  variant="album"
+                  hideHeader={true}
+                  hideTableHeader={true}
+                  showCoverImage={true}
+                  tracks={mapTopTracksForList(topTracks, band)}
+                  likedTrackIds={[]}
+                  headerInfo={{
+                    id: band.id,
+                    title: 'Most played',
+                    cover_image_url: band.image_url,
+                    type: 'playlist',
+                  }}
+                />
+              }
+            >
+              <BandTopTracksWithLikes topTracks={topTracks} band={band} userId={user?.id} />
+            </Suspense>
           </div>
         )}
 

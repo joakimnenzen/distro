@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePlayerStore } from '@/hooks/use-player-store'
 import { createClient } from '@/lib/supabase-browser'
 import { formatTime } from '@/lib/utils'
@@ -255,12 +256,14 @@ export function Player() {
 
               <div className="flex items-center gap-3">
               {/* cover */}
-              <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-sm bg-white/5">
+              <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-sm bg-white/5">
                 {currentTrack.cover_image_url ? (
-                  <img
+                  <Image
                     src={currentTrack.cover_image_url}
                     alt={`${currentTrack.album_title} cover`}
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="40px"
                   />
                 ) : null}
               </div>
@@ -325,10 +328,12 @@ export function Player() {
               <div className="mx-auto w-full max-w-md">
                 <div className="aspect-square w-full overflow-hidden rounded-2xl bg-white/5 shadow-lg">
                   {currentTrack.cover_image_url ? (
-                    <img
+                    <Image
                       src={currentTrack.cover_image_url}
                       alt={`${currentTrack.album_title} cover`}
-                      className="h-full w-full object-cover"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 90vw, 512px"
                     />
                   ) : (
                     <div className="h-full w-full" />
@@ -420,11 +425,13 @@ export function Player() {
           <div className="flex items-center space-x-4 w-1/3 min-w-0">
             {/* Album Cover */}
             {currentTrack.cover_image_url && (
-              <div className="flex-shrink-0">
-                <img
+              <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-md">
+                <Image
                   src={currentTrack.cover_image_url}
                   alt={`${currentTrack.album_title} cover`}
-                  className="w-14 h-14 rounded-md object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="56px"
                 />
               </div>
             )}
