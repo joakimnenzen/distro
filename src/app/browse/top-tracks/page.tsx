@@ -15,20 +15,12 @@ type TopTrackRow = {
         title: string
         slug: string | null
         cover_image_url: string | null
-        bands: {
-          name: string
-          slug: string
-        } | null
-      }
-    | {
-        id: string
-        title: string
-        slug: string | null
-        cover_image_url: string | null
-        bands: {
-          name: string
-          slug: string
-        } | null
+        bands:
+          | {
+              name: string
+              slug: string
+            }[]
+          | null
       }[]
     | null
 }
@@ -69,8 +61,8 @@ async function getTopTracks(): Promise<TrackListTrack[]> {
   }
 
   return (data as TopTrackRow[]).map((track, index) => {
-    const album = Array.isArray(track.albums) ? track.albums[0] : track.albums
-    const band = album?.bands && !Array.isArray(album.bands) ? album.bands : null
+    const album = track.albums?.[0] ?? null
+    const band = album?.bands?.[0] ?? null
 
     return {
       id: track.id,
