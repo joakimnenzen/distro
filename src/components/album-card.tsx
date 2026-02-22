@@ -13,6 +13,7 @@ interface AlbumCardProps {
     id: string
     slug?: string | null
     title: string
+    album_type?: 'album' | 'ep' | 'single' | 'demo' | null
     cover_image_url: string | null
     release_date?: string | null
     created_at?: string
@@ -43,6 +44,20 @@ export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: Alb
     const year = date.getFullYear()
     return Number.isFinite(year) ? year : null
   }
+
+  const getAlbumTypeLabel = () => {
+    switch (album.album_type) {
+      case 'ep':
+        return 'EP'
+      case 'single':
+        return 'Single'
+      case 'demo':
+        return 'Demo'
+      default:
+        return 'Album'
+    }
+  }
+  const releaseYear = getReleaseYear()
 
   const handlePlayAlbum = async () => {
     // If this album is already the current context, toggle play/pause
@@ -131,7 +146,7 @@ export function AlbumCard({ album, showBandName = true, subtitle = 'band' }: Alb
 
           {subtitle === 'year' ? (
             <span className="font-mono text-xs text-muted-foreground truncate">
-              {getReleaseYear() ?? ''}
+              {releaseYear ? `${releaseYear} • ${getAlbumTypeLabel()}` : getAlbumTypeLabel()}
             </span>
           ) : (
             showBandName && bandSlug !== '#' && (

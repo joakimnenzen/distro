@@ -8,6 +8,7 @@ import { MIN_PAYMENT_SEK } from '@/lib/payments-fees'
 
 const createAlbumSchema = z.object({
   title: z.string().min(1, 'Album title is required').max(200, 'Album title too long'),
+  albumType: z.enum(['album', 'ep', 'single', 'demo']).default('album'),
   releaseDate: z.string().optional(),
   coverImageUrl: z.string().url('Invalid cover image URL'),
   bandId: z.string().uuid('Invalid band ID'),
@@ -84,6 +85,7 @@ export async function createAlbum(data: CreateAlbumData) {
       .from('albums')
       .insert({
         title: validated.title,
+        album_type: validated.albumType,
         slug: albumSlug,
         release_date: validated.releaseDate ? new Date(validated.releaseDate).toISOString().split('T')[0] : null,
         cover_image_url: validated.coverImageUrl,

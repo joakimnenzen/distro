@@ -31,6 +31,7 @@ async function getAlbumWithTracks(bandSlug: string, albumSlug: string): Promise<
       id,
       slug,
       title,
+      album_type,
       release_date,
       cover_image_url,
       band_id,
@@ -152,6 +153,15 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   const paymentsEnabled = Boolean(bandRow?.stripe_account_id && bandRow?.stripe_payouts_enabled)
   const isBandOwner = Boolean(user && bandRow?.owner_id === user.id)
   const canBuyAlbum = Boolean(album.is_purchasable && album.price_ore && album.price_ore > 0)
+  const releaseYear = album.release_date ? new Date(album.release_date).getFullYear() : null
+  const releaseTypeLabel =
+    album.album_type === 'ep'
+      ? 'EP'
+      : album.album_type === 'single'
+        ? 'Single'
+        : album.album_type === 'demo'
+          ? 'Demo'
+          : 'Album'
 
   const totalDuration = album.tracks.reduce((total, track) => total + (track.duration || 0), 0)
   const formatTotalDuration = (seconds: number) => {
@@ -202,9 +212,11 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
               </div>
             </div>
 
-            {album.release_date && (
+            {(releaseYear || releaseTypeLabel) && (
               <div>
-                <span className="text-sm text-muted-foreground">Released {new Date(album.release_date).getFullYear()}</span>
+                <span className="text-sm text-muted-foreground">
+                  {releaseYear ? `Released ${releaseYear} • ${releaseTypeLabel}` : releaseTypeLabel}
+                </span>
               </div>
             )}
 

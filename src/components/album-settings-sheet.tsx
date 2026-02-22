@@ -39,6 +39,7 @@ import { CSS } from '@dnd-kit/utilities'
 interface Album {
   id: string
   title: string
+  album_type?: 'album' | 'ep' | 'single' | 'demo' | null
   cover_image_url: string | null
   release_date?: string | null
   band_id: string
@@ -69,6 +70,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [title, setTitle] = useState(album.title)
+  const [albumType, setAlbumType] = useState<'album' | 'ep' | 'single' | 'demo'>(album.album_type || 'album')
   const [releaseDate, setReleaseDate] = useState<string>(album.release_date || '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(album.cover_image_url)
@@ -94,6 +96,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   useEffect(() => {
     if (!isOpen) return
     setTitle(album.title)
+    setAlbumType(album.album_type || 'album')
     setReleaseDate(album.release_date || '')
     setImageFile(null)
     setImagePreview(album.cover_image_url)
@@ -360,6 +363,7 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
       // Prepare update data
       const updateData = {
         title: title,
+        album_type: albumType,
         cover_image_url: imageUrl,
         release_date: releaseDate ? releaseDate : null,
         is_purchasable: isPurchasable,
@@ -544,6 +548,22 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
                 className="bg-white/5 border-white/20 text-white font-mono"
                 required
               />
+            </div>
+
+            {/* Release Type */}
+            <div className="space-y-2">
+              <Label htmlFor="album_type" className="text-white font-sans">Release Type</Label>
+              <select
+                id="album_type"
+                value={albumType}
+                onChange={(e) => setAlbumType(e.target.value as 'album' | 'ep' | 'single' | 'demo')}
+                className="flex h-10 w-full rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm text-white font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="album">Album</option>
+                <option value="ep">EP</option>
+                <option value="single">Single</option>
+                <option value="demo">Demo</option>
+              </select>
             </div>
 
             {/* Release Date */}

@@ -12,6 +12,7 @@ interface Album {
   id: string
   slug?: string | null
   title: string
+  album_type?: 'album' | 'ep' | 'single' | 'demo' | null
   cover_image_url: string | null
   release_date?: string | null
   created_at: string

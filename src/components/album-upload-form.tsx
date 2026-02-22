@@ -50,6 +50,7 @@ import { CSS } from '@dnd-kit/utilities'
 
 const uploadFormSchema = z.object({
   title: z.string().min(1, 'Album title is required').max(200, 'Album title too long'),
+  albumType: z.enum(['album', 'ep', 'single', 'demo']).default('album'),
   releaseDate: z.string().optional(),
   coverFile: z.instanceof(File, { message: 'Cover image is required' })
     .refine((file) => file.size <= 5 * 1024 * 1024, 'File size must be less than 5MB')
@@ -137,6 +138,7 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
     resolver: zodResolver(uploadFormSchema),
     defaultValues: {
       title: '',
+      albumType: 'album',
       releaseDate: '',
       trackFiles: [],
       isPurchasable: false,
@@ -265,6 +267,7 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
         bandId,
         bandSlug,
         title: data.title,
+        albumType: data.albumType,
         releaseDate: data.releaseDate,
         coverName: data.coverFile?.name,
         coverSize: data.coverFile?.size,
@@ -315,6 +318,7 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
 
       const albumData: CreateAlbumData = {
         title: data.title,
+        albumType: data.albumType,
         releaseDate: data.releaseDate,
         coverImageUrl: coverUrl,
         bandId: bandId,
@@ -527,6 +531,31 @@ export function AlbumUploadForm({ bandId, bandSlug, bandName, paymentsEnabled }:
                   </FormControl>
                   <FormDescription>
                     Optional release date for the album
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="albumType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Release Type</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      className="flex h-10 w-full rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm text-white font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="album">Album</option>
+                      <option value="ep">EP</option>
+                      <option value="single">Single</option>
+                      <option value="demo">Demo</option>
+                    </select>
+                  </FormControl>
+                  <FormDescription>
+                    Choose if this release is an album, EP, single, or demo.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

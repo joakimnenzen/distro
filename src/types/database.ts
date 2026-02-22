@@ -57,6 +57,7 @@ export type Database = {
         Row: {
           id: string
           title: string
+          album_type: string
           release_date: string | null
           cover_image_url: string | null
           band_id: string
@@ -66,6 +67,7 @@ export type Database = {
         Insert: {
           id?: string
           title: string
+          album_type?: string
           release_date?: string | null
           cover_image_url?: string | null
           band_id: string
@@ -75,6 +77,7 @@ export type Database = {
         Update: {
           id?: string
           title?: string
+          album_type?: string
           release_date?: string | null
           cover_image_url?: string | null
           band_id?: string

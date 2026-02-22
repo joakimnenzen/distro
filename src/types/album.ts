@@ -2,6 +2,7 @@ export interface AlbumWithTracks {
   id: string
   slug?: string | null
   title: string
+  album_type?: 'album' | 'ep' | 'single' | 'demo' | null
   release_date: string | null
   cover_image_url: string | null
   band_id: string

@@ -31,6 +31,7 @@ async function getBandAlbums(bandId: string) {
       id,
       slug,
       title,
+      album_type,
       cover_image_url,
       created_at,
       release_date,
