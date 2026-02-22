@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { Music } from 'lucide-react'
 import { AlbumCard } from '@/components/album-card'
+import { BrowseSubnav } from '@/components/browse-subnav'
 
 interface AlbumWithBand {
   id: string
@@ -58,6 +59,8 @@ export default async function BrowsePage() {
 
   return (
     <div className="container mx-auto py-8">
+      <BrowseSubnav />
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold font-sans text-white mb-2">
           Fresh Pressings
