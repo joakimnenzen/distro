@@ -140,15 +140,17 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
   const album = await getAlbumWithTracks(bandSlug, albumSlug)
   if (!album) notFound()
 
-  const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
-  const isSaved = user ? await isAlbumSaved(user.id, album.id) : false
-  const moreAlbums = await getMoreAlbumsByBand(album.band_id, album.id)
-
-  const { data: bandRow } = await supabase
-    .from('bands')
-    .select('id, owner_id, stripe_account_id, stripe_payouts_enabled')
-    .eq('id', album.band_id)
-    .single()
+  const [likedTrackIds, isSaved, moreAlbums, bandRowRes] = await Promise.all([
+    user ? getLikedTrackIds(user.id) : Promise.resolve([]),
+    user ? isAlbumSaved(user.id, album.id) : Promise.resolve(false),
+    getMoreAlbumsByBand(album.band_id, album.id),
+    supabase
+      .from('bands')
+      .select('id, owner_id, stripe_account_id, stripe_payouts_enabled')
+      .eq('id', album.band_id)
+      .single(),
+  ])
+  const bandRow = bandRowRes.data
 
   const paymentsEnabled = Boolean(bandRow?.stripe_account_id && bandRow?.stripe_payouts_enabled)
   const isBandOwner = Boolean(user && bandRow?.owner_id === user.id)
@@ -189,6 +191,7 @@ export default async function AlbumPage({ params }: AlbumPageProps) {
                   fill
                   className="object-cover"
                   sizes="256px"
+                  priority
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground">No Cover</div>

@@ -114,10 +114,12 @@ export default async function BandPage({ params, searchParams }: PageProps) {
     if (!band) notFound()
   }
 
-  const topTracks = await getBandTopTracks(band.id)
-  const albums = await getBandAlbums(band.id)
+  const [topTracks, albums, likedTrackIds] = await Promise.all([
+    getBandTopTracks(band.id),
+    getBandAlbums(band.id),
+    user ? getLikedTrackIds(user.id) : Promise.resolve([]),
+  ])
   const isOwner = user && band.owner_id === user.id
-  const likedTrackIds = user ? await getLikedTrackIds(user.id) : []
   const paymentsEnabled = Boolean(band.stripe_payouts_enabled && band.stripe_account_id)
 
   return (

@@ -1,16 +1,18 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
-import { Player } from '@/components/player'
 import { TopBar } from '@/components/top-bar'
 import { Sidebar } from '@/components/sidebar'
 import { Toaster as ToastToaster } from '@/components/ui/toaster'
 import { Toaster as SonnerToaster } from '@/components/ui/sonner'
-import { AuthModal } from '@/components/auth/auth-modal'
 import { MobileNav } from '@/components/mobile-nav'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/next'
+
+const Player = dynamic(() => import('@/components/player').then((m) => m.Player))
+const AuthModal = dynamic(() => import('@/components/auth/auth-modal').then((m) => m.AuthModal))
 
 const geistSans = GeistSans
 const geistMono = GeistMono

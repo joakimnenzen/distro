@@ -72,9 +72,10 @@ function AlbumCarousel({
 
 export default async function Home() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const latestAlbums = await getLatestAlbums()
+  const [{ data: { user } }, latestAlbums] = await Promise.all([
+    supabase.auth.getUser(),
+    getLatestAlbums(),
+  ])
   const savedAlbums = user ? await getSavedAlbums(user.id) : []
 
   return (
