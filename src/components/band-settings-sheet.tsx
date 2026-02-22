@@ -210,12 +210,13 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="bg-black border-white/10 text-white w-full sm:max-w-md">
+      <SheetContent className="bg-black border-white/10 text-white w-full sm:max-w-md flex flex-col max-h-[100dvh] overflow-hidden">
         <SheetHeader>
           <SheetTitle className="text-white font-sans">Edit Band</SheetTitle>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+        <div className="mt-6 flex-1 min-h-0 overflow-y-auto pr-1">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Image Upload */}
           <div className="space-y-2">
             <Label className="text-white font-sans">Band Image</Label>
@@ -366,6 +367,8 @@ export function BandSettingsSheet({ band, isOpen, onClose }: BandSettingsSheetPr
             <Trash2 className="w-4 h-4 mr-2" />
             Delete Band
           </Button>
+        </div>
+
         </div>
 
         {/* Delete Confirmation Dialog */}
