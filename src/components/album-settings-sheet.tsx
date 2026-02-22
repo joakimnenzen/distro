@@ -476,12 +476,12 @@ export function AlbumSettingsSheet({ album, isOpen, onClose }: AlbumSettingsShee
   return (
     <>
       <Sheet open={isOpen} onOpenChange={onClose}>
-        <SheetContent className="bg-black border-white/10 text-white w-full sm:max-w-md">
+        <SheetContent className="bg-black border-white/10 text-white w-full sm:max-w-md flex flex-col max-h-[100dvh] overflow-hidden">
           <SheetHeader>
             <SheetTitle className="text-white font-sans">Edit Album</SheetTitle>
           </SheetHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+          <form onSubmit={handleSubmit} className="space-y-6 mt-6 flex-1 min-h-0 overflow-y-auto pr-1">
             {/* Cover Image Upload */}
             <div className="space-y-2">
               <Label className="text-white font-sans">Cover Image</Label>
